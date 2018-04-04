@@ -1,9 +1,10 @@
 #!/usr/bin/env xonsh
+import os
 import sys
 
-export MKL_NUM_THREADS=1
-export OMP_NUM_THREADS=1
-export CUDA_VISIBLE_DEVICES=3
+os.environ["MKL_NUM_THREADS"]=1
+os.environ["OMP_NUM_THREADS"]=1
+os.environ["CUDA_VISIBLE_DEVICES"]=3
 
 model_file = 'model.py'
 
