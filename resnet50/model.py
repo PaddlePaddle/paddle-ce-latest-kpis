@@ -327,14 +327,27 @@ def run_benchmark(model, args):
         print(s.getvalue())
 
 
-def collect_gpu_memory_data():
+def collect_gpu_memory_data(mem_list):
     """
     collect the GPU memory data
     """
-    command = "rm -rf mem.log;nvidia-smi --id=3 --query-compute-apps=used_memory --format=csv  -l 1 > mem.log"
-    status, output = commands.getstatusoutput(command)
-    if status != 0:
-        print('Get GPU memory data error')
+    while(True):
+        command = "nvidia-smi --id=3 --query-compute-apps=used_memory --format=csv"
+        status, output = commands.getstatusoutput(command)
+        if status != 0:
+            print('Get GPU memory data error')
+        else:
+            mem_list.append(int(output.split('\n')[1].split(' ')[0]))
+        time.sleep(1)
+
+
+def save_gpu_data(mem_list):
+    gpu_memory_factor = None
+    for kpi in tracking_kpis: 
+        if kpi.name == '%s_%s_gpu_memory' % (args.data_set, args.batch_size):
+            gpu_memory_kpi = kpi
+    gpu_memory_kpi.add_record(max(mem_list))
+    gpu_memory_kpi.persist()
 
 
 if __name__ == '__main__':
@@ -346,9 +359,10 @@ if __name__ == '__main__':
     print_arguments(args)
     if args.data_format == 'NHWC':
         raise ValueError('Only support NCHW data_format now.')
+    mem_data_list = []
     if args.device == 'GPU':
         collect_memory_thread = threading.Thread(
-            target=collect_gpu_memory_data)
+            target=collect_gpu_memory_data, args=(mem_data_list,))
         collect_memory_thread.setDaemon(True)
         collect_memory_thread.start()
     if args.use_nvprof and args.device == 'GPU':
@@ -356,3 +370,4 @@ if __name__ == '__main__':
             run_benchmark(model_map[args.model], args)
     else:
         run_benchmark(model_map[args.model], args)
+        save_gpu_data(mem_data_list)
