@@ -39,6 +39,11 @@ parser.add_argument(
     choices=['CPU', 'GPU'],
     help="The device type.")
 parser.add_argument(
+    "--gpu_id",
+    type=int,
+    default=3,
+    help="The GPU Card Id. (default: %(default)d)")
+parser.add_argument(
     '--data_format',
     type=str,
     default='NCHW',
@@ -246,7 +251,7 @@ def collect_gpu_memory_data(mem_list):
     collect the GPU memory data
     """
     while(True):
-        command = "nvidia-smi --id=3 --query-compute-apps=used_memory --format=csv"
+        command = "nvidia-smi --id=%s --query-compute-apps=used_memory --format=csv" % args.gpu_id
         status, output = commands.getstatusoutput(command)
         if status != 0:
             print('Get GPU memory data error')

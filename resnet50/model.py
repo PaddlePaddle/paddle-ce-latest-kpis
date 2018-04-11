@@ -67,6 +67,11 @@ def parse_args():
         choices=['CPU', 'GPU'],
         help='The device type.')
     parser.add_argument(
+        "--gpu_id",
+        type=int,
+        default=3,
+        help="The GPU Card Id. (default: %(default)d)")
+    parser.add_argument(
         '--data_set',
         type=str,
         default='flowers',
@@ -332,7 +337,7 @@ def collect_gpu_memory_data(mem_list):
     collect the GPU memory data
     """
     while(True):
-        command = "nvidia-smi --id=3 --query-compute-apps=used_memory --format=csv"
+        command = "nvidia-smi --id=%s --query-compute-apps=used_memory --format=csv" % args.gpu_id
         status, output = commands.getstatusoutput(command)
         if status != 0:
             print('Get GPU memory data error')
@@ -342,7 +347,7 @@ def collect_gpu_memory_data(mem_list):
 
 
 def save_gpu_data(mem_list):
-    gpu_memory_factor = None
+    gpu_memory_kpi = None
     for kpi in tracking_kpis: 
         if kpi.name == '%s_%s_gpu_memory' % (args.data_set, args.batch_size):
             gpu_memory_kpi = kpi
