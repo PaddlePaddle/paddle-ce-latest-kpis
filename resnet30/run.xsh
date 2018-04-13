@@ -9,4 +9,4 @@ import sys
 
 model_file = 'model.py'
 
-python @(model_file) --batch_size 1000 --iters 10 --device CPU
+python @(model_file) --batch_size 500 --iters 5 --device CPU
