@@ -102,7 +102,7 @@ def train(batch_size, device, pass_num, iterations):
     fluid.memory_optimize(fluid.default_main_program())
 
     train_reader = paddle.batch(
-        paddle.dataset.cifar.train10(),
+        paddle.reader.shuffle(paddle.dataset.cifar.train10(), buf_size=5120),
         batch_size=batch_size)
 
     test_reader = paddle.batch(
