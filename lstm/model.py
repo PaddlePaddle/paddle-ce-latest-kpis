@@ -250,7 +250,7 @@ def collect_gpu_memory_data(mem_list):
             print('Get GPU memory data error')
         else:
             mem_list.append(int(output.split('\n')[1].split(' ')[0]))
-        time.sleep(1)
+        time.sleep(0.01)
 
 
 def save_gpu_data(mem_list):
