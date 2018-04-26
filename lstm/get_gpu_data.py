@@ -21,8 +21,7 @@ parser.add_argument(
 parser.add_argument(
     '--data_set',
     type=str,
-    default='cifar10',
-    choices=['cifar10', 'flowers'],
+    default='imdb',
     help='Optional dataset for benchmark.')
 args = parser.parse_args()
 

@@ -10,6 +10,7 @@ import cPickle
 import os
 import random
 import commands
+import subprocess
 import threading
 import time
 import numpy as np
@@ -239,18 +240,21 @@ def print_arguments(args):
     print('------------------------------------------------')
 
 
-def collect_gpu_memory_data(mem_list):
+def collect_gpu_memory_data(alive):
     """
     collect the GPU memory data
     """
-    while(True):
-        command = "nvidia-smi --id=%s --query-compute-apps=used_memory --format=csv" % args.gpu_id
-        status, output = commands.getstatusoutput(command)
-        if status != 0:
-            print('Get GPU memory data error')
-        else:
-            mem_list.append(int(output.split('\n')[1].split(' ')[0]))
-        time.sleep(0.01)
+    global is_alive
+    status, output = commands.getstatusoutput('rm -rf memory.txt')
+    if status == 0:
+    	print('del memory.txt')
+    command = "nvidia-smi --id=%s --query-compute-apps=used_memory --format=csv -lms 1 > memory.txt" % args.gpu_id
+    p = subprocess.Popen(command, shell=True)
+    if p.pid < 0:
+    	print('Get GPU memory data error')
+    while(is_alive):
+        time.sleep(1)
+    p.kill()
 
 
 def save_gpu_data(mem_list):
@@ -265,10 +269,11 @@ def save_gpu_data(mem_list):
 if __name__ == '__main__':
     args = parse_args()
     print_arguments(args)
-    mem_data_list = []
+    global is_alive
+    is_alive = True
     collect_memory_thread = threading.Thread(
-            target=collect_gpu_memory_data, args=(mem_data_list,))
+            target=collect_gpu_memory_data, args=(is_alive,))
     collect_memory_thread.setDaemon(True)
     collect_memory_thread.start()
     main()
-    save_gpu_data(mem_data_list)
+    is_alive = False

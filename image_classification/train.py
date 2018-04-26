@@ -304,7 +304,7 @@ if __name__ == '__main__':
         args,
         learning_rate=0.1,
         batch_size=batch_size,
-        num_passes=5,
+        num_passes=10,
         init_model=None,
         parallel=True,
         use_nccl=True,

@@ -9,5 +9,5 @@ if [ ! -d "data/pascalvoc" ];then
     mkdir -p data/pascalvoc
     ./download.sh
 fi
-FLAGS_benchmark=true FLAGS_fraction_of_gpu_memory_to_use=0.0 python train.py --batch_size=64 --num_passes=1
+FLAGS_benchmark=true python train.py --batch_size=64 --num_passes=5
 
