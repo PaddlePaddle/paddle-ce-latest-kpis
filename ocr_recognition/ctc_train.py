@@ -101,12 +101,12 @@ def train(args, data_reader=ctc_reader):
                     total_loss / (batch_id * args.batch_size),
                     total_seq_error / (batch_id * args.batch_size))
                 sys.stdout.flush()
-	    if batch_id == args.iterations - 1:
+	        if batch_id == args.iterations - 1:
                 avg_seq_err = batch_seq_error[0] / args.batch_size
-		avg_loss = batch_loss[0] / args.batch_size
-		train_avg_loss_kpi.add_record(np.array(avg_loss, dtype='float32'))
-		train_seq_err_kpi.add_record(np.array(avg_seq_err, dtype='float32'))
-		break
+		        avg_loss = batch_loss[0] / args.batch_size
+		        train_avg_loss_kpi.add_record(np.array(avg_loss, dtype='float32'))
+		        train_seq_err_kpi.add_record(np.array(avg_seq_err, dtype='float32'))
+		        break
             # evaluate
             if batch_id % args.eval_period == 0:
                 with model_average.apply(exe):
