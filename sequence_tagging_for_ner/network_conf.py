@@ -59,8 +59,9 @@ def ner_net(word_dict_len, label_dict_len, parallel, stack_num=2):
                         name="__hidden%02d_%s__" % (i, direction),
                         size=hidden_dim,
                         act="stanh",
-                        bias_attr=fluid.ParamAttr(initializer=NormalInitializer(
-                            loc=0.0, scale=1.0)),
+                        bias_attr=fluid.ParamAttr(
+                            initializer=NormalInitializer(
+                                loc=0.0, scale=1.0)),
                         input=[hidden, rnn[0], rnn[1]],
                         param_attr=[
                             hidden_para_attr, rnn_para_attr, rnn_para_attr
@@ -103,8 +104,10 @@ def ner_net(word_dict_len, label_dict_len, parallel, stack_num=2):
         avg_cost = fluid.layers.mean(x=crf_cost)
         return avg_cost, emission
 
-    word = fluid.layers.data(name='word', shape=[1], dtype='int64', lod_level=1)
-    mark = fluid.layers.data(name='mark', shape=[1], dtype='int64', lod_level=1)
+    word = fluid.layers.data(
+        name='word', shape=[1], dtype='int64', lod_level=1)
+    mark = fluid.layers.data(
+        name='mark', shape=[1], dtype='int64', lod_level=1)
     target = fluid.layers.data(
         name="target", shape=[1], dtype='int64', lod_level=1)
 

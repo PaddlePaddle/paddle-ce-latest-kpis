@@ -2,7 +2,11 @@ import paddle as paddle
 import paddle.fluid as fluid
 
 
-def conv_bn_layer(input, num_filters, filter_size, stride=1, groups=1,
+def conv_bn_layer(input,
+                  num_filters,
+                  filter_size,
+                  stride=1,
+                  groups=1,
                   act=None):
     conv = fluid.layers.conv2d(
         input=input,

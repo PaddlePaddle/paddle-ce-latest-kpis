@@ -24,6 +24,7 @@ import paddle.fluid.profiler as profiler
 
 from continuous_evaluation import tracking_kpis
 
+
 def parse_args():
     parser = argparse.ArgumentParser("Understand Sentiment by Dynamic RNN.")
     parser.add_argument(
@@ -38,7 +39,10 @@ def parse_args():
         help='The first num of minibatch num to skip, for better performance test'
     )
     parser.add_argument(
-        '--iterations', type=int, default=80, help='The number of minibatches.')
+        '--iterations',
+        type=int,
+        default=80,
+        help='The number of minibatches.')
     parser.add_argument(
         '--emb_dim',
         type=int,
@@ -173,7 +177,7 @@ def main():
             crop_sentence(imdb.train(word_dict), args.crop_size),
             buf_size=25000),
         batch_size=args.batch_size)
-    
+
     train_acc_kpi = None
     for kpi in tracking_kpis:
         if kpi.name == 'imdb_%s_train_acc' % (args.batch_size):
@@ -247,19 +251,19 @@ def collect_gpu_memory_data(alive):
     global is_alive
     status, output = commands.getstatusoutput('rm -rf memory.txt')
     if status == 0:
-    	print('del memory.txt')
+        print('del memory.txt')
     command = "nvidia-smi --id=%s --query-compute-apps=used_memory --format=csv -lms 1 > memory.txt" % args.gpu_id
     p = subprocess.Popen(command, shell=True)
     if p.pid < 0:
-    	print('Get GPU memory data error')
-    while(is_alive):
+        print('Get GPU memory data error')
+    while (is_alive):
         time.sleep(1)
     p.kill()
 
 
 def save_gpu_data(mem_list):
     gpu_memory_kpi = None
-    for kpi in tracking_kpis: 
+    for kpi in tracking_kpis:
         if kpi.name == 'imdb_%s_gpu_memory' % (args.batch_size):
             gpu_memory_kpi = kpi
     gpu_memory_kpi.add_record(max(mem_list))
@@ -272,7 +276,7 @@ if __name__ == '__main__':
     global is_alive
     is_alive = True
     collect_memory_thread = threading.Thread(
-            target=collect_gpu_memory_data, args=(is_alive,))
+        target=collect_gpu_memory_data, args=(is_alive, ))
     collect_memory_thread.setDaemon(True)
     collect_memory_thread.start()
     main()

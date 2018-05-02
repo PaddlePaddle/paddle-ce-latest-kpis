@@ -165,8 +165,8 @@ def seq_to_seq_net(embedding_dim, encoder_size, decoder_size, source_dict_dim,
                                    bias_attr=False,
                                    act='tanh')
 
-    def lstm_decoder_with_attention(target_embedding, encoder_vec, encoder_proj,
-                                    decoder_boot, decoder_size):
+    def lstm_decoder_with_attention(target_embedding, encoder_vec,
+                                    encoder_proj, decoder_boot, decoder_size):
         def simple_attention(encoder_vec, encoder_proj, decoder_state):
             decoder_state_proj = fluid.layers.fc(input=decoder_state,
                                                  size=decoder_size,
@@ -206,7 +206,8 @@ def seq_to_seq_net(embedding_dim, encoder_size, decoder_size, source_dict_dim,
             context = simple_attention(encoder_vec, encoder_proj, hidden_mem)
             decoder_inputs = fluid.layers.concat(
                 input=[context, current_word], axis=1)
-            h, c = lstm_step(decoder_inputs, hidden_mem, cell_mem, decoder_size)
+            h, c = lstm_step(decoder_inputs, hidden_mem, cell_mem,
+                             decoder_size)
             rnn.update_memory(hidden_mem, h)
             rnn.update_memory(cell_mem, c)
             out = fluid.layers.fc(input=h,
@@ -315,7 +316,7 @@ def train():
             count += 1
 
         return total_loss / count
-    
+
     train_acc_kpi = None
     for kpi in tracking_kpis:
         if kpi.name == 'wmb_%s_train_acc' % (args.batch_size):
@@ -385,19 +386,19 @@ def collect_gpu_memory_data(alive):
     global is_alive
     status, output = commands.getstatusoutput('rm -rf memory.txt')
     if status == 0:
-    	print('del memory.txt')
+        print('del memory.txt')
     command = "nvidia-smi --id=%s --query-compute-apps=used_memory --format=csv -lms 1 > memory.txt" % args.gpu_id
     p = subprocess.Popen(command, shell=True)
     if p.pid < 0:
-    	print('Get GPU memory data error')
-    while(is_alive):
+        print('Get GPU memory data error')
+    while (is_alive):
         time.sleep(1)
     p.kill()
 
 
 def save_gpu_data(mem_list):
     gpu_memory_kpi = None
-    for kpi in tracking_kpis: 
+    for kpi in tracking_kpis:
         if kpi.name == 'wmb_%s_gpu_memory' % (args.batch_size):
             gpu_memory_kpi = kpi
     gpu_memory_kpi.add_record(max(mem_list))
@@ -410,7 +411,7 @@ if __name__ == '__main__':
     global is_alive
     is_alive = True
     collect_memory_thread = threading.Thread(
-            target=collect_gpu_memory_data, args=(is_alive,))
+        target=collect_gpu_memory_data, args=(is_alive, ))
     collect_memory_thread.setDaemon(True)
     collect_memory_thread.start()
     if args.infer_only:

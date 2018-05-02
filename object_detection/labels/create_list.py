@@ -36,8 +36,10 @@ def walk_dir(devkit_dir, year):
                 added.add(name_prefix)
                 ann_path = osp.join(annotation_dir, name_prefix + '.xml')
                 img_path = osp.join(img_dir, name_prefix + '.jpg')
-                assert os.path.isfile(ann_path), 'file %s not found.' % ann_path
-                assert os.path.isfile(img_path), 'file %s not found.' % img_path
+                assert os.path.isfile(
+                    ann_path), 'file %s not found.' % ann_path
+                assert os.path.isfile(
+                    img_path), 'file %s not found.' % img_path
                 img_ann_list.append((img_path, ann_path))
 
     return trainval_list, test_list

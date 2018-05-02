@@ -13,6 +13,7 @@ from nets import lstm_net
 from nets import gru_net
 from continuous_evaluation import lstm_train_cost_kpi, lstm_pass_duration_kpi
 
+
 def train(train_reader,
           word_dict,
           network,
@@ -70,7 +71,7 @@ def train(train_reader,
         avg_cost = total_cost / data_count
         newest_avg_cost = avg_cost
         t1 = time.time()
-	total_time += t1 - start_time
+        total_time += t1 - start_time
         avg_acc = total_acc / data_count
         print("pass_id: %d, avg_acc: %f, avg_cost: %f" %
               (pass_id, avg_acc, avg_cost))
@@ -78,7 +79,8 @@ def train(train_reader,
             lstm_train_cost_kpi.add_record(newest_avg_cost)
             lstm_pass_duration_kpi.add_record(total_time / pass_num)
         epoch_model = save_dirname + "/" + "epoch" + str(pass_id)
-        fluid.io.save_inference_model(epoch_model, ["words", "label"], acc, exe)
+        fluid.io.save_inference_model(epoch_model, ["words", "label"], acc,
+                                      exe)
     lstm_train_cost_kpi.persist()
     lstm_pass_duration_kpi.persist()
 
