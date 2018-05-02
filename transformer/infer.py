@@ -291,7 +291,6 @@ def main():
     decoder_program = fluid.io.get_inference_program(
         target_vars=[predict], main_program=decoder_program)
 
-
     test_data = paddle.batch(
         paddle.dataset.wmt16.test(ModelHyperParams.src_vocab_size,
                                   ModelHyperParams.trg_vocab_size),
@@ -328,7 +327,8 @@ def main():
             encoder_data_input_fields + encoder_util_input_fields,
             [enc_output.name],
             decoder_program,
-            decoder_data_input_fields[:-1] + decoder_util_input_fields + (decoder_data_input_fields[-1],),
+            decoder_data_input_fields[:-1] + decoder_util_input_fields +
+            (decoder_data_input_fields[-1], ),
             [predict.name],
             InferTaskConfig.beam_size,
             InferTaskConfig.max_length,

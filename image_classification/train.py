@@ -12,7 +12,8 @@ import argparse
 import functools
 from utility import add_arguments, print_arguments
 
-from continuous_evaluation import (train_acc_top1_kpi, train_acc_top5_kpi, train_cost_kpi)
+from continuous_evaluation import (train_acc_top1_kpi, train_acc_top5_kpi,
+                                   train_cost_kpi)
 parser = argparse.ArgumentParser(description=__doc__)
 add_arg = functools.partial(add_arguments, argparser=parser)
 # yapf: disable
@@ -244,14 +245,13 @@ def train_parallel_exe(args,
         train_loss = np.array(train_info[0]).mean()
         train_acc1 = np.array(train_info[1]).mean()
         train_acc5 = np.array(train_info[2]).mean()
-	if pass_id == num_passes - 1:
-		train_acc_top1_kpi.add_record(train_acc1)
-		train_acc_top5_kpi.add_record(train_acc5)
-		train_cost_kpi.add_record(train_loss)
+        if pass_id == num_passes - 1:
+            train_acc_top1_kpi.add_record(train_acc1)
+            train_acc_top5_kpi.add_record(train_acc5)
+            train_cost_kpi.add_record(train_loss)
         for data in test_reader():
             t1 = time.time()
-            loss, acc1, acc5 = test_exe.run(fetch_list,
-                                            feed=feeder.feed(data))
+            loss, acc1, acc5 = test_exe.run(fetch_list, feed=feeder.feed(data))
             t2 = time.time()
             period = t2 - t1
             loss = np.mean(np.array(loss))

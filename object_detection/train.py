@@ -158,7 +158,8 @@ def parallel_do(args,
             end_time = time.time()
             if batch_id % 20 == 0:
                 print("Pass {0}, batch {1}, loss {2}, time {3}".format(
-                    pass_id, batch_id, loss_v[0], start_time - prev_start_time))
+                    pass_id, batch_id, loss_v[0],
+                    start_time - prev_start_time))
         test(pass_id)
 
         if pass_id % 10 == 0 or pass_id == num_passes - 1:
@@ -281,13 +282,13 @@ def parallel_exe(args,
     total_train_time = 0.0
     total_iters = 0
     for pass_id in range(num_passes):
-	every_pass_loss = []
-	iter = 0
+        every_pass_loss = []
+        iter = 0
         pass_duration = 0.0
         for batch_id, data in enumerate(train_reader()):
             batch_start = time.time()
             if iter == args.iterations:
-		break
+                break
             if len(data) < devices_num: continue
             if args.parallel:
                 loss_v, = train_exe.run(fetch_list=[loss.name],
@@ -307,13 +308,16 @@ def parallel_exe(args,
             every_pass_loss.append(loss_v)
             iter += 1
             total_iters += 1
-        #test(pass_id, best_map)
-	total_train_time += pass_duration
-        print("Pass:%d, Loss:%f, Handle Images Duration: %f\n" % (pass_id, np.mean(every_pass_loss), pass_duration))
+    #test(pass_id, best_map)
+        total_train_time += pass_duration
+        print("Pass:%d, Loss:%f, Handle Images Duration: %f\n" %
+              (pass_id, np.mean(every_pass_loss), pass_duration))
         if pass_id == num_passes - 1:
-	    examples_per_sec = train_num / total_train_time
-	    train_cost_kpi.add_record(np.mean(every_pass_loss))
-	    train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float'))
+            examples_per_sec = train_num / total_train_time
+            train_cost_kpi.add_record(np.mean(every_pass_loss))
+            train_speed_kpi.add_record(
+                np.array(
+                    examples_per_sec, dtype='float'))
     train_cost_kpi.persist()
     train_speed_kpi.persist()
     print("Best test map {0}".format(best_map))

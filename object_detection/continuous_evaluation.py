@@ -6,8 +6,4 @@ from kpi import CostKpi, DurationKpi, AccKpi
 train_cost_kpi = CostKpi('train_cost', 0.2, 0)
 train_speed_kpi = AccKpi('train_speed', 0.2, 0)
 
-
-tracking_kpis = [
-	train_cost_kpi,
-	train_speed_kpi
-]
+tracking_kpis = [train_cost_kpi, train_speed_kpi]

@@ -67,6 +67,7 @@ def vgg16_bn_drop(input):
     """
     vgg16_bn_drop
     """
+
     def conv_block(input, num_filter, groups, dropouts):
         """
         conv_block
@@ -166,8 +167,9 @@ def main():
         """
         test_accuracy = fluid.average.WeightedAverage()
         for batch_id, data in enumerate(test_reader()):
-            img_data = np.array(map(lambda x: x[0].reshape(data_shape),
-                                    data)).astype("float32")
+            img_data = np.array(
+                map(lambda x: x[0].reshape(data_shape), data)).astype(
+                    "float32")
             y_data = np.array(map(lambda x: x[1], data)).astype("int64")
             y_data = y_data.reshape([-1, 1])
 
@@ -186,7 +188,7 @@ def main():
     for kpi in tracking_kpis:
         if kpi.name == '%s_%s_train_speed' % (args.data_set, args.batch_size):
             train_speed_kpi = kpi
-    
+
     iters, num_samples, start_time = 0, 0, time.time()
     accuracy = fluid.average.WeightedAverage()
     for pass_id in range(args.pass_num):
@@ -199,8 +201,9 @@ def main():
                 num_samples = 0
             if iters == args.iterations:
                 break
-            img_data = np.array(map(lambda x: x[0].reshape(data_shape),
-                                    data)).astype("float32")
+            img_data = np.array(
+                map(lambda x: x[0].reshape(data_shape), data)).astype(
+                    "float32")
             y_data = np.array(map(lambda x: x[1], data)).astype("int64")
             y_data = y_data.reshape([-1, 1])
 
@@ -233,7 +236,8 @@ def main():
         if args.with_test:
             pass_test_acc = test(exe)
         break
-	#train_acc_kpi.persist()
+
+#train_acc_kpi.persist()
     train_speed_kpi.persist()
 
 
@@ -254,30 +258,31 @@ def collect_gpu_memory_data(alive):
     global is_alive
     status, output = commands.getstatusoutput('rm -rf memory.txt')
     if status == 0:
-    	print('del memory.txt')
+        print('del memory.txt')
     command = "nvidia-smi --id=%s --query-compute-apps=used_memory --format=csv -lms 1 > memory.txt" % args.gpu_id
     p = subprocess.Popen(command, shell=True)
     if p.pid < 0:
-    	print('Get GPU memory data error')
-    while(is_alive):
+        print('Get GPU memory data error')
+    while (is_alive):
         time.sleep(1)
     p.kill()
 
 
 def save_gpu_data(mem_list):
     gpu_memory_kpi = None
-    for kpi in tracking_kpis: 
+    for kpi in tracking_kpis:
         if kpi.name == '%s_%s_gpu_memory' % (args.data_set, args.batch_size):
             gpu_memory_kpi = kpi
     gpu_memory_kpi.add_record(max(mem_list))
     gpu_memory_kpi.persist()
 
-            
+
 if __name__ == "__main__":
     print_arguments()
     global is_alive
     is_alive = True
-    collect_memory_thread = threading.Thread(target=collect_gpu_memory_data, args=(is_alive,))
+    collect_memory_thread = threading.Thread(
+        target=collect_gpu_memory_data, args=(is_alive, ))
     collect_memory_thread.setDaemon(True)
     collect_memory_thread.start()
     main()

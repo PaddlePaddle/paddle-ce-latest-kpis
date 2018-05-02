@@ -12,6 +12,7 @@ from utils import logger, load_dict
 from utils_extend import to_lodtensor, get_embedding
 from continuous_evaluation import train_acc_kpi, pass_duration_kpi
 
+
 def test(exe, chunk_evaluator, inference_program, test_data, place):
     chunk_evaluator.reset(exe)
     for data in test_data():
@@ -77,7 +78,8 @@ def main(train_data_file, test_data_file, vocab_file, target_file, emb_file,
     exe.run(fluid.default_startup_program())
 
     embedding_name = 'emb'
-    embedding_param = fluid.global_scope().find_var(embedding_name).get_tensor()
+    embedding_param = fluid.global_scope().find_var(embedding_name).get_tensor(
+    )
     embedding_param.set(word_vector_values, place)
 
     batch_id = 0
@@ -98,21 +100,22 @@ def main(train_data_file, test_data_file, vocab_file, target_file, emb_file,
             train_acc_kpi.add_record(pass_precision)
             pass_duration_kpi.add_record(total_time / num_passes)
         if pass_id % 100 == 0:
-            print("[TrainSet] pass_id:" + str(pass_id) + " pass_precision:" + str(
-                pass_precision) + " pass_recall:" + str(pass_recall) +
-                  " pass_f1_score:" + str(pass_f1_score))
+            print("[TrainSet] pass_id:" + str(pass_id) + " pass_precision:" +
+                  str(pass_precision) + " pass_recall:" + str(
+                      pass_recall) + " pass_f1_score:" + str(pass_f1_score))
         pass_precision, pass_recall, pass_f1_score = test(
             exe, chunk_evaluator, inference_program, test_reader, place)
         if pass_id % 100 == 0:
-            print("[TestSet] pass_id:" + str(pass_id) + " pass_precision:" + str(
-                pass_precision) + " pass_recall:" + str(pass_recall) +
-                  " pass_f1_score:" + str(pass_f1_score))
+            print("[TestSet] pass_id:" + str(pass_id) + " pass_precision:" +
+                  str(pass_precision) + " pass_recall:" + str(
+                      pass_recall) + " pass_f1_score:" + str(pass_f1_score))
 
         save_dirname = os.path.join(model_save_dir, "params_pass_%d" % pass_id)
-        fluid.io.save_inference_model(save_dirname, ['word', 'mark', 'target'],
-                                      [crf_decode], exe)
+        fluid.io.save_inference_model(
+            save_dirname, ['word', 'mark', 'target'], [crf_decode], exe)
     train_acc_kpi.persist()
     pass_duration_kpi.persist()
+
 
 if __name__ == "__main__":
     main(
