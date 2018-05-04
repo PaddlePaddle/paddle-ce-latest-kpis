@@ -215,7 +215,7 @@ def main():
     train_exe = fluid.ParallelExecutor(
         use_cuda=TrainTaskConfig.use_gpu,
         loss_name=sum_cost.name,
-        customize_loss_grad=True)
+        use_default_grad_scale=False)
 
     test_exe = fluid.ParallelExecutor(
         use_cuda=TrainTaskConfig.use_gpu,
