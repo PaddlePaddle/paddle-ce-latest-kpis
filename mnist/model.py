@@ -49,8 +49,8 @@ def parse_args():
 
 
 def print_arguments(args):
-    vars(args)['use_nvprof'] = (vars(args)['use_nvprof']
-                                and vars(args)['device'] == 'GPU')
+    vars(args)['use_nvprof'] = (vars(args)['use_nvprof'] and
+                                vars(args)['device'] == 'GPU')
     print('-----------  Configuration Arguments -----------')
     for arg, value in sorted(vars(args).iteritems()):
         print('%s: %s' % (arg, value))
@@ -99,13 +99,10 @@ def eval_test(exe, batch_acc, batch_size_tensor, inference_program):
         y_data = np.array(map(lambda x: x[1], data)).astype("int64")
         y_data = y_data.reshape([len(y_data), 1])
 
-        acc, weight = exe.run(
-            inference_program,
-            feed={
-                "pixel": img_data,
-                "label": y_data
-            },
-            fetch_list=[batch_acc, batch_size_tensor])
+        acc, weight = exe.run(inference_program,
+                              feed={"pixel": img_data,
+                                    "label": y_data},
+                              fetch_list=[batch_acc, batch_size_tensor])
         test_pass_acc.add(value=acc, weight=weight)
         pass_acc = test_pass_acc.eval()
     return pass_acc
@@ -167,10 +164,8 @@ def run_benchmark(model, args):
             start = time.time()
             outs = exe.run(
                 fluid.default_main_program(),
-                feed={
-                    "pixel": img_data,
-                    "label": y_data
-                },
+                feed={"pixel": img_data,
+                      "label": y_data},
                 fetch_list=[avg_cost, batch_acc, batch_size_tensor]
             )  # The accuracy is the accumulation of batches, but not the current batch.
             accuracy.add(value=outs[1], weight=outs[2])
