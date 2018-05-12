@@ -102,8 +102,7 @@ def train(batch_size, device, pass_num, iterations):
     fluid.memory_optimize(fluid.default_main_program())
 
     train_reader = paddle.batch(
-        paddle.dataset.cifar.train10(),
-        batch_size=batch_size)
+        paddle.dataset.cifar.train10(), batch_size=batch_size)
 
     test_reader = paddle.batch(
         paddle.dataset.cifar.test10(), batch_size=batch_size)
@@ -121,10 +120,8 @@ def train(batch_size, device, pass_num, iterations):
 
             predict_, avg_cost_ = exe.run(
                 inference_program,
-                feed={
-                    "data": img_data,
-                    "label": y_data
-                },
+                feed={"data": img_data,
+                      "label": y_data},
                 fetch_list=[predict, avg_cost])
             return avg_cost
 
@@ -143,17 +140,14 @@ def train(batch_size, device, pass_num, iterations):
             batch_start = time.time()
             if iter == iterations:
                 break
-            image = np.array(map(lambda x: x[0].reshape(dshape),
-                                 data)).astype('float32')
+            image = np.array(map(lambda x: x[0].reshape(dshape), data)).astype(
+                'float32')
             label = np.array(map(lambda x: x[1], data)).astype('int64')
             label = label.reshape([-1, 1])
-            avg_cost_ = exe.run(
-                fluid.default_main_program(),
-                feed={
-                    'data': image,
-                    'label': label
-                },
-                fetch_list=[avg_cost])
+            avg_cost_ = exe.run(fluid.default_main_program(),
+                                feed={'data': image,
+                                      'label': label},
+                                fetch_list=[avg_cost])
             batch_end = time.time()
             print('avg_cost', np.array(avg_cost_, dtype='float32'))
             train_cost_kpi.add_record(np.array(avg_cost_, dtype='float32'))
