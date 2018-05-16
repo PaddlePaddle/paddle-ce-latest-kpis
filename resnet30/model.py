@@ -192,6 +192,7 @@ def train(batch_size, device, pass_num, iterations):
         test_acc_kpi.add_record(np.array(pass_test_acc, dtype='float32'))
         test_acc_kpi.persist()
         train_duration_kpi.add_record(batch_end - batch_start)
+        train_duration_kpi.persist()
 
     if total_train_time > 0.0:
         examples_per_sec = im_num / total_train_time
