@@ -11,7 +11,7 @@ import reader
 from mobilenet_ssd import mobile_net
 from utility import add_arguments, print_arguments
 
-from continuous_evaluation import train_cost_kpi, train_speed_kpi
+from continuous_evaluation import train_cost_kpi, train_speed_kpi, four_card_speed_kpi
 
 parser = argparse.ArgumentParser(description=__doc__)
 add_arg = functools.partial(add_arguments, argparser=parser)
@@ -21,6 +21,7 @@ add_arg('batch_size',       int,   32,        "Minibatch size.")
 add_arg('num_passes',       int,   120,       "Epoch number.")
 add_arg('iterations',       int,   120,       "mini batchs.")
 add_arg('skip_batch_num',   int,   5,       "the num of minibatch to skip.")
+add_arg('gpu_card_num',   int,   1,       "the num of gpu card.")
 add_arg('parallel',         bool,  True,      "Whether use parallel training.")
 add_arg('use_gpu',          bool,  True,      "Whether to use GPU or not.")
 add_arg('use_nccl',         bool,  True,     "Whether to use NCCL or not.")
@@ -318,8 +319,14 @@ def parallel_exe(args,
             train_speed_kpi.add_record(
                 np.array(
                     examples_per_sec, dtype='float'))
-    train_cost_kpi.persist()
-    train_speed_kpi.persist()
+            four_card_speed_kpi.add_record(
+                np.array(
+                    examples_per_sec, dtype='float'))
+    if args.gpu_card_num == 1:
+        train_cost_kpi.persist()
+        train_speed_kpi.persist()
+    else:
+        four_card_speed_kpi.persist()
     print("Best test map {0}".format(best_map))
 
 
