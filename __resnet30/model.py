@@ -11,9 +11,7 @@ import json
 import paddle
 import paddle.fluid as fluid
 import paddle.fluid.core as core
-
-from continuous_evaluation import (train_cost_kpi, train_duration_kpi,
-                                   tracking_kpis)
+from continuous_evaluation import *
 
 logger = logging.getLogger(__name__)
 
@@ -85,20 +83,29 @@ def train(batch_size, device, pass_num, iterations):
     input = fluid.layers.data(name='data', shape=dshape, dtype='float32')
     label = fluid.layers.data(name='label', shape=[1], dtype='int64')
 
+    # Train program
     predict = resnet_cifar10(input, class_dim)
     cost = fluid.layers.cross_entropy(input=predict, label=label)
     avg_cost = fluid.layers.mean(x=cost)
-    optimizer = fluid.optimizer.Momentum(learning_rate=0.01, momentum=0.9)
-    opts = optimizer.minimize(avg_cost)
-    # accuracy = fluid.evaluator.Evaluator(input=predict, label=label)
+
+    # Evaluator
+    #accuracy = fluid.evaluator.Evaluator(input=predict, label=label)
+   
+    batch_size_tensor = fluid.layers.create_tensor(dtype='int64')
+    batch_acc = fluid.layers.accuracy(
+        input=predict, label=label, total=batch_size_tensor)
+    accuracy = fluid.average.WeightedAverage()
 
     # inference program
     inference_program = fluid.default_main_program().clone()
     with fluid.program_guard(inference_program):
         # test_target = accuracy.metrics + accuracy.states
-        test_target = [predict, avg_cost]
-        inference_program = fluid.io.get_inference_program(test_target)
+        target_vars=[batch_acc, batch_size_tensor]
+        inference_program = fluid.io.get_inference_program(target_vars)
 
+    # Optimization
+    optimizer = fluid.optimizer.Momentum(learning_rate=0.01, momentum=0.9)
+    opts = optimizer.minimize(avg_cost)
     fluid.memory_optimize(fluid.default_main_program())
 
     train_reader = paddle.batch(
@@ -107,34 +114,36 @@ def train(batch_size, device, pass_num, iterations):
     test_reader = paddle.batch(
         paddle.dataset.cifar.test10(), batch_size=batch_size)
 
+    # Initialize executor
+    place = fluid.CPUPlace() if args.device == 'CPU' else fluid.CUDAPlace(0)
+    exe = fluid.Executor(place)
+
+    # Parameter initialization
+    exe.run(fluid.default_startup_program())
+
     def test(exe):
-        # accuracy.reset(exe)
+        test_accuracy = fluid.average.WeightedAverage()
         for batch_id, data in enumerate(test_reader()):
             img_data = np.array(map(lambda x: x[0].reshape(dshape),
                                     data)).astype("float32")
             y_data = np.array(map(lambda x: x[1], data)).astype("int64")
             y_data = y_data.reshape([-1, 1])
 
-            # print('image_data', img_data)
-            # print('y_data', y_data)
+            acc, weight = exe.run(inference_program,
+                                  feed={"data": img_data,
+                                        "label": y_data},
+                                  fetch_list=[batch_acc, batch_size_tensor])
+            test_accuracy.add(value=acc, weight=weight)
 
-            predict_, avg_cost_ = exe.run(
-                inference_program,
-                feed={"data": img_data,
-                      "label": y_data},
-                fetch_list=[predict, avg_cost])
-            return avg_cost
+        return test_accuracy.eval()
 
-        # return accuracy.eval(exe)
-
-    place = core.CPUPlace() if device == 'CPU' else core.CUDAPlace(0)
-    exe = fluid.Executor(place)
-    exe.run(fluid.default_startup_program())
-
-    for pass_id in range(1):
-        logger.warning('Pass {}'.format(pass_id))
-        # accuracy.reset(exe)
+    im_num = 0
+    total_train_time = 0.0
+    for pass_id in range(args.pass_num):
         iter = 0
+        every_pass_loss = []
+        accuracy.reset()
+        pass_duration = 0.0
         for batch_id, data in enumerate(train_reader()):
             logger.warning('Batch {}'.format(batch_id))
             batch_start = time.time()
@@ -144,21 +153,53 @@ def train(batch_size, device, pass_num, iterations):
                 'float32')
             label = np.array(map(lambda x: x[1], data)).astype('int64')
             label = label.reshape([-1, 1])
-            avg_cost_ = exe.run(fluid.default_main_program(),
-                                feed={'data': image,
-                                      'label': label},
-                                fetch_list=[avg_cost])
+
+            loss, acc, weight = exe.run(
+                fluid.default_main_program(),
+                feed={'data': image,
+                      'label': label},
+                fetch_list=[avg_cost, batch_acc, batch_size_tensor])
+
             batch_end = time.time()
-            print('avg_cost', np.array(avg_cost_, dtype='float32'))
-            train_cost_kpi.add_record(np.array(avg_cost_, dtype='float32'))
-            train_duration_kpi.add_record(batch_end - batch_start)
+            every_pass_loss.append(loss)
+            accuracy.add(value=acc, weight=weight)
+        
+
+            if iter >= args.skip_batch_num or pass_id != 0:
+                batch_duration = time.time() - batch_start
+                pass_duration += batch_duration
+                im_num += label.shape[0]
 
             iter += 1
 
-            # test_start = time.time()
-            # test(exe)
-            # test_end = time.time()
-            # valid_tracker.add(test_end - test_start, pass_test_acc)
+            print(
+                    "Pass = %d, Iter = %d, Loss = %f, Accuracy = %f" %
+                    (pass_id, iter, loss, acc))
+        pass_train_acc = accuracy.eval()
+        pass_test_acc = test(exe)
+
+        total_train_time += pass_duration
+        pass_train_loss = np.mean(every_pass_loss) 
+        print(
+            "Pass:%d, Loss:%f, Train Accuray:%f, Test Accuray:%f, Handle Images Duration: %f\n"
+            % (pass_id, pass_train_loss, pass_train_acc,
+               pass_test_acc, pass_duration))
+    if pass_id == args.pass_num - 1:
+        train_cost_kpi.add_record(np.array(pass_train_loss, dtype='float32'))
+        train_cost_kpi.persist()
+        train_acc_kpi.add_record(np.array(pass_train_acc, dtype='float32'))
+        train_acc_kpi.persist()
+        test_acc_kpi.add_record(np.array(pass_test_acc, dtype='float32'))
+        test_acc_kpi.persist()
+        train_duration_kpi.add_record(batch_end - batch_start)
+        train_duration_kpi.persist()
+
+    if total_train_time > 0.0:
+        examples_per_sec = im_num / total_train_time
+        sec_per_batch = total_train_time / \
+            (iter * args.pass_num - args.skip_batch_num)
+        train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float32'))
+        train_speed_kpi.persist()
 
 
 def parse_args():
@@ -166,6 +207,14 @@ def parse_args():
     parser.add_argument('--batch_size', type=int)
     parser.add_argument('--device', type=str, choices=('CPU', 'GPU'))
     parser.add_argument('--iters', type=int)
+    parser.add_argument(
+        '--pass_num', type=int, default=3, help='The number of passes.')
+    parser.add_argument(
+        '--skip_batch_num',
+        type=int,
+        default=5,
+        help='The first num of minibatch num to skip, for better performance test'
+    )
     args = parser.parse_args()
     return args
 
