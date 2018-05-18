@@ -33,8 +33,6 @@ def conv_bn_layer(input,
 
 def depthwise_separable(input, num_filters1, num_filters2, num_groups, stride,
                         scale):
-    """
-    """
     depthwise_conv = conv_bn_layer(
         input=input,
         filter_size=3,
