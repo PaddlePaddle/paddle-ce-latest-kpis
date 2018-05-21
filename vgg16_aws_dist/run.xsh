@@ -31,7 +31,7 @@ git clone https://github.com/putcn/aws_runner.git
 pip install -r aws_runner/client/requirements.txt
 
 # start aws testingr
-python aws_runner/client/ce_runner.py 
+python aws_runner/client/ce_runner.py \
     --key_name aws_benchmark_us_east \
     --pem_path /workspace/dist_files/aws_benchmark_us_east.pem \
     --security_group_id  sg-95539dff \
