@@ -31,9 +31,13 @@ git clone https://github.com/putcn/aws_runner.git
 pip install -r aws_runner/client/requirements.txt
 
 # start aws testingr
-python aws_runner/client/ce_runner.py --key_name aws_benchmark_us_east --pem_patt
-h /workspace/dist_files/aws_benchmark_us_east.pem --security_group_id sg-cecaebaa
-5 --online_mode yes --trainer_count 2 --pserver_count 2 --pserver_command local::
-no,batch_size:128,num_passes:1 --trainer_command local:no,batch_size:128,num_pass
-ses:1 --docker_image @(vgg16_test_dockerhub_tag)
-
+python aws_runner/client/ce_runner.py 
+    --key_name aws_benchmark_us_east \
+    --pem_path /workspace/dist_files/aws_benchmark_us_east.pem \
+    --security_group_id  sg-95539dff \
+    --online_mode yes \
+    --trainer_count 2 \
+    --pserver_count 2 \
+    --pserver_command local:no,batch_size:128,num_passes:1 \ 
+    --trainer_command local:no,batch_size:128,num_passes:1 \
+    --docker_image @(vgg16_test_dockerhub_tag)
