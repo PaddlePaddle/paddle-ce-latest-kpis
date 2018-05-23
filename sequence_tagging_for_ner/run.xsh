@@ -9,7 +9,7 @@ export CUDA_VISIBLE_DEVICES=$cudaid
 sh download.sh
 FLAGS_benchmark=true  python train.py
 
-cudaid=${sequence_tagging_m:=0,1,2,3} # use 0-th card as default
+cudaid=${sequence_tagging_m:=0,1,2,3} # use multi card as default
 export CUDA_VISIBLE_DEVICES=$cudaid
 #pass_num 2200
 sh download.sh
