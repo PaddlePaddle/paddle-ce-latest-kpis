@@ -50,7 +50,7 @@ pip install -r aws_runner/client/requirements.txt
 
 echo "going to start testing"
 # start aws testingr
-python aws_runner/client/ce_runner.py \
+python ce_runner.py \
     --key_name aws_benchmark_us_east \
     --security_group_id sg-95539dff \
     --online_mode yes \
