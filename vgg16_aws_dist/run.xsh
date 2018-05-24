@@ -1,5 +1,6 @@
 #!/bin/bash
 
+PADDLE_PATH=../../../
 paddle_build_path=$PADDLE_PATH/build
 paddle_docker_hub_tag="paddlepaddlece/paddle:latest"
 vgg16_test_dockerhub_tag="paddlepaddlece/vgg16_dist:latest"
