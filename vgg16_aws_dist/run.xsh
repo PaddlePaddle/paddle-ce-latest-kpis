@@ -21,6 +21,7 @@ docker push $paddle_docker_hub_tag
 
 # build test docker image
 echo "going to prepare and build vgg16_dist_test"
+cd $CURRENT_FILE_DIR
 if [ ! -d vgg16_dist_test ]; then
     echo "No vgg16_dist_test repo found, going to clone one"
     git clone https://github.com/putcn/vgg16_dist_test.git
