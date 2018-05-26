@@ -2,7 +2,7 @@
 
 
 CURRENT_FILE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PADDLE_PATH=$CURRENT_FILE_DIR../../../
+PADDLE_PATH=$CURRENT_FILE_DIR/../../..
 paddle_build_path=$PADDLE_PATH/build
 paddle_docker_hub_tag="paddlepaddlece/paddle:latest"
 vgg16_test_dockerhub_tag="paddlepaddlece/vgg16_dist:latest"
