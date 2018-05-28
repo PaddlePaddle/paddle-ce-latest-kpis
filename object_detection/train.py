@@ -11,7 +11,7 @@ import reader
 from mobilenet_ssd import mobile_net
 from utility import add_arguments, print_arguments
 
-from continuous_evaluation import train_cost_kpi, train_speed_kpi
+from continuous_evaluation import train_cost_kpi, train_speed_kpi, four_card_speed_kpi
 
 parser = argparse.ArgumentParser(description=__doc__)
 add_arg = functools.partial(add_arguments, argparser=parser)
@@ -21,6 +21,7 @@ add_arg('batch_size',       int,   32,        "Minibatch size.")
 add_arg('num_passes',       int,   120,       "Epoch number.")
 add_arg('iterations',       int,   120,       "mini batchs.")
 add_arg('skip_batch_num',   int,   5,       "the num of minibatch to skip.")
+add_arg('gpu_card_num',   int,   1,       "the num of gpu card.")
 add_arg('parallel',         bool,  True,      "Whether use parallel training.")
 add_arg('use_gpu',          bool,  True,      "Whether to use GPU or not.")
 add_arg('use_nccl',         bool,  True,     "Whether to use NCCL or not.")
@@ -158,7 +159,8 @@ def parallel_do(args,
             end_time = time.time()
             if batch_id % 20 == 0:
                 print("Pass {0}, batch {1}, loss {2}, time {3}".format(
-                    pass_id, batch_id, loss_v[0], start_time - prev_start_time))
+                    pass_id, batch_id, loss_v[0],
+                    start_time - prev_start_time))
         test(pass_id)
 
         if pass_id % 10 == 0 or pass_id == num_passes - 1:
@@ -281,13 +283,13 @@ def parallel_exe(args,
     total_train_time = 0.0
     total_iters = 0
     for pass_id in range(num_passes):
-	every_pass_loss = []
-	iter = 0
+        every_pass_loss = []
+        iter = 0
         pass_duration = 0.0
         for batch_id, data in enumerate(train_reader()):
             batch_start = time.time()
             if iter == args.iterations:
-		break
+                break
             if len(data) < devices_num: continue
             if args.parallel:
                 loss_v, = train_exe.run(fetch_list=[loss.name],
@@ -307,15 +309,24 @@ def parallel_exe(args,
             every_pass_loss.append(loss_v)
             iter += 1
             total_iters += 1
-        #test(pass_id, best_map)
-	total_train_time += pass_duration
-        print("Pass:%d, Loss:%f, Handle Images Duration: %f\n" % (pass_id, np.mean(every_pass_loss), pass_duration))
+    #test(pass_id, best_map)
+        total_train_time += pass_duration
+        print("Pass:%d, Loss:%f, Handle Images Duration: %f\n" %
+              (pass_id, np.mean(every_pass_loss), pass_duration))
         if pass_id == num_passes - 1:
-	    examples_per_sec = train_num / total_train_time
-	    train_cost_kpi.add_record(np.mean(every_pass_loss))
-	    train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float'))
-    train_cost_kpi.persist()
-    train_speed_kpi.persist()
+            examples_per_sec = train_num / total_train_time
+            train_cost_kpi.add_record(np.mean(every_pass_loss))
+            train_speed_kpi.add_record(
+                np.array(
+                    examples_per_sec, dtype='float'))
+            four_card_speed_kpi.add_record(
+                np.array(
+                    examples_per_sec, dtype='float'))
+    if args.gpu_card_num == 1:
+        train_cost_kpi.persist()
+        train_speed_kpi.persist()
+    else:
+        four_card_speed_kpi.persist()
     print("Best test map {0}".format(best_map))
 
 

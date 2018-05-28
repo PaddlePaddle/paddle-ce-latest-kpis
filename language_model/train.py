@@ -5,11 +5,12 @@ import numpy as np
 import math
 
 import paddle.fluid as fluid
-import  paddle
+import paddle
 
 import utils
 
 from continuous_evaluation import imikolov_20_avg_ppl_kpi, imikolov_20_pass_duration_kpi
+
 
 def network(src, dst, vocab_size, hid_size, init_low_bound, init_high_bound):
     """ network definition """
@@ -129,16 +130,17 @@ def train(train_reader,
 
         t1 = time.time()
         total_time += t1 - t0
-        print "epoch:%d num_steps:%d time_cost(s):%f" % (epoch_idx, i,
-                                                         total_time / epoch_idx)
+        print "epoch:%d num_steps:%d time_cost(s):%f" % (
+            epoch_idx, i, total_time / epoch_idx)
 
         if pass_idx == pass_num - 1:
             imikolov_20_pass_duration_kpi.add_record(total_time / epoch_idx)
-	    imikolov_20_avg_ppl_kpi.add_record(newest_ppl)
+            imikolov_20_avg_ppl_kpi.add_record(newest_ppl)
         save_dir = "%s/epoch_%d" % (model_dir, epoch_idx)
         feed_var_names = ["src_wordseq", "dst_wordseq"]
         fetch_vars = [avg_cost]
-        fluid.io.save_inference_model(save_dir, feed_var_names, fetch_vars, exe)
+        fluid.io.save_inference_model(save_dir, feed_var_names, fetch_vars,
+                                      exe)
         print("model saved in %s" % save_dir)
     imikolov_20_pass_duration_kpi.persist()
     imikolov_20_avg_ppl_kpi.persist()

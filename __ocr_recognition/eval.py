@@ -54,7 +54,8 @@ def evaluate(args, eval=ctc_eval, data_reader=ctc_reader):
     count = 0
     for data in test_reader():
         count += 1
-        exe.run(fluid.default_main_program(), feed=get_feeder_data(data, place))
+        exe.run(fluid.default_main_program(),
+                feed=get_feeder_data(data, place))
     avg_distance, avg_seq_error = evaluator.eval(exe)
     print "Read %d samples; avg_distance: %s; avg_seq_error: %s" % (
         count, avg_distance, avg_seq_error)

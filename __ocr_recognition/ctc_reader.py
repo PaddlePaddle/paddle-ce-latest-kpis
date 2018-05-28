@@ -167,7 +167,8 @@ def train(batch_size, train_images_dir=None, train_list_file=None):
         train_images_dir = path.join(data_dir, TRAIN_DATA_DIR_NAME)
     if train_list_file is None:
         train_list_file = path.join(data_dir, TRAIN_LIST_FILE_NAME)
-    return generator.train_reader(train_images_dir, train_list_file, batch_size)
+    return generator.train_reader(train_images_dir, train_list_file,
+                                  batch_size)
 
 
 def test(batch_size=1, test_images_dir=None, test_list_file=None):

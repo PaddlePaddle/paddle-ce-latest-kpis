@@ -154,7 +154,6 @@ input_descs = {
     "lbl_weight": [(1 * (ModelHyperParams.max_length + 1), 1L), "float32"],
 }
 
-
 # Names of position encoding table which will be initialized externally.
 pos_enc_param_names = (
     "src_pos_enc_table",
@@ -183,4 +182,3 @@ decoder_util_input_fields = (
 label_data_input_fields = (
     "lbl_word",
     "lbl_weight", )
-

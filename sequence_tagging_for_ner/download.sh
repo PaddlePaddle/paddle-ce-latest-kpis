@@ -13,4 +13,3 @@ else
   echo "download data error!" >> /dev/stderr
   exit 1
 fi
-
