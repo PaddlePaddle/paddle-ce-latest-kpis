@@ -4,7 +4,6 @@ sys.path.append(os.environ['ceroot'])
 from kpi import CostKpi, DurationKpi, AccKpi
 
 train_acc_top1_kpi = AccKpi('train_acc_top1_kpi', 0.05, 0,
-                            actived=True,
                             desc='TOP1 ACC')
 train_acc_top5_kpi = AccKpi('train_acc_top5_kpi', 0.05, 0,
                             actived=True,
