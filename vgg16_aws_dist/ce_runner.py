@@ -4,12 +4,13 @@ import sys, os
 import numpy as np
 import threading
 import copy
+import csv
 from aws_runner.client.train_command import TrainCommand
 
 # for ce env ONLY
 
 sys.path.append(os.environ['ceroot'])
-from kpi import LessWorseKpi
+from continuous_evaluation import cluster_specs, kpis_map, generate_kpi_id, generate_cluster_id
 
 from aws_runner.client.abclient import Abclient
 
@@ -99,12 +100,6 @@ parser.add_argument(
     help="aws zone id to place ec2 instances")
 
 parser.add_argument(
-    '--trainer_count', type=int, default=1, help="Trainer count")
-
-parser.add_argument(
-    '--pserver_count', type=int, default=1, help="Pserver count")
-
-parser.add_argument(
     '--action', type=str, default="create", help="create|cleanup|status")
 
 parser.add_argument('--pem_path', type=str, help="private key file")
@@ -142,81 +137,119 @@ parser.add_argument(
 args = parser.parse_args()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 
-train_speed_kpi = LessWorseKpi('train_speed', 0.01)
-kpis_to_track = {}
-
-def save_to_kpi(name, val):
-    val = float(val)
-    if name in kpis_to_track:
-        kpi_to_track = kpis_to_track[name]
-    else:
-        kpi_to_track = LessWorseKpi(name, 0.01)
-    kpi_to_track.add_record(np.array(val, dtype='float32'))
-
 class DataCollector(object):
-    def __init__(self):
-        self.store = []
+    _instance_store = {}
+    @classmethod
+    def get_instance_by_spec(cls, cluster_spec):
+        cluster_id = generate_cluster_id(cluster_spec)
+        if cluster_id not in cls._instance_store:
+            cls._instance_store[cluster_id] = cls(cluster_spec)
+        return cls._instance_store[cluster_id]
+    @classmethod
+    def persist_all(cls):
+        for _, collector in cls._instance_store.iteritems():
+            collector.persist()
+    @classmethod
+    def generate_csv(cls):
+        with open("report.csv", "w") as csvfile:
+            fieldnames = []
+            rows = []
+            for cluster_id, collector in cls._instance_store.iteritems():
+                row = {
+                    "cluster_spec": cluster_id
+                }
+                for metric_name, _ in collector.store.iteritems():
+                    if metric_name not in fieldnames:
+                        fieldnames.append(metric_name)
+                    row[metric_name] = collector.avg(metric_name)
+                    rows.append(row)
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            for row in rows:
+                writer.writerow(row)
+    def __init__(self, cluster_spec):
+        self.store = {}
         self.metric_data_identifier = "**metrics_data: "
+        self.cluster_spec = cluster_spec
+        self.cluster_id = generate_cluster_id(cluster_spec)
     def log_processor(self, msg):
         if (msg.startswith(self.metric_data_identifier)):
             str_msg = msg.replace(self.metric_data_identifier, "")
             metrics_raw = str_msg.split(",")
             for metric in metrics_raw:
                 metric_data = metric.split("=")
-                if metric_data[0].strip() == "train_speed":
-                    self.save(metric_data[1])
-    def save(self, val):
-        self.store.append(float(val))
-    def avg(self):
-        return np.average(self.store)
+                self.save(metric_data[0], metric_data[1])
+    def save(self, key, val):
+        if (key not in self.store):
+            self.store[key] = []
+        logging.info("going to save " + key + "=" + str(val) + "from " + self.cluster_id)
+        self.store[key].append(float(val))
+    def get(self, key):
+        if (key in self.store):
+            return self.store[key]
+        return None
+    def avg(self, key):
+        vals = self.store[key]
+        return sum(vals)/float(len(vals))
+    def persist(self):
+        for metric_name in self.store.iteritems():
+            kpi_id = generate_kpi_id(metric_name, self.cluster_spec)
+            logging.info("going to persist kpi " + kpi_id)
+            if kpi_id in kpis_map:
+                kpi_instance = kpis_map[kpi_id]
+                kpi_instance.add_record(np.array(self.avg(metric_name), dtype='float32'))
+                kpi_instance.persist()
+                logging.info("done persisting kpi " + kpi_id)
+            else:
+                logging.info("no such kpi id found in map!!!")
+                logging.info(kpi_id)
 
-solo_data_collector = DataCollector()
-def train_without_pserver(args, lock):
-    def log_handler(source, id):
-        for line in iter(source.readline, ""):
-            logging.info("without pserver:")
-            logging.info(line)
-            solo_data_collector.log_processor(line)
-
-    args.pserver_count = 0
-    args.trainer_count = 1
+def train_with_spec(spec, args, lock):
+    batch_size = spec[0]
+    args.trainer_count = spec[1]
+    # gpus_per_trainer_count = spec[2]
+    args.pserver_count = spec[3]
     trainer_command = TrainCommand(args.trainer_command)
-    trainer_command.update({"local":"yes"})
+    if args.pserver_count == 0:
+        trainer_command.update({"local":"yes"})
+    trainer_command.update({"batch_size":str(batch_size)})
     args.trainer_command = trainer_command.unparse()
-    logging.info(args)
-    abclient = Abclient(args, log_handler, lock)
-    abclient.create()
+    args.pserver_command = args.trainer_command
 
-cluster_data_collector = DataCollector()
-def train_with_pserver(args, lock):
-    def log_handler(source, id):
-        for line in iter(source.readline, ""):
-            logging.info("with pserver:")
-            logging.info(line)
-            cluster_data_collector.log_processor(line)
-
-    logging.info(args)
-    abclient = Abclient(args, log_handler, lock)
+    data_collector = DataCollector.get_instance_by_spec(spec)
+        
+    abclient = Abclient(args, data_collector.log_processor, lock)
     abclient.create()
 
 if __name__ == "__main__":
     print_arguments()
     if args.action == "create":
         lock = threading.Lock()
-        thread_no_pserver = threading.Thread(
-            target=train_without_pserver,
-            args=(copy.copy(args), lock,)
-        )
-        thread_with_pserver = threading.Thread(
-            target=train_with_pserver,
-            args=(copy.copy(args), lock, )
-        )
-        thread_no_pserver.start()
-        thread_with_pserver.start()
-        thread_no_pserver.join()
-        thread_with_pserver.join()
+        testing_threads = []
+        for cluster_spec in cluster_specs:
+            thread = threading.Thread(
+                target=train_with_spec,
+                args=(cluster_spec, copy.copy(args), lock,)
+            )
+            testing_threads.append(thread)
 
-        speedup_rate = cluster_data_collector.avg()/solo_data_collector.avg()
-        logging.info("speed up rate is "+ str(speedup_rate))
+        for testing_thread in testing_threads:
+            testing_thread.start()
+        
+        for testing_thread in testing_threads:
+            testing_thread.join()
+        
+        # generate speedup rate
+        # 0 spec is the baseline
+        def get_speed_and_collector_by_spec(spec):
+            data_collector = DataCollector.get_instance_by_spec(spec)
+            return data_collector.avg("train_speed"), data_collector
 
-        save_to_kpi("speedup_rate", speedup_rate.item())
+        base_speed, _ = get_speed_and_collector_by_spec(cluster_specs[0])
+        for cluster_spec in cluster_specs[1:]:
+            speed, data_collector = get_speed_and_collector_by_spec(cluster_spec)
+            data_collector.save("speedup", base_speed/speed)
+
+        DataCollector.persist_all()
+        # DataCollector.generate_csv()
+

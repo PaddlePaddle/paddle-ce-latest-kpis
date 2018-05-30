@@ -6,7 +6,7 @@ PADDLE_PATH=$CURRENT_FILE_DIR/../../..
 paddle_build_path=$PADDLE_PATH/build
 paddle_docker_hub_tag="paddlepaddlece/paddle:latest"
 vgg16_test_dockerhub_tag="paddlepaddlece/vgg16_dist:latest"
-training_command="local:no,batch_size:128,num_passes:1"
+training_command="local:no,batch_size:128,num_passes:10,acc_target:0.6"
 
 # clean up docker
 docker system prune -f
@@ -57,8 +57,6 @@ python ce_runner.py \
     --key_name aws_benchmark_us_east \
     --security_group_id sg-95539dff \
     --online_mode yes \
-    --trainer_count 2 \
-    --pserver_count 2 \
     --pserver_command $training_command \
     --trainer_command $training_command \
     --docker_image $vgg16_test_dockerhub_tag

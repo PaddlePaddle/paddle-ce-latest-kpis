@@ -1,10 +1,34 @@
 import os
 import sys
 sys.path.append(os.environ['ceroot'])
-from kpi import LessWorseKpi
+from kpi import LessWorseKpi, GreaterWorseKpi
 
-speedup_rate_kpi = LessWorseKpi('speedup_rate', 0.01)
+kpis_specs = {
+    "speedup": [LessWorseKpi, 0.01],
+    "train_speed":[LessWorseKpi, 0.01],
+    "converge_speed":[GreaterWorseKpi, 0.01],
+    "gpu_memory":[GreaterWorseKpi, 0.01],
+    "acc_4passes":[GreaterWorseKpi, 0.01],
+}
 
-tracking_kpis = [
-    speedup_rate_kpi,
+# each row represets a cluster setting with the following columns
+# batch_size, trainer_count, gpus_per_trainer_count, pserver_count
+cluster_specs = [
+    [64, 1, 1, 0],
+    [64, 8, 1, 8],
+    [64, 16, 1, 8],
+    [64, 32, 1, 8],
 ]
+
+kpis_map = {}
+
+def generate_cluster_id(cluster_spec):
+    return "_".join(map(str, cluster_spec))
+def generate_kpi_id(kpi_name, cluster_spec):
+    return kpi_name + "_" + generate_cluster_id(cluster_spec)
+
+for kpi_type_name, (Kpi_class, diff_thre) in kpis_specs.iteritems():
+    for cluster_spec in cluster_specs:
+        kpi_id = generate_kpi_id(kpi_type_name, cluster_spec)
+        the_kpi = Kpi_class(kpi_id, diff_thre)
+        kpis_map[kpi_id] = the_kpi
