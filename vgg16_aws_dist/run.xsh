@@ -24,17 +24,13 @@ docker push $paddle_docker_hub_tag
 # build test docker image
 echo "going to prepare and build vgg16_dist_test"
 cd $CURRENT_FILE_DIR
-if [ ! -d vgg16_dist_test ]; then
-    echo "No vgg16_dist_test repo found, going to clone one"
-    git clone https://github.com/putcn/vgg16_dist_test.git
-fi
+
 cd vgg16_dist_test
 if [ -d ~/.cache/paddle/dataset/cifar ]; then
     echo "host cifar cache found, copying it to docker root"
     mkdir -p .cache/paddle/dataset/
     cp -r -f ~/.cache/paddle/dataset/cifar .cache/paddle/dataset/
 fi
-git pull
 cd ..
 echo "going to build vgg16_dist_test docker image and push it"
 docker build -t $vgg16_test_dockerhub_tag ./vgg16_dist_test

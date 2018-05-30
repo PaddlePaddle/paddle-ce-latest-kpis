@@ -184,6 +184,9 @@ class DataCollector(object):
                     metric_data = metric.split("=")
                     self.save(metric_data[0], metric_data[1])
     def save(self, key, val):
+        key = key.strip()
+        if isinstance(val, str):
+            val = val.strip()
         if (key not in self.store):
             self.store[key] = []
         logging.info("going to save " + key + "=" + str(val) + "from " + self.cluster_id)
@@ -193,10 +196,12 @@ class DataCollector(object):
             return self.store[key]
         return None
     def avg(self, key):
-        vals = self.store[key]
+        vals = self.get(key)
+        if vals is None:
+            return None
         return sum(vals)/float(len(vals))
     def persist(self):
-        for metric_name in self.store.iteritems():
+        for metric_name, _ in self.store.iteritems():
             kpi_id = generate_kpi_id(metric_name, self.cluster_spec)
             logging.info("going to persist kpi " + kpi_id)
             if kpi_id in kpis_map:
@@ -227,27 +232,84 @@ def train_with_spec(spec, args, lock):
     abclient = Abclient(args, data_collector.log_processor, lock)
     abclient.create()
 
+'''
+ClusterIterator relies on spec structure as follows
+ batch_size, trainer_count, gpus_per_trainer_count, pserver_count
+ cluster_specs = [
+    [64, 1, 1, 0],
+    [64, 8, 1, 8],
+    [64, 16, 1, 8],
+    [64, 32, 1, 8],
+ ]
+ it will sequentially distribute specs into chunks and make sure each chunk
+ does not exceeds trainer and pserver count limit
+ above specs will be distributed into 2 chunks
+[[64, 1, 1, 0], [64, 8, 1, 8]]
+and 
+[[64, 16, 1, 8]]
+
+[64, 32, 1, 8] itself does not fit in a single chunk, thus gets discard
+
+'''
+class ClusterIterator:
+    def __init__(self, specs, trainer_count_threshold = 20, pserver_count_threshold = 10):
+        self.specs = specs
+        self.trainer_count_threshold = trainer_count_threshold
+        self.pserver_count_threshold = pserver_count_threshold
+        self.bad_specs = []
+    def __iter__(self):
+        return self
+    def spec_can_not_fit(self, trainer_count, pserver_count):
+        return (trainer_count > self.trainer_count_threshold or pserver_count > self.pserver_count_threshold)
+    def next(self):
+        specs_to_ret = []
+        trainer_count = 0
+        pserver_count = 0
+        if len(self.specs) == 0:
+            raise StopIteration()
+        else:
+            while len(self.specs) != 0:
+                next_spec = self.specs[0]
+                # when single spec can't even fit, move it to bad spec list
+                if self.spec_can_not_fit(next_spec[1], next_spec[3]):
+                    self.bad_specs.append(self.specs.pop(0))
+                    continue
+                trainer_count += next_spec[1]
+                pserver_count += next_spec[3]
+                if self.spec_can_not_fit(trainer_count, pserver_count):
+                    break
+                specs_to_ret.append(self.specs.pop(0))
+        if len(specs_to_ret) == 0:
+            if len(self.bad_specs) != 0:
+                logging.info("%d specs not be able to fit in any test chunk" % len(self.bad_specs))
+            raise StopIteration()
+        return specs_to_ret
+
 if __name__ == "__main__":
     print_arguments()
     if args.action == "create":
         lock = threading.Lock()
-        testing_threads = []
-        for cluster_spec in cluster_specs:
-            logging.info("creating cluster thread with spec")
-            logging.info(cluster_spec)
-            thread = threading.Thread(
-                target=train_with_spec,
-                args=(cluster_spec, copy.copy(args), lock,)
-            )
-            testing_threads.append(thread)
+        cluster_specs_origin = copy.copy(cluster_specs)
+        for specs in ClusterIterator(cluster_specs):
+            logging.info("starting a new chunk of test")
+            testing_threads = []
+            for cluster_spec in specs:
+                logging.info("creating cluster thread with spec")
+                logging.info(cluster_spec)
+                thread = threading.Thread(
+                    target=train_with_spec,
+                    args=(cluster_spec, copy.copy(args), lock,)
+                )
+                testing_threads.append(thread)
 
-        for testing_thread in testing_threads:
-            testing_thread.start()
+            for testing_thread in testing_threads:
+                testing_thread.start()
+            
+            for testing_thread in testing_threads:
+                testing_thread.join()
+            logging.info("testing chunk ended")
         
-        for testing_thread in testing_threads:
-            testing_thread.join()
-        
-        logging.info("all thread joined")
+        logging.info("all testing ended")
         
         # generate speedup rate
         # 0 spec is the baseline
@@ -255,10 +317,15 @@ if __name__ == "__main__":
             data_collector = DataCollector.get_instance_by_spec(spec)
             return data_collector.avg("train_speed"), data_collector
 
-        base_speed, _ = get_speed_and_collector_by_spec(cluster_specs[0])
-        for cluster_spec in cluster_specs[1:]:
-            speed, data_collector = get_speed_and_collector_by_spec(cluster_spec)
-            data_collector.save("speedup", base_speed/speed)
+        logging.info("generating speedup")
+
+        base_speed, _ = get_speed_and_collector_by_spec(cluster_specs_origin[0])
+        logging.info("base speed is %f" % base_speed)
+        if base_speed is not None:
+            for cluster_spec in cluster_specs_origin:
+                speed, data_collector = get_speed_and_collector_by_spec(cluster_spec)
+                if speed is not None:
+                    data_collector.save("speedup", speed*cluster_spec[1]*cluster_spec[2]/base_speed)
 
         DataCollector.persist_all()
         # DataCollector.generate_csv()
