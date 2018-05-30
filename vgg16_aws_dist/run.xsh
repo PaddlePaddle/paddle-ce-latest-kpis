@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -xe
 
 CURRENT_FILE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PADDLE_PATH=$CURRENT_FILE_DIR/../../..
@@ -12,7 +13,8 @@ training_command="local:no,batch_size:128,num_passes:10,acc_target:0.6"
 docker system prune -f
 
 # loginto docker hub
-docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
+# login is now performed in teamcity
+# docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
 
 # create paddle docker image
 echo "going to build and push paddle production image"
@@ -37,7 +39,6 @@ cd ..
 echo "going to build vgg16_dist_test docker image and push it"
 docker build -t $vgg16_test_dockerhub_tag ./vgg16_dist_test
 docker push $vgg16_test_dockerhub_tag
-docker logout
 
 # fetch runner and install dependencies
 echo "going to work with aws_runner"

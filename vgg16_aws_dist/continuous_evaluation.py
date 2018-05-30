@@ -13,11 +13,17 @@ kpis_specs = {
 
 # each row represets a cluster setting with the following columns
 # batch_size, trainer_count, gpus_per_trainer_count, pserver_count
+# disable production cluster config for now
+# cluster_specs = [
+#    [64, 1, 1, 0],
+#    [64, 8, 1, 8],
+#    [64, 16, 1, 8],
+#    [64, 32, 1, 8],
+# ]
+
 cluster_specs = [
     [64, 1, 1, 0],
-    [64, 8, 1, 8],
-    [64, 16, 1, 8],
-    [64, 32, 1, 8],
+    [64, 4, 1, 4],
 ]
 
 kpis_map = {}

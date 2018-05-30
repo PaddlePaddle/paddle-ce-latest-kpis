@@ -172,13 +172,17 @@ class DataCollector(object):
         self.metric_data_identifier = "**metrics_data: "
         self.cluster_spec = cluster_spec
         self.cluster_id = generate_cluster_id(cluster_spec)
-    def log_processor(self, msg):
-        if (msg.startswith(self.metric_data_identifier)):
-            str_msg = msg.replace(self.metric_data_identifier, "")
-            metrics_raw = str_msg.split(",")
-            for metric in metrics_raw:
-                metric_data = metric.split("=")
-                self.save(metric_data[0], metric_data[1])
+    def log_processor(self, source, log_type):
+        for msg in iter(source.readline, ""):
+            logging.info(self.cluster_id)
+            logging.info(msg)
+            if (msg.startswith(self.metric_data_identifier)):
+                logging.info("metric data found, parse and save it")
+                str_msg = msg.replace(self.metric_data_identifier, "")
+                metrics_raw = str_msg.split(",")
+                for metric in metrics_raw:
+                    metric_data = metric.split("=")
+                    self.save(metric_data[0], metric_data[1])
     def save(self, key, val):
         if (key not in self.store):
             self.store[key] = []
@@ -205,6 +209,7 @@ class DataCollector(object):
                 logging.info(kpi_id)
 
 def train_with_spec(spec, args, lock):
+    logging.info("updating cluster config and starting client")
     batch_size = spec[0]
     args.trainer_count = spec[1]
     # gpus_per_trainer_count = spec[2]
@@ -217,7 +222,8 @@ def train_with_spec(spec, args, lock):
     args.pserver_command = args.trainer_command
 
     data_collector = DataCollector.get_instance_by_spec(spec)
-        
+
+    logging.info(args)
     abclient = Abclient(args, data_collector.log_processor, lock)
     abclient.create()
 
@@ -227,6 +233,8 @@ if __name__ == "__main__":
         lock = threading.Lock()
         testing_threads = []
         for cluster_spec in cluster_specs:
+            logging.info("creating cluster thread with spec")
+            logging.info(cluster_spec)
             thread = threading.Thread(
                 target=train_with_spec,
                 args=(cluster_spec, copy.copy(args), lock,)
@@ -238,6 +246,8 @@ if __name__ == "__main__":
         
         for testing_thread in testing_threads:
             testing_thread.join()
+        
+        logging.info("all thread joined")
         
         # generate speedup rate
         # 0 spec is the baseline
