@@ -29,6 +29,8 @@ cluster_specs = [
 
 kpis_map = {}
 
+tracking_kpis = []
+
 def generate_cluster_id(cluster_spec):
     return "_".join(map(str, cluster_spec))
 def generate_kpi_id(kpi_name, cluster_spec):
@@ -38,4 +40,5 @@ for kpi_type_name, (Kpi_class, diff_thre) in kpis_specs.iteritems():
     for cluster_spec in cluster_specs:
         kpi_id = generate_kpi_id(kpi_type_name, cluster_spec)
         the_kpi = Kpi_class(kpi_id, diff_thre)
+        tracking_kpis.append(the_kpi)
         kpis_map[kpi_id] = the_kpi
