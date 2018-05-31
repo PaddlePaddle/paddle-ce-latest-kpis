@@ -24,6 +24,7 @@ kpis_specs = {
 cluster_specs = [
     [64, 1, 1, 0],
     [64, 4, 1, 4],
+    [64, 7, 1, 7],
 ]
 
 kpis_map = {}
