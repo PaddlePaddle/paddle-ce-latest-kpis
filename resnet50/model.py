@@ -7,6 +7,7 @@ import functools
 import numpy as np
 import time
 import commands
+import subprocess
 import threading
 
 import cProfile
@@ -90,8 +91,8 @@ def parse_args():
 
 
 def print_arguments(args):
-    vars(args)['use_nvprof'] = (vars(args)['use_nvprof']
-                                and vars(args)['device'] == 'GPU')
+    vars(args)['use_nvprof'] = (vars(args)['use_nvprof'] and
+                                vars(args)['device'] == 'GPU')
     print('-----------  Configuration Arguments -----------')
     for arg, value in sorted(vars(args).iteritems()):
         print('%s: %s' % (arg, value))
@@ -282,14 +283,15 @@ def run_benchmark(model, args):
             if iter == args.iterations:
                 break
             if not args.use_fake_data:
-                image = np.array(
-                    map(lambda x: x[0].reshape(dshape), data)).astype('float32')
+                image = np.array(map(lambda x: x[0].reshape(dshape),
+                                     data)).astype('float32')
                 label = np.array(map(lambda x: x[1], data)).astype('int64')
                 label = label.reshape([-1, 1])
             loss, acc, weight = exe.run(
-                fluid.default_main_program(), feed={
-                    'data': image, 'label': label}, fetch_list=[
-                    avg_cost, batch_acc, batch_size_tensor])
+                fluid.default_main_program(),
+                feed={'data': image,
+                      'label': label},
+                fetch_list=[avg_cost, batch_acc, batch_size_tensor])
             accuracy.add(value=acc, weight=weight)
             if iter >= args.skip_batch_num or pass_id != 0:
                 batch_duration = time.time() - batch_start
@@ -305,8 +307,9 @@ def run_benchmark(model, args):
         pass_train_acc = accuracy.eval()
         pass_test_acc = test(exe)
         print(
-            "Pass:%d, Loss:%f, Train Accuray:%f, Test Accuray:%f, Handle Images Duration: %f\n" %
-            (pass_id, np.mean(every_pass_loss), pass_train_acc, pass_test_acc, pass_duration))
+            "Pass:%d, Loss:%f, Train Accuray:%f, Test Accuray:%f, Handle Images Duration: %f\n"
+            % (pass_id, np.mean(every_pass_loss), pass_train_acc,
+               pass_test_acc, pass_duration))
     if pass_id == args.pass_num - 1 and args.data_set == 'cifar10':
         train_acc_kpi.add_record(np.array(pass_train_acc, dtype='float32'))
         train_acc_kpi.persist()
@@ -317,9 +320,8 @@ def run_benchmark(model, args):
         train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float32'))
     train_speed_kpi.persist()
 
-    print(
-        '\nTotal examples: %d, total time: %.5f' %
-        (im_num, total_train_time))
+    print('\nTotal examples: %d, total time: %.5f' %
+          (im_num, total_train_time))
     print('%.5f examples/sec, %.5f sec/batch \n' %
           (examples_per_sec, sec_per_batch))
 
@@ -332,23 +334,26 @@ def run_benchmark(model, args):
         print(s.getvalue())
 
 
-def collect_gpu_memory_data(mem_list):
+def collect_gpu_memory_data(alive):
     """
     collect the GPU memory data
     """
-    while(True):
-        command = "nvidia-smi --id=%s --query-compute-apps=used_memory --format=csv" % args.gpu_id
-        status, output = commands.getstatusoutput(command)
-        if status != 0:
-            print('Get GPU memory data error')
-        else:
-            mem_list.append(int(output.split('\n')[1].split(' ')[0]))
+    global is_alive
+    status, output = commands.getstatusoutput('rm -rf memory.txt')
+    if status == 0:
+        print('del memory.txt')
+    command = "nvidia-smi --id=%s --query-compute-apps=used_memory --format=csv -lms 1 > memory.txt" % args.gpu_id
+    p = subprocess.Popen(command, shell=True)
+    if p.pid < 0:
+        print('Get GPU memory data error')
+    while (is_alive):
         time.sleep(1)
+    p.kill()
 
 
 def save_gpu_data(mem_list):
     gpu_memory_kpi = None
-    for kpi in tracking_kpis: 
+    for kpi in tracking_kpis:
         if kpi.name == '%s_%s_gpu_memory' % (args.data_set, args.batch_size):
             gpu_memory_kpi = kpi
     gpu_memory_kpi.add_record(max(mem_list))
@@ -362,12 +367,13 @@ if __name__ == '__main__':
     }
     args = parse_args()
     print_arguments(args)
+    global is_alive
+    is_alive = True
     if args.data_format == 'NHWC':
         raise ValueError('Only support NCHW data_format now.')
-    mem_data_list = []
     if args.device == 'GPU':
         collect_memory_thread = threading.Thread(
-            target=collect_gpu_memory_data, args=(mem_data_list,))
+            target=collect_gpu_memory_data, args=(is_alive, ))
         collect_memory_thread.setDaemon(True)
         collect_memory_thread.start()
     if args.use_nvprof and args.device == 'GPU':
@@ -375,4 +381,4 @@ if __name__ == '__main__':
             run_benchmark(model_map[args.model], args)
     else:
         run_benchmark(model_map[args.model], args)
-        save_gpu_data(mem_data_list)
+        is_alive = False
