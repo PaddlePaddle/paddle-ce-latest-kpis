@@ -12,11 +12,11 @@ import paddle.fluid.profiler as profiler
 
 from continuous_evaluation import (train_acc_kpi, train_cost_kpi, test_acc_kpi,
                                    train_duration_kpi, tracking_kpis)
-SEED = 1
+SEED = 90
 DTYPE = "float32"
 
 # random seed must set before configuring the network.
-# fluid.default_startup_program().random_seed = SEED
+fluid.default_startup_program().random_seed = SEED
 
 
 def parse_args():
