@@ -6,8 +6,8 @@ CURRENT_FILE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PADDLE_PATH=$CURRENT_FILE_DIR/../../..
 paddle_build_path=$PADDLE_PATH/build
 paddle_docker_hub_tag="paddlepaddlece/paddle:latest"
-vgg16_test_dockerhub_tag="paddlepaddlece/vgg16_dist:latest"
-training_command="local:no,batch_size:128,num_passes:10,acc_target:0.6"
+fluid_benchmark_dockerhub_tag="paddlepaddlece/fluid_benchmark:latest"
+training_command="update_method:pserver,pass_num:10,acc_target:0.6"
 
 # clean up docker
 docker system prune -f
@@ -22,19 +22,11 @@ docker build -t $paddle_docker_hub_tag $paddle_build_path
 docker push $paddle_docker_hub_tag
 
 # build test docker image
-echo "going to prepare and build vgg16_dist_test"
 cd $CURRENT_FILE_DIR
 
-cd vgg16_dist_test
-if [ -d ~/.cache/paddle/dataset/cifar ]; then
-    echo "host cifar cache found, copying it to docker root"
-    mkdir -p .cache/paddle/dataset/
-    cp -r -f ~/.cache/paddle/dataset/cifar .cache/paddle/dataset/
-fi
-cd ..
-echo "going to build vgg16_dist_test docker image and push it"
-docker build -t $vgg16_test_dockerhub_tag ./vgg16_dist_test
-docker push $vgg16_test_dockerhub_tag
+echo "going to build fluid_benchmark_for_aws docker image and push it"
+docker build -t $fluid_benchmark_dockerhub_tag ./fluid_benchmark_for_aws
+docker push $fluid_benchmark_dockerhub_tag
 
 # fetch runner and install dependencies
 echo "going to work with aws_runner"
@@ -56,4 +48,4 @@ python ce_runner.py \
     --online_mode yes \
     --pserver_command $training_command \
     --trainer_command $training_command \
-    --docker_image $vgg16_test_dockerhub_tag
+    --docker_image $fluid_benchmark_dockerhub_tag

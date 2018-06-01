@@ -215,14 +215,27 @@ class DataCollector(object):
 
 def train_with_spec(spec, args, lock):
     logging.info("updating cluster config and starting client")
-    batch_size = spec[0]
-    args.trainer_count = spec[1]
-    # gpus_per_trainer_count = spec[2]
-    args.pserver_count = spec[3]
+    test_name = spec[0]
+    batch_size = spec[1]
+    args.trainer_count = spec[2]
+    gpus_per_trainer_count = spec[3]
+    args.pserver_count = spec[4]
     trainer_command = TrainCommand(args.trainer_command)
-    if args.pserver_count == 0:
-        trainer_command.update({"local":"yes"})
-    trainer_command.update({"batch_size":str(batch_size)})
+
+    command_to_update = {
+        "model": test_name,
+        "batch_size": str(batch_size),
+        "gpus": str(gpus_per_trainer_count),
+    }
+
+    if args.pserver_count == 0 and args.trainer_count == 1:
+        command_to_update["update_method"] = "local"
+    ''' not yet supported because aws runner can't provide PADDLE_TRAINER_IPS
+    if args.pserver_count == 0 and args.trainer_count > 1:
+        command_to_update["update_method"] = "nccl2"
+    '''
+
+    trainer_command.update(command_to_update)
     args.trainer_command = trainer_command.unparse()
     args.pserver_command = args.trainer_command
 
@@ -271,11 +284,11 @@ class ClusterIterator:
             while len(self.specs) != 0:
                 next_spec = self.specs[0]
                 # when single spec can't even fit, move it to bad spec list
-                if self.spec_can_not_fit(next_spec[1], next_spec[3]):
+                if self.spec_can_not_fit(next_spec[2], next_spec[4]):
                     self.bad_specs.append(self.specs.pop(0))
                     continue
-                trainer_count += next_spec[1]
-                pserver_count += next_spec[3]
+                trainer_count += next_spec[2]
+                pserver_count += next_spec[4]
                 if self.spec_can_not_fit(trainer_count, pserver_count):
                     break
                 specs_to_ret.append(self.specs.pop(0))
@@ -325,7 +338,7 @@ if __name__ == "__main__":
             for cluster_spec in cluster_specs_origin:
                 speed, data_collector = get_speed_and_collector_by_spec(cluster_spec)
                 if speed is not None:
-                    data_collector.save("speedup", speed*cluster_spec[1]*cluster_spec[2]/base_speed)
+                    data_collector.save("speedup", speed*cluster_spec[2]*cluster_spec[3]/base_speed)
 
         DataCollector.persist_all()
         # DataCollector.generate_csv()
