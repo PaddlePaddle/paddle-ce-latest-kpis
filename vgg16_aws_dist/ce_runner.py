@@ -265,7 +265,7 @@ and
 
 '''
 class ClusterIterator:
-    def __init__(self, specs, trainer_count_threshold = 7, pserver_count_threshold = 10):
+    def __init__(self, specs, trainer_count_threshold = 32, pserver_count_threshold = 10):
         self.specs = specs
         self.trainer_count_threshold = trainer_count_threshold
         self.pserver_count_threshold = pserver_count_threshold
