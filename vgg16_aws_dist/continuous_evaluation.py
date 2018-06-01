@@ -22,9 +22,9 @@ kpis_specs = {
 # ]
 
 cluster_specs = [
-    ["resnet", 64, 1, 1, 0],
-    ["resnet", 64, 4, 4, 4],
-    ["resnet", 64, 7, 8, 7],
+    ["mnist", 64, 1, 1, 0],
+    ["mnist", 64, 4, 4, 4],
+    ["mnist", 64, 7, 8, 7],
 ]
 
 kpis_map = {}

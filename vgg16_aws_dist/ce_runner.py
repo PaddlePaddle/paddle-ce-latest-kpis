@@ -332,13 +332,18 @@ if __name__ == "__main__":
 
         logging.info("generating speedup")
 
+        # base_speed supposed to be one trainer, one gpu, local mode
         base_speed, _ = get_speed_and_collector_by_spec(cluster_specs_origin[0])
-        logging.info("base speed is %f" % base_speed)
         if base_speed is not None:
-            for cluster_spec in cluster_specs_origin:
-                speed, data_collector = get_speed_and_collector_by_spec(cluster_spec)
-                if speed is not None:
-                    data_collector.save("speedup", speed*cluster_spec[2]*cluster_spec[3]/base_speed)
+            logging.info("base speed is %f" % base_speed)
+            if base_speed is not None:
+                for cluster_spec in cluster_specs_origin:
+                    speed, data_collector = get_speed_and_collector_by_spec(cluster_spec)
+                    if speed is not None:
+                        # speed * trainer_count * gpus_per_trainer_count / base_speed
+                        data_collector.save("speedup", speed*cluster_spec[2]*cluster_spec[3]/base_speed)
+        else:
+            logging.info("base speed is not available")
 
         DataCollector.persist_all()
         # DataCollector.generate_csv()
