@@ -36,7 +36,7 @@ def generate_cluster_id(cluster_spec):
 def generate_kpi_id(kpi_name, cluster_spec):
     return kpi_name + "_" + generate_cluster_id(cluster_spec)
 
-for kpi_type_name, (Kpi_class, diff_thre) in kpis_specs.iteritems():
+for kpi_type_name, (Kpi_class, diff_thre) in kpis_specs.items():
     for cluster_spec in cluster_specs:
         kpi_id = generate_kpi_id(kpi_type_name, cluster_spec)
         the_kpi = Kpi_class(kpi_id, diff_thre)
