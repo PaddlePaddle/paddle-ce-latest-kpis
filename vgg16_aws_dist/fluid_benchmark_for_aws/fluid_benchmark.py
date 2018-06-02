@@ -242,7 +242,7 @@ def train(avg_loss, infer_prog, optimizer, train_reader, test_reader, batch_acc,
             num_samples += len(data)
             loss = outs[0]
             if batch_acc is not None:
-                acc = outs[1]
+                acc = np.mean(outs[1]).item()
                 train_pass_acc.add(value=acc, weight=len(data))
             else:
                 acc = None
