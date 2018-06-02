@@ -7,7 +7,7 @@ PADDLE_PATH=$CURRENT_FILE_DIR/../../..
 paddle_build_path=$PADDLE_PATH/build
 paddle_docker_hub_tag="paddlepaddlece/paddle:latest"
 fluid_benchmark_dockerhub_tag="paddlepaddlece/fluid_benchmark:latest"
-training_command="update_method:pserver,pass_num:10,acc_target:0.6"
+training_command="update_method:pserver,acc_target:0.6,iterations:100,pass_num:1"
 
 # clean up docker
 docker system prune -f
@@ -26,11 +26,17 @@ cd $CURRENT_FILE_DIR
 
 cd fluid_benchmark_for_aws
 if [ -d ~/.cache/paddle/dataset/cifar ]; then
-    echo "host cifar cache found, copying it to docker root"
+    echo "host cifar dataset cache found, copying it to docker root"
     mkdir -p .cache/paddle/dataset/
     cp -r -f ~/.cache/paddle/dataset/cifar .cache/paddle/dataset/
+fi
+
+if [ -d ~/.cache/paddle/dataset/flowers ]; then
+    echo "host flower dataset cache found, copying it to docker root"
+    mkdir -p .cache/paddle/dataset/
     cp -r -f ~/.cache/paddle/dataset/flowers .cache/paddle/dataset/
 fi
+
 cd ..
 
 echo "going to build fluid_benchmark_for_aws docker image and push it"

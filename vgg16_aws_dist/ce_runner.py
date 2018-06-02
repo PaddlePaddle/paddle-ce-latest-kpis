@@ -340,8 +340,8 @@ if __name__ == "__main__":
                 for cluster_spec in cluster_specs_origin:
                     speed, data_collector = get_speed_and_collector_by_spec(cluster_spec)
                     if speed is not None:
-                        # speed * trainer_count * gpus_per_trainer_count / base_speed
-                        data_collector.save("speedup", speed*cluster_spec[2]*cluster_spec[3]/base_speed)
+                        # speed * trainer_count / base_speed
+                        data_collector.save("speedup", speed*cluster_spec[2]/base_speed)
         else:
             logging.info("base speed is not available")
 
