@@ -10,13 +10,13 @@ import paddle
 import paddle.fluid as fluid
 import paddle.fluid.profiler as profiler
 
-from continuous_evaluation import (train_acc_kpi, test_acc_kpi,
+from continuous_evaluation import (train_acc_kpi, train_cost_kpi, test_acc_kpi,
                                    train_duration_kpi, tracking_kpis)
-SEED = 1
+SEED = 90
 DTYPE = "float32"
 
 # random seed must set before configuring the network.
-# fluid.default_startup_program().random_seed = SEED
+fluid.default_startup_program().random_seed = SEED
 
 
 def parse_args():
@@ -49,8 +49,8 @@ def parse_args():
 
 
 def print_arguments(args):
-    vars(args)['use_nvprof'] = (vars(args)['use_nvprof']
-                                and vars(args)['device'] == 'GPU')
+    vars(args)['use_nvprof'] = (vars(args)['use_nvprof'] and
+                                vars(args)['device'] == 'GPU')
     print('-----------  Configuration Arguments -----------')
     for arg, value in sorted(vars(args).iteritems()):
         print('%s: %s' % (arg, value))
@@ -99,13 +99,10 @@ def eval_test(exe, batch_acc, batch_size_tensor, inference_program):
         y_data = np.array(map(lambda x: x[1], data)).astype("int64")
         y_data = y_data.reshape([len(y_data), 1])
 
-        acc, weight = exe.run(
-            inference_program,
-            feed={
-                "pixel": img_data,
-                "label": y_data
-            },
-            fetch_list=[batch_acc, batch_size_tensor])
+        acc, weight = exe.run(inference_program,
+                              feed={"pixel": img_data,
+                                    "label": y_data},
+                              fetch_list=[batch_acc, batch_size_tensor])
         test_pass_acc.add(value=acc, weight=weight)
         pass_acc = test_pass_acc.eval()
     return pass_acc
@@ -158,6 +155,7 @@ def run_benchmark(model, args):
     for pass_id in range(args.pass_num):
         accuracy.reset()
         pass_start = time.time()
+        every_pass_loss = []
         for batch_id, data in enumerate(train_reader()):
             img_data = np.array(
                 map(lambda x: x[0].reshape([1, 28, 28]), data)).astype(DTYPE)
@@ -165,29 +163,30 @@ def run_benchmark(model, args):
             y_data = y_data.reshape([len(y_data), 1])
 
             start = time.time()
-            outs = exe.run(
+            loss, acc, weight = exe.run(
                 fluid.default_main_program(),
-                feed={
-                    "pixel": img_data,
-                    "label": y_data
-                },
+                feed={"pixel": img_data,
+                      "label": y_data},
                 fetch_list=[avg_cost, batch_acc, batch_size_tensor]
             )  # The accuracy is the accumulation of batches, but not the current batch.
-            accuracy.add(value=outs[1], weight=outs[2])
             end = time.time()
-            loss = np.array(outs[0])
-            acc = np.array(outs[1])
+            accuracy.add(value=acc, weight=weight)
+            every_pass_loss.append(loss)
+            print ("Pass = %d, Iter = %d, Loss = %f, Accuracy = %f" %
+                    (pass_id, batch_id, loss, acc))
 
         pass_end = time.time()
 
         train_avg_acc = accuracy.eval()
+        train_avg_loss = np.mean(every_pass_loss)
         test_avg_acc = eval_test(exe, batch_acc, batch_size_tensor,
                                  inference_program)
 
-        print("pass=%d, train_avg_acc=%f, test_avg_acc=%f, elapse=%f" %
-              (pass_id, train_avg_acc, test_avg_acc, (pass_end - pass_start)))
+        print("pass=%d, train_avg_acc=%f,train_avg_loss=%f, test_avg_acc=%f, elapse=%f" %
+              (pass_id, train_avg_acc, train_avg_loss, test_avg_acc, (pass_end - pass_start)))
 
         train_acc_kpi.add_record(np.array(train_avg_acc, dtype='float32'))
+        train_cost_kpi.add_record(np.array(train_avg_loss, dtype='float32'))
         test_acc_kpi.add_record(np.array(test_avg_acc, dtype='float32'))
         train_duration_kpi.add_record(pass_end - pass_start)
 
