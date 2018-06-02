@@ -24,6 +24,15 @@ docker push $paddle_docker_hub_tag
 # build test docker image
 cd $CURRENT_FILE_DIR
 
+cd fluid_benchmark_for_aws
+if [ -d ~/.cache/paddle/dataset/cifar ]; then
+    echo "host cifar cache found, copying it to docker root"
+    mkdir -p .cache/paddle/dataset/
+    cp -r -f ~/.cache/paddle/dataset/cifar .cache/paddle/dataset/
+    cp -r -f ~/.cache/paddle/dataset/flowers .cache/paddle/dataset/
+fi
+cd ..
+
 echo "going to build fluid_benchmark_for_aws docker image and push it"
 docker build -t $fluid_benchmark_dockerhub_tag ./fluid_benchmark_for_aws
 docker push $fluid_benchmark_dockerhub_tag
