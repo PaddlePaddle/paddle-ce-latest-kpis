@@ -52,7 +52,10 @@ def parse_args():
         help='The first num of minibatch num to skip, for better performance test'
     )
     parser.add_argument(
-        '--iterations', type=int, default=80, help='The number of minibatches.')
+        '--iterations',
+        type=int,
+        default=80,
+        help='The number of minibatches.')
     parser.add_argument(
         '--pass_num', type=int, default=100, help='The number of passes.')
     parser.add_argument(
@@ -71,7 +74,8 @@ def parse_args():
         '--gpus',
         type=int,
         default=1,
-        help='If gpus > 1, will use ParallelExecutor to run, else use Executor.')
+        help='If gpus > 1, will use ParallelExecutor to run, else use Executor.'
+    )
     parser.add_argument(
         '--data_set',
         type=str,
@@ -108,7 +112,10 @@ def parse_args():
         help='Choose parameter update method, can be local, pserver, nccl2.')
 
     parser.add_argument(
-    "--acc_target", default=0.6, type=float, help="trianing will be terminated when acc_target reaches")
+        "--acc_target",
+        default=0.6,
+        type=float,
+        help="trianing will be terminated when acc_target reaches")
 
     args = parser.parse_args()
     return args
@@ -127,7 +134,8 @@ def append_nccl2_prepare(trainer_id):
         current_endpoint = os.getenv("PADDLE_CURRENT_IP") + ":" + port
         worker_endpoints.remove(current_endpoint)
 
-        nccl_id_var = fluid.default_startup_program().global_block().create_var(
+        nccl_id_var = fluid.default_startup_program().global_block(
+        ).create_var(
             name="NCCLID",
             persistable=True,
             type=fluid.core.VarDesc.VarType.RAW)
@@ -142,8 +150,9 @@ def append_nccl2_prepare(trainer_id):
             })
         return nccl_id_var, num_trainers, trainer_id
     else:
-        raise Exception("must set positive PADDLE_TRAINER_ID env variables for "
-                        "nccl-based dist train.")
+        raise Exception(
+            "must set positive PADDLE_TRAINER_ID env variables for "
+            "nccl-based dist train.")
 
 
 def dist_transpile(trainer_id):
@@ -196,8 +205,8 @@ def test(exe, inference_program, test_reader, feeder, batch_acc):
 
 # TODO(wuyi): replace train, train_parallel, test functions with new trainer
 # API once it is ready.
-def train(avg_loss, infer_prog, optimizer, train_reader, test_reader, batch_acc, batch_size_tensor,
-          args, train_prog, startup_prog):
+def train(avg_loss, infer_prog, optimizer, train_reader, test_reader,
+          batch_acc, batch_size_tensor, args, train_prog, startup_prog):
     if os.getenv("PADDLE_TRAINING_ROLE") == "PSERVER":
         place = core.CPUPlace()
         exe = fluid.Executor(place)
@@ -263,7 +272,8 @@ def train(avg_loss, infer_prog, optimizer, train_reader, test_reader, batch_acc,
             print("acc_4passes set with %f" % pass_train_acc)
             acc_4passes = float(pass_train_acc)
 
-        output_metric_data(pass_id, examples_per_sec, pass_train_acc, acc_4passes, converge_speed)
+        output_metric_data(pass_id, examples_per_sec, pass_train_acc,
+                           acc_4passes, converge_speed)
 
         # evaluation
         if not args.no_test and batch_acc != None:
@@ -278,8 +288,8 @@ def train(avg_loss, infer_prog, optimizer, train_reader, test_reader, batch_acc,
 # TODO(wuyi): replace train, train_parallel, test functions with new trainer
 # API once it is ready.
 def train_parallel(avg_loss, infer_prog, optimizer, train_reader, test_reader,
-                   batch_acc, batch_size_tensor, args, train_prog, startup_prog, nccl_id_var,
-                   num_trainers, trainer_id):
+                   batch_acc, batch_size_tensor, args, train_prog,
+                   startup_prog, nccl_id_var, num_trainers, trainer_id):
     feed_var_list = [
         var for var in train_prog.global_block().vars.itervalues()
         if var.is_data
@@ -345,7 +355,7 @@ def train_parallel(avg_loss, infer_prog, optimizer, train_reader, test_reader,
             if args.use_fake_data:
                 outs = exe.run(fetch_list)
             else:
-                outs = exe.run(fetch_list, feed=feeder.feed(data))   
+                outs = exe.run(fetch_list, feed=feeder.feed(data))
 
             if args.update_method == "pserver":
                 exe.bcast_params()
@@ -362,9 +372,9 @@ def train_parallel(avg_loss, infer_prog, optimizer, train_reader, test_reader,
                 print("Pass %d, batch %d, loss %s, acc %s" %
                       (pass_id, batch_id, np.mean(outs[0]), str(acc)))
             if converge_speed is None and args.acc_target and acc >= args.acc_target:
-                    converge_speed = time.time() - start_time
-                    print("converge_speed set with %f" % converge_speed)
-        
+                converge_speed = time.time() - start_time
+                print("converge_speed set with %f" % converge_speed)
+
         pass_elapsed = time.time() - pass_start_time
         examples_per_sec = num_samples / pass_elapsed
         if batch_acc is not None:
@@ -376,7 +386,8 @@ def train_parallel(avg_loss, infer_prog, optimizer, train_reader, test_reader,
             print("acc_4passes set with %f" % pass_train_acc)
             acc_4passes = float(pass_train_acc)
 
-        output_metric_data(pass_id, examples_per_sec, pass_train_acc, acc_4passes, converge_speed)
+        output_metric_data(pass_id, examples_per_sec, pass_train_acc,
+                           acc_4passes, converge_speed)
 
         if not args.no_test and batch_acc != None:
             test_acc = test(startup_exe, infer_prog, test_reader, feeder,
@@ -384,7 +395,9 @@ def train_parallel(avg_loss, infer_prog, optimizer, train_reader, test_reader,
             print("Pass: %d, Test Accuracy: %f\n" % (pass_id, test_acc))
         exit(0)
 
-def output_metric_data(pass_id, examples_per_sec, pass_train_acc, acc_4passes, converge_speed):
+
+def output_metric_data(pass_id, examples_per_sec, pass_train_acc, acc_4passes,
+                       converge_speed):
     msgs = []
     msgs.append("pass = %d" % pass_id)
     msgs.append("train_speed = %f" % float(examples_per_sec))
@@ -395,6 +408,7 @@ def output_metric_data(pass_id, examples_per_sec, pass_train_acc, acc_4passes, c
     if isinstance(converge_speed, float):
         msgs.append("converge_speed = %f" % converge_speed)
     print("**metrics_data: " + ", ".join(msgs))
+
 
 def print_arguments(args):
     vars(args)['use_nvprof'] = (vars(args)['use_nvprof'] and
@@ -442,7 +456,8 @@ def main():
     train_args.append(fluid.default_startup_program())
 
     if args.update_method == "nccl2":
-        nccl_id_var, num_trainers, trainer_id = append_nccl2_prepare(trainer_id)
+        nccl_id_var, num_trainers, trainer_id = append_nccl2_prepare(
+            trainer_id)
     if args.gpus == 1:
         # NOTE: parallel executor use profiler interanlly
         if args.use_nvprof and args.device == 'GPU':

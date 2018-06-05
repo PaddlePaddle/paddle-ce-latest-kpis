@@ -176,7 +176,10 @@ def gen_job():
         })
     elif args.disttype == "nccl2" or args.disttype == "local":
         # NCCL2 have no training role, set to plain WORKER
-        tn_container["env"].append({"name": "TRAINING_ROLE", "value": "WORKER"})
+        tn_container["env"].append({
+            "name": "TRAINING_ROLE",
+            "value": "WORKER"
+        })
 
     os.mkdir(args.jobname)
     if args.disttype == "pserver":

@@ -41,7 +41,8 @@ def conv_bn_layer(input, ch_out, filter_size, stride, padding, act='relu'):
 
 
 def shortcut(input, ch_out, stride):
-    ch_in = input.shape[1]  # if args.data_format == 'NCHW' else input.shape[-1]
+    ch_in = input.shape[
+        1]  # if args.data_format == 'NCHW' else input.shape[-1]
     if ch_in != ch_out:
         return conv_bn_layer(input, ch_out, 1, stride, 0, None)
     else:

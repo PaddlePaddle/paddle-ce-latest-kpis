@@ -14,6 +14,7 @@ from continuous_evaluation import cluster_specs, kpis_map, generate_kpi_id, gene
 
 from aws_runner.client.abclient import Abclient
 
+
 def str2bool(v):
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
         return True
@@ -22,10 +23,12 @@ def str2bool(v):
     else:
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
+
 def print_arguments():
     print('-----------  Configuration Arguments -----------')
     for arg, value in sorted(vars(args).iteritems()):
         print('%s: %s' % (arg, value))
+
 
 parser = argparse.ArgumentParser(description=__doc__)
 
@@ -108,7 +111,10 @@ parser.add_argument(
     '--pserver_port', type=str, default="5436", help="pserver port")
 
 parser.add_argument(
-    '--docker_image', type=str, default="busybox", help="training docker image")
+    '--docker_image',
+    type=str,
+    default="busybox",
+    help="training docker image")
 
 parser.add_argument(
     '--master_server_port', type=int, default=5436, help="master server port")
@@ -137,6 +143,7 @@ parser.add_argument(
 args = parser.parse_args()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 
+
 class DataCollector(object):
     ''' collect metrics data from training output
 
@@ -145,6 +152,7 @@ class DataCollector(object):
 
     '''
     _instance_store = {}
+
     @classmethod
     def get_instance_by_spec(cls, cluster_spec):
         ''' singleton method to get/create instnace
@@ -156,11 +164,13 @@ class DataCollector(object):
         if cluster_id not in cls._instance_store:
             cls._instance_store[cluster_id] = cls(cluster_spec)
         return cls._instance_store[cluster_id]
+
     @classmethod
     def persist_all(cls):
         ''' to persist all data to KPI '''
         for _, collector in cls._instance_store.iteritems():
             collector.persist()
+
     @classmethod
     def generate_csv(cls):
         ''' to generate csv from data managed by this class '''
@@ -168,9 +178,7 @@ class DataCollector(object):
             fieldnames = []
             rows = []
             for cluster_id, collector in cls._instance_store.iteritems():
-                row = {
-                    "cluster_spec": cluster_id
-                }
+                row = {"cluster_spec": cluster_id}
                 for metric_name, _ in collector.store.iteritems():
                     if metric_name not in fieldnames:
                         fieldnames.append(metric_name)
@@ -180,11 +188,13 @@ class DataCollector(object):
             writer.writeheader()
             for row in rows:
                 writer.writerow(row)
+
     def __init__(self, cluster_spec):
         self.store = {}
         self.metric_data_identifier = "**metrics_data: "
         self.cluster_spec = cluster_spec
         self.cluster_id = generate_cluster_id(cluster_spec)
+
     def log_processor(self, source, log_type):
         ''' to catch metric data from training output 
         
@@ -202,6 +212,7 @@ class DataCollector(object):
                 for metric in metrics_raw:
                     metric_data = metric.split("=")
                     self.save(metric_data[0], metric_data[1])
+
     def save(self, key, val):
         ''' save metric data to its data store'''
         key = key.strip()
@@ -209,18 +220,22 @@ class DataCollector(object):
             val = val.strip()
         if (key not in self.store):
             self.store[key] = []
-        logging.info("going to save " + key + "=" + str(val) + "from " + self.cluster_id)
+        logging.info("going to save " + key + "=" + str(val) + "from " +
+                     self.cluster_id)
         self.store[key].append(float(val))
+
     def get(self, key):
         ''' return store by key if there is such store '''
         if (key in self.store):
             return self.store[key]
         return None
+
     def avg(self, key):
         vals = self.get(key)
         if vals is None:
             return None
-        return sum(vals)/float(len(vals))
+        return sum(vals) / float(len(vals))
+
     def persist(self):
         ''' find kpi instance by id, add record to it, then persist the data '''
         for metric_name, _ in self.store.iteritems():
@@ -228,12 +243,15 @@ class DataCollector(object):
             logging.info("going to persist kpi " + kpi_id)
             if kpi_id in kpis_map:
                 kpi_instance = kpis_map[kpi_id]
-                kpi_instance.add_record(np.array(self.avg(metric_name), dtype='float32'))
+                kpi_instance.add_record(
+                    np.array(
+                        self.avg(metric_name), dtype='float32'))
                 kpi_instance.persist()
                 logging.info("done persisting kpi " + kpi_id)
             else:
                 logging.info("no such kpi id found in map!!!")
                 logging.info(kpi_id)
+
 
 def train_with_spec(spec, args, lock):
     ''' a thread targe to run a thread of test
@@ -243,7 +261,7 @@ def train_with_spec(spec, args, lock):
         lock: thread lock used when creating subnets, since subnets creating may 
         conflict with each other.
 
-    ''' 
+    '''
     logging.info("updating cluster config and starting client")
     test_name = spec[0]
     batch_size = spec[1]
@@ -275,6 +293,7 @@ def train_with_spec(spec, args, lock):
     abclient = Abclient(args, data_collector.log_processor, lock)
     abclient.create()
 
+
 class ClusterIterator:
     '''
     ClusterIterator relies on spec structure as follows
@@ -295,15 +314,23 @@ class ClusterIterator:
     [64, 33, 1, 8] itself does not fit in a single chunk, thus gets discard
 
     '''
-    def __init__(self, specs, trainer_count_threshold = 32, pserver_count_threshold = 10):
+
+    def __init__(self,
+                 specs,
+                 trainer_count_threshold=32,
+                 pserver_count_threshold=10):
         self.specs = specs
         self.trainer_count_threshold = trainer_count_threshold
         self.pserver_count_threshold = pserver_count_threshold
         self.bad_specs = []
+
     def __iter__(self):
         return self
+
     def spec_can_not_fit(self, trainer_count, pserver_count):
-        return (trainer_count > self.trainer_count_threshold or pserver_count > self.pserver_count_threshold)
+        return (trainer_count > self.trainer_count_threshold or
+                pserver_count > self.pserver_count_threshold)
+
     def next(self):
         specs_to_ret = []
         trainer_count = 0
@@ -324,16 +351,17 @@ class ClusterIterator:
                 specs_to_ret.append(self.specs.pop(0))
         if len(specs_to_ret) == 0:
             if len(self.bad_specs) != 0:
-                logging.info("%d specs not be able to fit in any test chunk" % len(self.bad_specs))
+                logging.info("%d specs not be able to fit in any test chunk" %
+                             len(self.bad_specs))
             raise StopIteration()
         return specs_to_ret
+
 
 if __name__ == "__main__":
     print_arguments()
     if args.action == "create":
         lock = threading.Lock()
         cluster_specs_origin = copy.copy(cluster_specs)
-
         ''' start testing in chunks '''
         for specs in ClusterIterator(cluster_specs):
             logging.info("starting a new chunk of test")
@@ -343,20 +371,22 @@ if __name__ == "__main__":
                 logging.info(cluster_spec)
                 thread = threading.Thread(
                     target=train_with_spec,
-                    args=(cluster_spec, copy.copy(args), lock,)
-                )
+                    args=(
+                        cluster_spec,
+                        copy.copy(args),
+                        lock, ))
                 testing_threads.append(thread)
 
             for testing_thread in testing_threads:
                 testing_thread.start()
-            
+
             for testing_thread in testing_threads:
                 testing_thread.join()
             logging.info("testing chunk ended")
-        
+
         logging.info("all testing ended")
-        
         ''' all testing done, start to generate speedup rate '''
+
         # spec[0] is the baseline
         def get_speed_and_collector_by_spec(spec):
             data_collector = DataCollector.get_instance_by_spec(spec)
@@ -365,18 +395,20 @@ if __name__ == "__main__":
         logging.info("generating speedup")
 
         # base_speed supposed to be one trainer, one gpu, local mode
-        base_speed, _ = get_speed_and_collector_by_spec(cluster_specs_origin[0])
+        base_speed, _ = get_speed_and_collector_by_spec(cluster_specs_origin[
+            0])
         if base_speed is not None:
             logging.info("base speed is %f" % base_speed)
             if base_speed is not None:
                 for cluster_spec in cluster_specs_origin:
-                    speed, data_collector = get_speed_and_collector_by_spec(cluster_spec)
+                    speed, data_collector = get_speed_and_collector_by_spec(
+                        cluster_spec)
                     if speed is not None:
                         # speed * trainer_count / base_speed
-                        data_collector.save("speedup", speed*cluster_spec[2]/base_speed)
+                        data_collector.save("speedup", speed *
+                                            cluster_spec[2] / base_speed)
         else:
             logging.info("base speed is not available")
 
         DataCollector.persist_all()
         # DataCollector.generate_csv()
-
