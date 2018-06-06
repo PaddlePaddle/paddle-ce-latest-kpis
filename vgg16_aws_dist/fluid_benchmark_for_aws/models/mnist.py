@@ -24,6 +24,10 @@ import cProfile
 import paddle
 import paddle.fluid as fluid
 import paddle.fluid.profiler as profiler
+from models.model_base import get_decay_learning_rate
+from models.model_base import get_regularization
+from models.model_base import set_error_clip
+from models.model_base import set_gradient_clip
 
 SEED = 1
 DTYPE = "float32"
@@ -32,7 +36,7 @@ DTYPE = "float32"
 # fluid.default_startup_program().random_seed = SEED
 
 
-def cnn_model(data):
+def cnn_model(data, args):
     conv_pool_1 = fluid.nets.simple_img_conv_pool(
         input=data,
         filter_size=5,
@@ -47,6 +51,9 @@ def cnn_model(data):
         pool_size=2,
         pool_stride=2,
         act="relu")
+
+    set_error_clip(args.error_clip_method, conv_pool_1.name,
+                   args.error_clip_min, args.error_clip_max)
 
     # TODO(dzhwinter) : refine the initializer and random seed settting
     SIZE = 10
@@ -69,26 +76,53 @@ def get_model(args):
     images = fluid.layers.data(name='pixel', shape=[1, 28, 28], dtype=DTYPE)
     label = fluid.layers.data(name='label', shape=[1], dtype='int64')
 
-    # Train program
-    predict = cnn_model(images)
-    cost = fluid.layers.cross_entropy(input=predict, label=label)
-    avg_cost = fluid.layers.mean(x=cost)
+    if args.device == 'CPU' and args.cpus > 1:
+        places = fluid.layers.get_places(args.cpus)
+        pd = fluid.layers.ParallelDo(places)
+        with pd.do():
+            predict = cnn_model(pd.read_input(images), args)
+            label = pd.read_input(label)
+            cost = fluid.layers.cross_entropy(input=predict, label=label)
+            avg_cost = fluid.layers.mean(x=cost)
+            batch_acc = fluid.layers.accuracy(input=predict, label=label)
 
-    # Evaluator
-    batch_size_tensor = fluid.layers.create_tensor(dtype='int64')
-    batch_acc = fluid.layers.accuracy(
-        input=predict, label=label, total=batch_size_tensor)
+            pd.write_output(avg_cost)
+            pd.write_output(batch_acc)
+
+        avg_cost, batch_acc = pd()
+        avg_cost = fluid.layers.mean(avg_cost)
+        batch_acc = fluid.layers.mean(batch_acc)
+    else:
+        # Train program
+        predict = cnn_model(images, args)
+        cost = fluid.layers.cross_entropy(input=predict, label=label)
+        avg_cost = fluid.layers.mean(x=cost)
+
+        # Evaluator
+        batch_acc = fluid.layers.accuracy(input=predict, label=label)
 
     # inference program
     inference_program = fluid.default_main_program().clone()
 
+    # set gradient clip
+    # set_gradient_clip(args.gradient_clip_method, args.gradient_clip_norm)
+
     # Optimization
     opt = fluid.optimizer.AdamOptimizer(
-        learning_rate=0.001, beta1=0.9, beta2=0.999)
+        learning_rate=get_decay_learning_rate(
+            decay_method=args.learning_rate_decay_method,
+            learning_rate=0.001,
+            decay_steps=args.learning_rate_decay_steps,
+            decay_rate=args.learning_rate_decay_rate),
+        regularization=get_regularization(
+            regularizer_method=args.weight_decay_regularizer_method,
+            regularizer_coeff=args.weight_decay_regularizer_coeff),
+        beta1=0.9,
+        beta2=0.999)
 
     # Reader
     train_reader = paddle.batch(
         paddle.dataset.mnist.train(), batch_size=args.batch_size)
     test_reader = paddle.batch(
         paddle.dataset.mnist.test(), batch_size=args.batch_size)
-    return avg_cost, inference_program, opt, train_reader, test_reader, batch_acc, batch_size_tensor
+    return avg_cost, inference_program, opt, train_reader, test_reader, batch_acc

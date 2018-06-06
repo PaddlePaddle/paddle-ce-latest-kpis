@@ -10,7 +10,7 @@ fluid_benchmark_dockerhub_tag="paddlepaddlece/fluid_benchmark:latest"
 training_command="update_method:pserver,acc_target:0.6,iterations:100,pass_num:1"
 
 # clean up docker
-docker system prune -f
+# docker system prune -f
 
 # loginto docker hub
 # login is now performed in teamcity
@@ -64,4 +64,3 @@ python ce_runner.py \
     --pserver_command $training_command \
     --trainer_command $training_command \
     --docker_image $fluid_benchmark_dockerhub_tag
-    

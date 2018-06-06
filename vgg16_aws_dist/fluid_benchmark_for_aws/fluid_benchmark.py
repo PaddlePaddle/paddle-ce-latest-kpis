@@ -39,11 +39,67 @@ def parse_args():
         help='The model to run benchmark with.')
     parser.add_argument(
         '--batch_size', type=int, default=32, help='The minibatch size.')
+    #  args related to learning rate
     parser.add_argument(
-        '--learning_rate',
+        '--learning_rate', type=float, default=0.001, help='The learning rate.')
+    parser.add_argument(
+        '--learning_rate_decay_method',
+        type=str,
+        default=None,
+        choices=['exponential', 'natural_exp', 'inverse_time'],
+        help='Learning rate decay method, can be exponential, natural_exp, inverse_time'
+    )
+    parser.add_argument(
+        '--learning_rate_decay_steps',
+        type=int,
+        default=100000,
+        help='Decay steps for learning rate decay method')
+    parser.add_argument(
+        '--learning_rate_decay_rate',
         type=float,
-        default=0.001,
-        help='The minibatch size.')
+        default=0.5,
+        help='Decay rate for learning rate decay method')
+    #  args related to regularization
+    parser.add_argument(
+        '--weight_decay_regularizer_method',
+        type=str,
+        default=None,
+        choices=['L1', 'L2'],
+        help='Weight decay regularizer method, can be L1, L2')
+    parser.add_argument(
+        '--weight_decay_regularizer_coeff',
+        type=float,
+        default=0.1,
+        help='Weight decay regularizer coeff, 0.1 for default')
+    #  args related to gradient clipping
+    parser.add_argument(
+        '--gradient_clip_method',
+        type=str,
+        default=None,
+        choices=['Norm', 'GlobalNorm'],
+        help='Gradient clipping method, can be Norm, GlobalNorm')
+    parser.add_argument(
+        '--gradient_clip_norm',
+        type=float,
+        default=1.,
+        help='Gradient clipping norm, 1. for default')
+    #  args related to error clipping
+    parser.add_argument(
+        '--error_clip_method',
+        type=str,
+        default=None,
+        choices=['Value'],
+        help='Error clipping method, can be Value')
+    parser.add_argument(
+        '--error_clip_min',
+        type=float,
+        default=1e-6,
+        help='Error clipping min value, 1e-6 for default')
+    parser.add_argument(
+        '--error_clip_max',
+        type=float,
+        default=2e-6,
+        help='Error clipping max value, 2e-6 for default')
     # TODO(wuyi): add "--use_fake_data" option back.
     parser.add_argument(
         '--skip_batch_num',
@@ -52,10 +108,7 @@ def parse_args():
         help='The first num of minibatch num to skip, for better performance test'
     )
     parser.add_argument(
-        '--iterations',
-        type=int,
-        default=80,
-        help='The number of minibatches.')
+        '--iterations', type=int, default=80, help='The number of minibatches.')
     parser.add_argument(
         '--pass_num', type=int, default=100, help='The number of passes.')
     parser.add_argument(
@@ -74,8 +127,12 @@ def parse_args():
         '--gpus',
         type=int,
         default=1,
-        help='If gpus > 1, will use ParallelExecutor to run, else use Executor.'
-    )
+        help='If gpus > 1, will use ParallelExecutor to run, else use Executor.')
+    parser.add_argument(
+        '--cpus',
+        type=int,
+        default=1,
+        help='If cpus > 1, will use ParallelDo to run, else use Executor.')
     parser.add_argument(
         '--data_set',
         type=str,
@@ -92,8 +149,8 @@ def parse_args():
         help='If set, use nvprof for CUDA.')
     parser.add_argument(
         '--no_test',
-        action='store_false',
-        help='If set, test the testset during training.')
+        action='store_true',
+        help='If set, do not test the testset during training.')
     parser.add_argument(
         '--memory_optimize',
         action='store_true',
@@ -110,13 +167,16 @@ def parse_args():
         default='local',
         choices=['local', 'pserver', 'nccl2'],
         help='Choose parameter update method, can be local, pserver, nccl2.')
-
     parser.add_argument(
-        "--acc_target",
-        default=0.6,
-        type=float,
-        help="trianing will be terminated when acc_target reaches")
-
+        '--no_split_var',
+        action='store_true',
+        default=False,
+        help='Whether split variables into blocks when update_method is pserver')
+    parser.add_argument(
+        '--async_mode',
+        action='store_true',
+        default=False,
+        help='Whether start pserver in async mode to support ASGD')
     args = parser.parse_args()
     return args
 
@@ -134,8 +194,7 @@ def append_nccl2_prepare(trainer_id):
         current_endpoint = os.getenv("PADDLE_CURRENT_IP") + ":" + port
         worker_endpoints.remove(current_endpoint)
 
-        nccl_id_var = fluid.default_startup_program().global_block(
-        ).create_var(
+        nccl_id_var = fluid.default_startup_program().global_block().create_var(
             name="NCCLID",
             persistable=True,
             type=fluid.core.VarDesc.VarType.RAW)
@@ -150,9 +209,8 @@ def append_nccl2_prepare(trainer_id):
             })
         return nccl_id_var, num_trainers, trainer_id
     else:
-        raise Exception(
-            "must set positive PADDLE_TRAINER_ID env variables for "
-            "nccl-based dist train.")
+        raise Exception("must set positive PADDLE_TRAINER_ID env variables for "
+                        "nccl-based dist train.")
 
 
 def dist_transpile(trainer_id):
@@ -205,8 +263,8 @@ def test(exe, inference_program, test_reader, feeder, batch_acc):
 
 # TODO(wuyi): replace train, train_parallel, test functions with new trainer
 # API once it is ready.
-def train(avg_loss, infer_prog, optimizer, train_reader, test_reader,
-          batch_acc, batch_size_tensor, args, train_prog, startup_prog):
+def train(avg_loss, infer_prog, optimizer, train_reader, test_reader, batch_acc,
+          args, train_prog, startup_prog):
     if os.getenv("PADDLE_TRAINING_ROLE") == "PSERVER":
         place = core.CPUPlace()
         exe = fluid.Executor(place)
@@ -227,56 +285,27 @@ def train(avg_loss, infer_prog, optimizer, train_reader, test_reader,
     ]
     feeder = fluid.DataFeeder(feed_var_list, place)
 
-    acc_4passes = None
-    converge_speed = None
-    train_pass_acc = fluid.average.WeightedAverage()
-    fetch_list = [avg_loss]
-    if batch_acc is not None:
-        fetch_list.append(batch_acc)
-
     iters, num_samples, start_time = 0, 0, time.time()
     for pass_id in range(args.pass_num):
         train_losses = []
-        train_pass_acc.reset()
         for batch_id, data in enumerate(train_reader()):
             if iters == args.skip_batch_num:
                 start_time = time.time()
                 num_samples = 0
             if iters == args.iterations:
                 break
-            outs = exe.run(train_prog,
+            loss = exe.run(train_prog,
                            feed=feeder.feed(data),
-                           fetch_list=fetch_list)
+                           fetch_list=[avg_loss])
             iters += 1
             num_samples += len(data)
-            loss = outs[0]
-            if batch_acc is not None:
-                acc = np.mean(outs[1]).item()
-                train_pass_acc.add(value=acc, weight=len(data))
-            else:
-                acc = None
             train_losses.append(loss)
-            print("Pass: %d, Iter: %d, Loss: %f, acc %s\n" %
-                  (pass_id, iters, np.mean(train_losses), str(acc)))
-            if converge_speed is None and args.acc_target and acc >= args.acc_target:
-                converge_speed = time.time() - start_time
-                print("converge_speed set with %f" % converge_speed)
-        train_elapsed = time.time() - start_time
-        examples_per_sec = num_samples / train_elapsed
-        if batch_acc is not None:
-            pass_train_acc = train_pass_acc.eval()
-        else:
-            pass_train_acc = None
-
-        if pass_id == 4 and batch_acc is not None:
-            print("acc_4passes set with %f" % pass_train_acc)
-            acc_4passes = float(pass_train_acc)
-
-        output_metric_data(pass_id, examples_per_sec, pass_train_acc,
-                           acc_4passes, converge_speed)
-
+            print("Pass: %d, Iter: %d, Loss: %f\n" %
+                  (pass_id, iters, np.mean(train_losses)))
+        print_train_time(start_time, time.time(), num_samples)
+        print("Pass: %d, Loss: %f" % (pass_id, np.mean(train_losses))),
         # evaluation
-        if not args.no_test and batch_acc != None:
+        if not args.no_test and batch_acc:
             pass_test_acc = test(exe, infer_prog, test_reader, feeder,
                                  batch_acc)
             print(", Test Accuracy: %f" % pass_test_acc)
@@ -288,8 +317,8 @@ def train(avg_loss, infer_prog, optimizer, train_reader, test_reader,
 # TODO(wuyi): replace train, train_parallel, test functions with new trainer
 # API once it is ready.
 def train_parallel(avg_loss, infer_prog, optimizer, train_reader, test_reader,
-                   batch_acc, batch_size_tensor, args, train_prog,
-                   startup_prog, nccl_id_var, num_trainers, trainer_id):
+                   batch_acc, args, train_prog, startup_prog, nccl_id_var,
+                   num_trainers, trainer_id):
     feed_var_list = [
         var for var in train_prog.global_block().vars.itervalues()
         if var.is_data
@@ -328,19 +357,10 @@ def train_parallel(avg_loss, infer_prog, optimizer, train_reader, test_reader,
         trainer_id=trainer_id)
 
     feeder = fluid.DataFeeder(feed_var_list, place)
-    acc_4passes = None
-    converge_speed = None
-    accuracy_evaluator = fluid.metrics.Accuracy()
-    fetch_list = [avg_loss.name]
-    if batch_acc is not None:
-        fetch_list.append(batch_acc.name)
-    start_time = time.time()
-
     for pass_id in range(args.pass_num):
         num_samples = 0
         iters = 0
-        pass_start_time = time.time()
-        accuracy_evaluator.reset()
+        start_time = time.time()
         for batch_id, data in enumerate(train_reader()):
             if args.profile and pass_id == 0 and batch_id == 5:
                 profiler.start_profiler("All")
@@ -353,70 +373,38 @@ def train_parallel(avg_loss, infer_prog, optimizer, train_reader, test_reader,
             if iters == args.iterations:
                 break
             if args.use_fake_data:
-                outs = exe.run(fetch_list)
+                loss, = exe.run([avg_loss.name])
             else:
-                outs = exe.run(fetch_list, feed=feeder.feed(data))
-
+                loss, = exe.run([avg_loss.name], feed=feeder.feed(data))
             if args.update_method == "pserver":
                 exe.bcast_params()
             num_samples += len(data)
             iters += 1
-
-            if batch_acc is not None:
-                acc = np.mean(outs[1]).item()
-                accuracy_evaluator.update(value=acc, weight=len(data))
-            else:
-                acc = None
-
             if batch_id % 1 == 0:
-                print("Pass %d, batch %d, loss %s, acc %s" %
-                      (pass_id, batch_id, np.mean(outs[0]), str(acc)))
-            if converge_speed is None and args.acc_target and acc >= args.acc_target:
-                converge_speed = time.time() - start_time
-                print("converge_speed set with %f" % converge_speed)
-
-        pass_elapsed = time.time() - pass_start_time
-        examples_per_sec = num_samples / pass_elapsed
-        if batch_acc is not None:
-            pass_train_acc = accuracy_evaluator.eval()
-        else:
-            pass_train_acc = None
-
-        if pass_id == 4 and batch_acc is not None:
-            print("acc_4passes set with %f" % pass_train_acc)
-            acc_4passes = float(pass_train_acc)
-
-        output_metric_data(pass_id, examples_per_sec, pass_train_acc,
-                           acc_4passes, converge_speed)
-
-        if not args.no_test and batch_acc != None:
+                print("Pass %d, batch %d, loss %s" %
+                      (pass_id, batch_id, np.array(loss)))
+        print_train_time(start_time, time.time(), num_samples)
+        if not args.no_test and batch_acc:
             test_acc = test(startup_exe, infer_prog, test_reader, feeder,
                             batch_acc)
             print("Pass: %d, Test Accuracy: %f\n" % (pass_id, test_acc))
         exit(0)
 
 
-def output_metric_data(pass_id, examples_per_sec, pass_train_acc, acc_4passes,
-                       converge_speed):
-    msgs = []
-    msgs.append("pass = %d" % pass_id)
-    msgs.append("train_speed = %f" % float(examples_per_sec))
-    if isinstance(pass_train_acc, float):
-        msgs.append("train_accuracy = %f" % pass_train_acc)
-    if isinstance(acc_4passes, float):
-        msgs.append("acc_4passes = %f" % acc_4passes)
-    if isinstance(converge_speed, float):
-        msgs.append("converge_speed = %f" % converge_speed)
-    print("**metrics_data: " + ", ".join(msgs))
-
-
 def print_arguments(args):
     vars(args)['use_nvprof'] = (vars(args)['use_nvprof'] and
                                 vars(args)['device'] == 'GPU')
-    print('----------- resnet Configuration Arguments -----------')
+    print('----------- Configuration Arguments -----------')
     for arg, value in sorted(vars(args).iteritems()):
         print('%s: %s' % (arg, value))
     print('------------------------------------------------')
+
+
+def print_train_time(start_time, end_time, num_samples):
+    train_elapsed = end_time - start_time
+    examples_per_sec = num_samples / train_elapsed
+    print('\nTotal examples: %d, total time: %.5f, %.5f examples/sed\n' %
+          (num_samples, train_elapsed, examples_per_sec))
 
 
 def main():
@@ -426,7 +414,7 @@ def main():
     # the unique trainer id, starting from 0, needed by trainer
     # only
     nccl_id_var, num_trainers, trainer_id = (
-        None, 1, int(os.getenv("PADDLE_TRAINER_ID", "-1")))
+        None, 1, int(os.getenv("PADDLE_TRAINER_ID", "0")))
 
     if args.use_cprof:
         pr = cProfile.Profile()
@@ -456,8 +444,7 @@ def main():
     train_args.append(fluid.default_startup_program())
 
     if args.update_method == "nccl2":
-        nccl_id_var, num_trainers, trainer_id = append_nccl2_prepare(
-            trainer_id)
+        nccl_id_var, num_trainers, trainer_id = append_nccl2_prepare(trainer_id)
     if args.gpus == 1:
         # NOTE: parallel executor use profiler interanlly
         if args.use_nvprof and args.device == 'GPU':

@@ -28,6 +28,10 @@ import paddle.dataset.imdb as imdb
 import paddle.fluid as fluid
 import paddle.batch as batch
 import paddle.fluid.profiler as profiler
+from models.model_base import get_decay_learning_rate
+from models.model_base import get_regularization
+from models.model_base import set_error_clip
+from models.model_base import set_gradient_clip
 
 word_dict = imdb.word_dict()
 
@@ -54,6 +58,9 @@ def get_model(args):
         input=data, size=[len(word_dict), emb_dim])
 
     sentence = fluid.layers.fc(input=sentence, size=lstm_size, act='tanh')
+
+    set_error_clip(args.error_clip_method, sentence.name, args.error_clip_min,
+                   args.error_clip_max)
 
     rnn = fluid.layers.DynamicRNN()
     with rnn.block():
@@ -101,16 +108,26 @@ def get_model(args):
     loss = fluid.layers.mean(x=loss)
 
     # add acc
-    batch_size_tensor = fluid.layers.create_tensor(dtype='int64')
     batch_acc = fluid.layers.accuracy(input=logit, label=fluid.layers.data(name='label', \
-                shape=[1], dtype='int64'), total=batch_size_tensor)
+                shape=[1], dtype='int64'))
 
     inference_program = fluid.default_main_program().clone()
     with fluid.program_guard(inference_program):
         inference_program = fluid.io.get_inference_program(
             target_vars=[batch_acc, batch_size_tensor])
 
-    adam = fluid.optimizer.Adam()
+    # set gradient clip
+    set_gradient_clip(args.gradient_clip_method, args.gradient_clip_norm)
+
+    adam = fluid.optimizer.Adam(
+        learning_rate=get_decay_learning_rate(
+            decay_method=args.learning_rate_decay_method,
+            learning_rate=0.001,
+            decay_steps=args.learning_rate_decay_steps,
+            decay_rate=args.learning_rate_decay_rate),
+        regularization=get_regularization(
+            regularizer_method=args.weight_decay_regularizer_method,
+            regularizer_coeff=args.weight_decay_regularizer_coeff))
 
     train_reader = batch(
         paddle.reader.shuffle(
@@ -121,7 +138,7 @@ def get_model(args):
             crop_sentence(imdb.test(word_dict), crop_size), buf_size=25000),
         batch_size=args.batch_size)
 
-    return loss, inference_program, adam, train_reader, test_reader, batch_acc, batch_size_tensor
+    return loss, inference_program, adam, train_reader, test_reader, batch_acc
 
 
 def to_lodtensor(data, place):
