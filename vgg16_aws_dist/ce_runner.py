@@ -5,6 +5,7 @@ import numpy as np
 import threading
 import copy
 import csv
+
 from aws_runner.client.train_command import TrainCommand
 
 # for ce env ONLY
