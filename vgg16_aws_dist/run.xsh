@@ -64,3 +64,4 @@ python ce_runner.py \
     --pserver_command $training_command \
     --trainer_command $training_command \
     --docker_image $fluid_benchmark_dockerhub_tag
+    
