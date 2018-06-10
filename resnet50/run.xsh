@@ -9,7 +9,7 @@ if [[ `nvidia-smi  --list-gpus| wc -l` = 8 ]]; then
     #agent has 4 card no need to run 8 card scene
     arr[2]='0,1,2,3,4,5,6,7'
 else 
-    cp -rf latest_kpis/*card8* / 
+    cp -rf latest_kpis/*card8* .
 fi
 
 for var in ${arr[@]};
