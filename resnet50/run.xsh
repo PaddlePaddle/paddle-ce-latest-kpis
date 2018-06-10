@@ -18,7 +18,7 @@ do
     echo $CUDA_VISIBLE_DEVICES
 
     #FLAGS_benchmark=true FLAGS_fraction_of_gpu_memory_to_use=0.0 
-    python model.py --device=GPU --batch_size=128 --data_set=cifar10 --model=resnet_cifar10 --pass_num=3  --gpu_id $cudaid
+    python model.py --device=GPU --batch_size=128 --data_set=cifar10 --model=resnet_cifar10 --pass_num=30  --gpu_id $cudaid
 
     #FLAGS_benchmark=true FLAGS_fraction_of_gpu_memory_to_use=0.0 
     python model.py --device=GPU --batch_size=32 --data_set=flowers --model=resnet_imagenet --pass_num=3  --use_fake_data --gpu_id $cudaid --iterations 20

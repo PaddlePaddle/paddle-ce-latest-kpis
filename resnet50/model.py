@@ -322,7 +322,6 @@ def run_benchmark(model, args):
               (examples_per_sec, sec_per_batch))
 
     gpu_nums = len(args.gpu_id.split(','))
-    print ("=============",gpu_nums)
     save_kpi_data(gpu_nums, examples_per_sec, every_pass_acc)
     # persist mem kpi
     save_gpu_data(gpu_nums)
