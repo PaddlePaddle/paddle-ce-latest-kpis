@@ -7,7 +7,7 @@ PADDLE_PATH=$CURRENT_FILE_DIR/../../..
 paddle_build_path=$PADDLE_PATH/build
 paddle_docker_hub_tag="paddlepaddlece/paddle:latest"
 fluid_benchmark_dockerhub_tag="paddlepaddlece/fluid_benchmark:latest"
-training_command="update_method:pserver,acc_target:0.6,iterations:100,pass_num:1"
+training_command="gpus:2,device:GPU,model:resnet,update_method:pserver"
 
 # clean up docker
 docker system prune -f
