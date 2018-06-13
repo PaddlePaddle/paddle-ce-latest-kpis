@@ -323,8 +323,10 @@ def run_benchmark(model, args):
 
     gpu_nums = len(args.gpu_id.split(','))
     save_kpi_data(gpu_nums, examples_per_sec, every_pass_acc)
-    # persist mem kpi
-    save_gpu_data(gpu_nums)
+
+    if args.device == 'GPU':
+        # persist mem kpi
+        save_gpu_data(gpu_nums)
 
     if args.use_cprof:
         pr.disable()
@@ -339,39 +341,21 @@ def save_kpi_data(gpu_nums, examples_per_sec, every_pass_acc):
     train_acc_kpi = None
     train_speed_kpi = None
 
-    var = locals()
-    var['train_acc' + str(gpu_nums)]=None
-    var['train_speed' + str(gpu_nums)]=None
-
     for kpi in tracking_kpis:
         if kpi.name == '%s_train_acc' % (args.data_set):
             train_acc_kpi = kpi
-        if kpi.name == '%s_train_acc_card%s' % (args.data_set, gpu_nums):
-           var['train_acc' + str(gpu_nums)] = kpi
 
     for kpi in tracking_kpis:
         if kpi.name == '%s_train_speed' % (args.data_set):
             train_speed_kpi = kpi
-        if kpi.name == '%s_train_speed_card%s' % (args.data_set, gpu_nums):
-            var['train_speed' + str(gpu_nums)] = kpi
 
-    if gpu_nums == 1:
-        train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float32'))
-        train_speed_kpi.persist()
-    elif gpu_nums > 1:
-        var['train_speed' + str(gpu_nums)].\
-                   add_record(np.array(examples_per_sec, dtype='float32'))
-        var['train_speed' + str(gpu_nums)].persist()
+    train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float32'))
+    train_speed_kpi.persist()
 
     if args.data_set == 'cifar10':
-        if gpu_nums == 1:
-            train_acc_kpi.add_record(np.array(np.mean(every_pass_acc),\
+        train_acc_kpi.add_record(np.array(np.mean(every_pass_acc),\
                      dtype='float32'))
-            train_acc_kpi.persist()
-        elif gpu_nums > 1:
-            var['train_acc' + str(gpu_nums)].\
-                   add_record(np.array(np.mean(every_pass_acc), dtype='float32'))
-            var['train_acc' + str(gpu_nums)].persist()
+        train_acc_kpi.persist()
 
 
 def collect_gpu_memory_data(alive):
@@ -405,20 +389,13 @@ def save_gpu_data(gpu_nums):
               | awk {'print $3'} ''')
     mem = output.strip()
     gpu_memory_factor = None
-    var = locals()
-    var['gpu_memory' + str(gpu_nums)] = None
     for kpi in tracking_kpis:
         if kpi.name == '%s_gpu_memory' % (args.data_set):
             gpu_memory_kpi = kpi
         if kpi.name == '%s_gpu_memory_card%s' % (args.data_set, gpu_nums):
             var['gpu_memory' + str(gpu_nums)] = kpi
-    if gpu_nums == 1:
-        gpu_memory_kpi.add_record(np.array(mem, dtype='float32'))
-        gpu_memory_kpi.persist()
-    elif gpu_nums > 1:
-        var['gpu_memory' + str(gpu_nums)].\
-                            add_record(np.array(mem, dtype='float32'))
-        var['gpu_memory' + str(gpu_nums)].persist()
+    gpu_memory_kpi.add_record(np.array(mem, dtype='float32'))
+    gpu_memory_kpi.persist()
 
 
 if __name__ == '__main__':
