@@ -21,6 +21,8 @@ import paddle.fluid.profiler as profiler
 
 from continuous_evaluation import tracking_kpis
 
+fluid.default_startup_program().random_seed = 91
+
 
 def parse_args():
     parser = argparse.ArgumentParser('Convolution model benchmark.')
@@ -69,8 +71,8 @@ def parse_args():
         help='The device type.')
     parser.add_argument(
         "--gpu_id",
-        type=int,
-        default=3,
+        type=str,
+        default='0,1,2,3',
         help="The GPU Card Id. (default: %(default)d)")
     parser.add_argument(
         '--data_set',
@@ -202,57 +204,66 @@ def run_benchmark(model, args):
         else:
             dshape = [224, 224, 3]
 
-    input = fluid.layers.data(name='data', shape=dshape, dtype='float32')
+    # Input data
+    image = fluid.layers.data(name='image', shape=dshape, dtype='float32')
     label = fluid.layers.data(name='label', shape=[1], dtype='int64')
-    predict = model(input, class_dim)
+
+    #Train program
+    predict = model(image, class_dim)
     cost = fluid.layers.cross_entropy(input=predict, label=label)
     avg_cost = fluid.layers.mean(x=cost)
 
+    # Evaluator
     batch_size_tensor = fluid.layers.create_tensor(dtype='int64')
     batch_acc = fluid.layers.accuracy(
         input=predict, label=label, total=batch_size_tensor)
 
-    inference_program = fluid.default_main_program().clone()
-    with fluid.program_guard(inference_program):
-        inference_program = fluid.io.get_inference_program(
-            target_vars=[batch_acc, batch_size_tensor])
-
-    optimizer = fluid.optimizer.Momentum(learning_rate=0.01, momentum=0.9)
+    # Optimization to minimize lost
+    optimizer = fluid.optimizer.Momentum(learning_rate=0.001, momentum=0.9)
     opts = optimizer.minimize(avg_cost)
-
     fluid.memory_optimize(fluid.default_main_program())
 
-    train_reader = paddle.batch(
-        paddle.reader.shuffle(
+    # Initialize executor
+    place = core.CPUPlace() if args.device == 'CPU' else core.CUDAPlace(0)
+    exe = fluid.Executor(place)
+    exe.run(fluid.default_startup_program())
+    
+   # Reader 
+    feeder = fluid.DataFeeder(place=place, feed_list=[image, label])
+    train_reader = \
+         paddle.batch(
             paddle.dataset.cifar.train10()
             if args.data_set == 'cifar10' else paddle.dataset.flowers.train(),
-            buf_size=5120),
-        batch_size=args.batch_size)
+               batch_size=args.batch_size)
+      
+
     test_reader = paddle.batch(
         paddle.dataset.cifar.test10()
         if args.data_set == 'cifar10' else paddle.dataset.flowers.test(),
         batch_size=args.batch_size)
+    
+    # Register test program
+    test_program = fluid.default_main_program().clone(for_test=True)
+    with fluid.program_guard(test_program):
+        test_program = fluid.io.get_inference_program(
+            target_vars=[batch_acc])
 
+    # Define parallel exe
+    train_exe = fluid.ParallelExecutor(use_cuda=True, loss_name=avg_cost.name)
     def test(exe):
-        test_accuracy = fluid.average.WeightedAverage()
+        test_accuracy = []
         for batch_id, data in enumerate(test_reader()):
-            img_data = np.array(map(lambda x: x[0].reshape(dshape),
-                                    data)).astype("float32")
-            y_data = np.array(map(lambda x: x[1], data)).astype("int64")
-            y_data = y_data.reshape([-1, 1])
 
-            acc, weight = exe.run(inference_program,
-                                  feed={"data": img_data,
-                                        "label": y_data},
-                                  fetch_list=[batch_acc, batch_size_tensor])
-            test_accuracy.add(value=acc, weight=weight)
+            acc, = exe.run(test_program,
+                                  fetch_list=[batch_acc],
+                                  feed=feeder.feed(data)
+                                  )
+            acc_avg = np.mean(np.array(acc))
+            test_accuracy.append(acc_avg)
 
-        return test_accuracy.eval()
+        return np.array(test_accuracy).mean()
 
-    place = core.CPUPlace() if args.device == 'CPU' else core.CUDAPlace(0)
-    exe = fluid.Executor(place)
-    exe.run(fluid.default_startup_program())
-    accuracy = fluid.average.WeightedAverage()
+
     if args.use_fake_data:
         data = train_reader().next()
         image = np.array(map(lambda x: x[0].reshape(dshape), data)).astype(
@@ -262,68 +273,60 @@ def run_benchmark(model, args):
 
     im_num = 0
     total_train_time = 0.0
-    total_iters = 0
-
-    train_acc_kpi = None
-    for kpi in tracking_kpis:
-        if kpi.name == '%s_%s_train_acc' % (args.data_set, args.batch_size):
-            train_acc_kpi = kpi
-    train_speed_kpi = None
-    for kpi in tracking_kpis:
-        if kpi.name == '%s_%s_train_speed' % (args.data_set, args.batch_size):
-            train_speed_kpi = kpi
-
+    
+    fetch_list=[avg_cost.name, batch_acc.name]
+    #fetch_list=[avg_cost.name]
     for pass_id in range(args.pass_num):
         every_pass_loss = []
-        accuracy.reset()
+        every_pass_acc = []
         iter = 0
         pass_duration = 0.0
         for batch_id, data in enumerate(train_reader()):
-            batch_start = time.time()
             if iter == args.iterations:
                 break
-            if not args.use_fake_data:
-                image = np.array(map(lambda x: x[0].reshape(dshape),
-                                     data)).astype('float32')
-                label = np.array(map(lambda x: x[1], data)).astype('int64')
-                label = label.reshape([-1, 1])
-            loss, acc, weight = exe.run(
-                fluid.default_main_program(),
-                feed={'data': image,
-                      'label': label},
-                fetch_list=[avg_cost, batch_acc, batch_size_tensor])
-            accuracy.add(value=acc, weight=weight)
+            batch_start = time.time()
+            loss, acc = train_exe.run(
+                fetch_list=fetch_list,
+                feed=feeder.feed(data)
+             )
+
             if iter >= args.skip_batch_num or pass_id != 0:
                 batch_duration = time.time() - batch_start
                 pass_duration += batch_duration
-                im_num += label.shape[0]
-            every_pass_loss.append(loss)
-            # print("Pass: %d, Iter: %d, loss: %s, acc: %s" %
-            #      (pass_id, iter, str(loss), str(acc)))
+                im_num += len(data)
+            loss_avg, acc_avg = np.mean(np.array(loss)), np.mean(np.array(acc))
+            print("Pass: %d, Iter: %d, loss: %s, acc: %s" % \
+                        (pass_id, batch_id, loss_avg, acc_avg))
+            
+            every_pass_loss.append(loss_avg)
+            every_pass_acc.append(acc_avg)
             iter += 1
-            total_iters += 1
 
         total_train_time += pass_duration
-        pass_train_acc = accuracy.eval()
+        # Begin test
         pass_test_acc = test(exe)
         print(
-            "Pass:%d, Loss:%f, Train Accuray:%f, Test Accuray:%f, Handle Images Duration: %f\n"
-            % (pass_id, np.mean(every_pass_loss), pass_train_acc,
+            "Pass:%d, Loss:%f, Train Accuray:%f, Test Accuray:%f,\
+                     Handle Images Duration: %f\n"
+            % (pass_id, np.mean(every_pass_loss), np.mean(every_pass_acc),
                pass_test_acc, pass_duration))
-    if pass_id == args.pass_num - 1 and args.data_set == 'cifar10':
-        train_acc_kpi.add_record(np.array(pass_train_acc, dtype='float32'))
-        train_acc_kpi.persist()
+
+    examples_per_sec = 0
     if total_train_time > 0.0 and iter != args.skip_batch_num:
         examples_per_sec = im_num / total_train_time
         sec_per_batch = total_train_time / \
             (iter * args.pass_num - args.skip_batch_num)
-        train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float32'))
-    train_speed_kpi.persist()
+        print('\nTotal examples: %d, total time: %.5f' %
+              (im_num, total_train_time))
+        print('%.5f examples/sec, %.5f sec/batch \n' %
+              (examples_per_sec, sec_per_batch))
 
-    print('\nTotal examples: %d, total time: %.5f' %
-          (im_num, total_train_time))
-    print('%.5f examples/sec, %.5f sec/batch \n' %
-          (examples_per_sec, sec_per_batch))
+    gpu_nums = len(args.gpu_id.split(','))
+    save_kpi_data(gpu_nums, examples_per_sec, every_pass_acc)
+
+    if args.device == 'GPU':
+        # persist mem kpi
+        save_gpu_data(gpu_nums)
 
     if args.use_cprof:
         pr.disable()
@@ -334,29 +337,64 @@ def run_benchmark(model, args):
         print(s.getvalue())
 
 
+def save_kpi_data(gpu_nums, examples_per_sec, every_pass_acc):
+    train_acc_kpi = None
+    train_speed_kpi = None
+
+    for kpi in tracking_kpis:
+        if kpi.name == '%s_train_acc' % (args.data_set):
+            train_acc_kpi = kpi
+
+    for kpi in tracking_kpis:
+        if kpi.name == '%s_train_speed' % (args.data_set):
+            train_speed_kpi = kpi
+
+    train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float32'))
+    train_speed_kpi.persist()
+
+    if args.data_set == 'cifar10':
+        train_acc_kpi.add_record(np.array(np.mean(every_pass_acc),\
+                     dtype='float32'))
+        train_acc_kpi.persist()
+
+
 def collect_gpu_memory_data(alive):
     """
     collect the GPU memory data
     """
     global is_alive
-    status, output = commands.getstatusoutput('rm -rf memory.txt')
+    status, output = commands.getstatusoutput('rm -rf memory_*')
     if status == 0:
-        print('del memory.txt')
-    command = "nvidia-smi --id=%s --query-compute-apps=used_memory --format=csv -lms 1 > memory.txt" % args.gpu_id
-    p = subprocess.Popen(command, shell=True)
-    if p.pid < 0:
-        print('Get GPU memory data error')
+        print('del memory')
+    pid_list = []
+    for gpu_id in args.gpu_id.split(','):
+        command = "nvidia-smi --id=%s --query-compute-apps=used_memory --format=csv\
+                    -lms 1000 > memory_%s.txt" % (gpu_id, gpu_id)
+        p = subprocess.Popen(command, shell=True)
+        if p.pid < 0:
+            print('Get GPU memory data error')
+        else:
+            pid_list.append(p)
+           
     while (is_alive):
         time.sleep(1)
-    p.kill()
+    for p in pid_list:
+        p.kill()
 
 
-def save_gpu_data(mem_list):
-    gpu_memory_kpi = None
+def save_gpu_data(gpu_nums):
+    mem_list = []
+    status, output = commands.getstatusoutput('''cat memory*|\
+             awk {'print $1'}|awk '{sum+=$1} END {print "Average = ", sum/NR}'\
+              | awk {'print $3'} ''')
+    mem = output.strip()
+    gpu_memory_factor = None
     for kpi in tracking_kpis:
-        if kpi.name == '%s_%s_gpu_memory' % (args.data_set, args.batch_size):
+        if kpi.name == '%s_gpu_memory' % (args.data_set):
             gpu_memory_kpi = kpi
-    gpu_memory_kpi.add_record(max(mem_list))
+        if kpi.name == '%s_gpu_memory_card%s' % (args.data_set, gpu_nums):
+            var['gpu_memory' + str(gpu_nums)] = kpi
+    gpu_memory_kpi.add_record(np.array(mem, dtype='float32'))
     gpu_memory_kpi.persist()
 
 
@@ -382,3 +420,4 @@ if __name__ == '__main__':
     else:
         run_benchmark(model_map[args.model], args)
         is_alive = False
+
