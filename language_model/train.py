@@ -1,14 +1,12 @@
 import sys
 import time
-
+import utils
 import numpy as np
 import math
 
 import argparse
 import paddle.fluid as fluid
 import paddle
-
-import utils
 
 from continuous_evaluation import *
 # random seed must set before configuring the network.
