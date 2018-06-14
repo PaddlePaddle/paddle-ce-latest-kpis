@@ -1,15 +1,17 @@
 import os
 import time
 import numpy as np
-
+import argparse
 import paddle
 import paddle.fluid as fluid
 
 from model import transformer, position_encoding_init
 from optim import LearningRateScheduler
 from transformer_config import *
-from continuous_evaluation import train_avg_ppl_kpi, train_pass_duration_kpi
+from continuous_evaluation import *
 
+# random seed must set before configuring the network.
+fluid.default_startup_program().random_seed = 101
 
 def pad_batch_data(insts,
                    pad_idx,
@@ -137,8 +139,17 @@ def read_multiple(reader, count):
 
     return __impl__
 
+def parse_args():
+    parser = argparse.ArgumentParser("mnist model benchmark.")
+    parser.add_argument(
+        '--gpu_card_num', type=int, default=1, help='gpu card num used.')
+
+    args = parser.parse_args()
+    return args
+
 
 def main():
+    args = parse_args()
     place = fluid.CUDAPlace(0) if TrainTaskConfig.use_gpu else fluid.CPUPlace()
     exe = fluid.Executor(place)
 
@@ -163,10 +174,8 @@ def main():
     dev_count = fluid.core.get_cuda_device_count()
 
     train_data = paddle.batch(
-        paddle.reader.shuffle(
             paddle.dataset.wmt16.train(ModelHyperParams.src_vocab_size,
                                        ModelHyperParams.trg_vocab_size),
-            buf_size=100000),
         batch_size=TrainTaskConfig.batch_size)
 
     # Program to do validation.
@@ -262,18 +271,23 @@ def main():
                   (pass_id, batch_id, total_sum_cost, total_avg_cost,
                    np.exp([min(total_avg_cost, 100)])))
             init = True
+        pass_end_time = time.time()
         # Validate and save the model for inference.
         val_avg_cost, val_ppl = test(test_exe)
-        pass_end_time = time.time()
         time_consumed = pass_end_time - pass_start_time
         print("pass_id = " + str(pass_id) + " time_consumed = " + str(
             time_consumed))
         if pass_id == TrainTaskConfig.pass_num - 1:
-            train_avg_ppl_kpi.add_record(np.array(val_ppl, dtype='float32'))
-            train_pass_duration_kpi.add_record(time_consumed)
-    train_avg_ppl_kpi.persist()
-    train_pass_duration_kpi.persist()
-
-
+            if args.gpu_card_num == 1:
+                test_avg_ppl_kpi.add_record(np.array(val_ppl, dtype='float32'))
+                train_pass_duration_kpi.add_record(time_consumed)
+                test_avg_ppl_kpi.persist()
+                train_pass_duration_kpi.persist()
+            else:
+                test_avg_ppl_kpi_card4.add_record(np.array(val_ppl, dtype='float32'))
+                train_pass_duration_kpi_card4.add_record(time_consumed)
+                test_avg_ppl_kpi_card4.persist()
+                train_pass_duration_kpi_card4.persist()
+           
 if __name__ == "__main__":
     main()
