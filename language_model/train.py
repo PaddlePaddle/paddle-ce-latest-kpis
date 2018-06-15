@@ -1,16 +1,16 @@
 import sys
 import time
-
+import utils
 import numpy as np
 import math
 
+import argparse
 import paddle.fluid as fluid
 import paddle
 
-import utils
-
-from continuous_evaluation import imikolov_20_avg_ppl_kpi, imikolov_20_pass_duration_kpi
-
+from continuous_evaluation import *
+# random seed must set before configuring the network.
+fluid.default_startup_program().random_seed = 102
 
 def network(src, dst, vocab_size, hid_size, init_low_bound, init_high_bound):
     """ network definition """
@@ -51,6 +51,13 @@ def network(src, dst, vocab_size, hid_size, init_low_bound, init_high_bound):
     cost = fluid.layers.cross_entropy(input=fc, label=dst)
     return cost
 
+def parse_args():
+    parser = argparse.ArgumentParser("mnist model benchmark.")
+    parser.add_argument(
+        '--gpu_card_num', type=int, default=1, help='gpu card num used.')
+
+    args = parser.parse_args()
+    return args
 
 def train(train_reader,
           vocab,
@@ -65,6 +72,8 @@ def train(train_reader,
           init_low_bound=-0.04,
           init_high_bound=0.04):
     """ train network """
+    args = parse_args()
+
     vocab_size = len(vocab)
 
     src_wordseq = fluid.layers.data(
@@ -134,16 +143,25 @@ def train(train_reader,
             epoch_idx, i, total_time / epoch_idx)
 
         if pass_idx == pass_num - 1:
-            imikolov_20_pass_duration_kpi.add_record(total_time / epoch_idx)
-            imikolov_20_avg_ppl_kpi.add_record(newest_ppl)
+            if args.gpu_card_num == 1:
+                imikolov_20_pass_duration_kpi.add_record(total_time / epoch_idx)
+                imikolov_20_avg_ppl_kpi.add_record(newest_ppl)
+            else:
+                imikolov_20_pass_duration_kpi_card4.add_record(total_time / epoch_idx)
+                imikolov_20_avg_ppl_kpi_card4.add_record(newest_ppl)
         save_dir = "%s/epoch_%d" % (model_dir, epoch_idx)
         feed_var_names = ["src_wordseq", "dst_wordseq"]
         fetch_vars = [avg_cost]
         fluid.io.save_inference_model(save_dir, feed_var_names, fetch_vars,
                                       exe)
         print("model saved in %s" % save_dir)
-    imikolov_20_pass_duration_kpi.persist()
-    imikolov_20_avg_ppl_kpi.persist()
+    if args.gpu_card_num == 1:
+        imikolov_20_pass_duration_kpi.persist()
+        imikolov_20_avg_ppl_kpi.persist()
+    else:
+        imikolov_20_pass_duration_kpi_card4.persist()
+        imikolov_20_avg_ppl_kpi_card4.persist()
+
     print("finish training")
 
 
