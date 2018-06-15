@@ -169,9 +169,10 @@ def train(train_reader,
 
 def train_net():
     """ do training """
+    args = parse_args()
     batch_size = 20
     vocab, train_reader, test_reader = utils.prepare_data(
-        batch_size=batch_size, buffer_size=1000, word_freq_threshold=0)
+        batch_size=batch_size * args.gpu_card_num, buffer_size=1000, word_freq_threshold=0)
     train(
         train_reader=train_reader,
         vocab=vocab,
