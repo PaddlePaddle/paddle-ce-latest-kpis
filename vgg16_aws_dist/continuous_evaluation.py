@@ -4,8 +4,8 @@ sys.path.append(os.environ['ceroot'])
 from kpi import LessWorseKpi, GreaterWorseKpi
 
 kpis_specs = {
-    "speedup": [LessWorseKpi, 0.01],
-    "train_speed": [LessWorseKpi, 0.01],
+    "speedup": [LessWorseKpi, 0.01, 0],
+    "train_speed": [LessWorseKpi, 0.01, 0],
     # "converge_speed":[GreaterWorseKpi, 0.01],
     # "gpu_memory":[GreaterWorseKpi, 0.01],
     # "acc_4passes":[GreaterWorseKpi, 0.01],
