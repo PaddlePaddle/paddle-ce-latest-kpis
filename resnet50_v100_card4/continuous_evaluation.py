@@ -1,1 +1,1 @@
-../resnet50/continuous_evaluation.py
+../resnet50_v100_card1/continuous_evaluation.py

@@ -1,1 +1,1 @@
-../resnet50/model.py
+../resnet50_v100_card1/model.py
