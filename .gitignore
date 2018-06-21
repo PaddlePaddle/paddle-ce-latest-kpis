@@ -2,3 +2,8 @@
 __pycache__
 *.so
 .#*
+sequence_tagging_for_ner/assignment2.zip
+sequence_tagging_for_ner/data/vocab.txt
+sequence_tagging_for_ner/data/wordVectors.txt
+sequence_tagging_for_ner/pass_duration_factor.txt
+sequence_tagging_for_ner/train_acc_factor.txt

@@ -12,13 +12,16 @@ from utils import logger, load_dict
 from utils_extend import to_lodtensor, get_embedding
 from continuous_evaluation import *
 
+
 def parse_args():
-    parser = argparse.ArgumentParser("sequence_tagging_for_ner model benchmark.")
+    parser = argparse.ArgumentParser(
+        "sequence_tagging_for_ner model benchmark.")
     parser.add_argument(
         '--gpu_card_num', type=int, default=1, help='gpu card num used.')
 
     args = parser.parse_args()
     return args
+
 
 def test(exe, chunk_evaluator, inference_program, test_data, place):
     chunk_evaluator.reset(exe)
@@ -35,7 +38,6 @@ def test(exe, chunk_evaluator, inference_program, test_data, place):
 
 def main(train_data_file, test_data_file, vocab_file, target_file, emb_file,
          model_save_dir, num_passes, use_gpu, parallel):
-
     args = parse_args()
     if not os.path.exists(model_save_dir):
         os.mkdir(model_save_dir)
@@ -66,7 +68,7 @@ def main(train_data_file, test_data_file, vocab_file, target_file, emb_file,
 
     inference_program = fluid.default_main_program().clone()
     with fluid.program_guard(inference_program):
-        test_target = chunk_evaluator.metrics + chunk_evaluator.states
+        test_target = chunk_evaluator.metrics
         inference_program = fluid.io.get_inference_program(test_target)
 
     train_reader = paddle.batch(
@@ -116,16 +118,16 @@ def main(train_data_file, test_data_file, vocab_file, target_file, emb_file,
         if pass_id % 100 == 0:
             print("[TrainSet] pass_id:" + str(pass_id) + " pass_precision:" +
                   str(pass_precision) + " pass_recall:" + str(
-                      pass_recall) + " pass_f1_score:" + str(pass_f1_score))
+                        pass_recall) + " pass_f1_score:" + str(pass_f1_score))
         pass_precision, pass_recall, pass_f1_score = test(
             exe, chunk_evaluator, inference_program, test_reader, place)
         if pass_id % 100 == 0:
             print("[TestSet] pass_id:" + str(pass_id) + " pass_precision:" +
                   str(pass_precision) + " pass_recall:" + str(
-                      pass_recall) + " pass_f1_score:" + str(pass_f1_score))
+                        pass_recall) + " pass_f1_score:" + str(pass_f1_score))
 
-        #save_dirname = os.path.join(model_save_dir, "params_pass_%d" % pass_id)
-        #fluid.io.save_inference_model(
+        # save_dirname = os.path.join(model_save_dir, "params_pass_%d" % pass_id)
+        # fluid.io.save_inference_model(
         #    save_dirname, ['word', 'mark', 'target'], [crf_decode], exe)
 
     if args.gpu_card_num == 1:
