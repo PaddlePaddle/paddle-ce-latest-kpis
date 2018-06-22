@@ -40,7 +40,7 @@ def main(train_data_file, test_data_file, vocab_file, target_file, emb_file,
     if not os.path.exists(model_save_dir):
         os.mkdir(model_save_dir)
 
-    BATCH_SIZE = 200
+    BATCH_SIZE = 50
     word_dict = load_dict(vocab_file)
     label_dict = load_dict(target_file)
 
