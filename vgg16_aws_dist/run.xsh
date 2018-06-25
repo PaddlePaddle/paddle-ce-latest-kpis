@@ -9,8 +9,6 @@ paddle_docker_hub_tag="paddlepaddlece/paddle:latest"
 fluid_benchmark_dockerhub_tag="paddlepaddlece/fluid_benchmark:latest"
 training_command="update_method:pserver,acc_target:0.6,iterations:100,pass_num:1"
 
-# clean up docker
-docker system prune -f
 
 # loginto docker hub
 # login is now performed in teamcity
@@ -20,6 +18,9 @@ docker system prune -f
 echo "going to build and push paddle production image"
 docker build -t $paddle_docker_hub_tag $paddle_build_path
 docker push $paddle_docker_hub_tag
+
+# clean up docker
+docker rm -f $paddle_docker_hub_tag
 
 # build test docker image
 cd $CURRENT_FILE_DIR
