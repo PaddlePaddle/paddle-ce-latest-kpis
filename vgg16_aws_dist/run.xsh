@@ -21,6 +21,7 @@ docker push $paddle_docker_hub_tag
 
 # clean up docker
 docker rm -f $paddle_docker_hub_tag
+docker rm -f $fluid_benchmark_dockerhub_tag
 
 # build test docker image
 cd $CURRENT_FILE_DIR
