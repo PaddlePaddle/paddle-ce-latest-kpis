@@ -20,6 +20,7 @@ four_card_train_speed_kpi = AccKpi('four_card_train_speed_kpi', 0.05, 0,
                         unit_repr='images/s',
                         desc='train speed in four GPU card')
 
+
 tracking_kpis = [train_acc_top1_kpi,
                 train_acc_top5_kpi,
                 train_cost_kpi,
