@@ -133,12 +133,13 @@ def main(train_data_file, test_data_file, vocab_file, target_file, emb_file,
 
 
 if __name__ == "__main__":
+    base_dir = "/root/.cache/paddle/dataset/data"
     main(
         train_data_file="data/train",
         test_data_file="data/test",
-        vocab_file="data/vocab.txt",
+        vocab_file="%s/vocab.txt" % base_dir,
         target_file="data/target.txt",
-        emb_file="data/wordVectors.txt",
+        emb_file="%s/wordVectors.txt" % base_dir,
         model_save_dir="models",
         num_passes=2300,
         use_gpu=True,
