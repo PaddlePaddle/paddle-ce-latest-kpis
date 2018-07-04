@@ -11,7 +11,6 @@ from kpi import DurationKpi
 wmb_128_train_speed_kpi = AccKpi('wmb_128_train_speed', 0.2, 0)
 wmb_128_gpu_memory_kpi = DurationKpi('wmb_128_gpu_memory', 0.2, 0)
 
-
 tracking_kpis = [
     wmb_128_train_speed_kpi,
     wmb_128_gpu_memory_kpi,
