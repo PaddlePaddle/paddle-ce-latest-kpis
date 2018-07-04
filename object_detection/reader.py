@@ -48,8 +48,8 @@ class Settings(object):
         self._apply_expand = apply_expand
         self._resize_height = resize_h
         self._resize_width = resize_w
-        self._img_mean = np.array(mean_value)[:, np.newaxis, np.newaxis].astype(
-            'float32')
+        self._img_mean = np.array(mean_value)[:, np.newaxis,
+                                              np.newaxis].astype('float32')
         self._expand_prob = 0.5
         self._expand_max_ratio = 4
         self._hue_prob = 0.5
@@ -173,8 +173,10 @@ def coco(settings, file_list, mode, shuffle):
     category_names = [item['name'] for item in coco.loadCats(category_ids)]
 
     if not settings.toy == 0:
-        images = images[:settings.toy] if len(images) > settings.toy else images
-    print("{} on {} with {} images".format(mode, settings.dataset, len(images)))
+        images = images[:settings.toy] if len(
+            images) > settings.toy else images
+    print("{} on {} with {} images".format(mode, settings.dataset, len(
+        images)))
 
     def reader():
         if mode == 'train' and shuffle:
@@ -224,8 +226,10 @@ def pascalvoc(settings, file_list, mode, shuffle):
     flist = open(file_list)
     images = [line.strip() for line in flist]
     if not settings.toy == 0:
-        images = images[:settings.toy] if len(images) > settings.toy else images
-    print("{} on {} with {} images".format(mode, settings.dataset, len(images)))
+        images = images[:settings.toy] if len(
+            images) > settings.toy else images
+    print("{} on {} with {} images".format(mode, settings.dataset, len(
+        images)))
 
     def reader():
         if mode == 'train' and shuffle:
@@ -247,7 +251,8 @@ def pascalvoc(settings, file_list, mode, shuffle):
                 bbox_sample = []
                 # start from 1
                 bbox_sample.append(
-                    float(settings.label_list.index(object.find('name').text)))
+                    float(
+                        settings.label_list.index(object.find('name').text)))
                 bbox = object.find('bndbox')
                 difficult = float(object.find('difficult').text)
                 bbox_sample.append(float(bbox.find('xmin').text) / im_width)

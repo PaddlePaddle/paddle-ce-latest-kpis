@@ -109,4 +109,5 @@
     model_path: bow_model/epoch28, avg_acc: 0.844680
     model_path: bow_model/epoch29, avg_acc: 0.844960
 ```
+
 注：过拟合导致acc持续下降，请忽略
