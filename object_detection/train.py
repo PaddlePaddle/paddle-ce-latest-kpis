@@ -334,7 +334,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print_arguments(args)
 
-    data_dir = '/data/pascalvoc'
+    data_dir = '/root/.cache/paddle/dataset/pascalvoc'
     train_file_list = 'trainval.txt'
     val_file_list = 'test.txt'
     label_file = 'label_list'
