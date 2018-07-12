@@ -2,7 +2,6 @@ import math
 
 import paddle.fluid as fluid
 from paddle.fluid.initializer import NormalInitializer
-
 from utils import logger, load_dict, get_embedding
 
 
