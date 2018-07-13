@@ -58,12 +58,11 @@ def train_parallel_do(args,
                       layers=50):
     class_dim = 1000
     image_shape = [3, 224, 224]
-
     image = fluid.layers.data(name='image', shape=image_shape, dtype='float32')
     label = fluid.layers.data(name='label', shape=[1], dtype='int64')
 
     if parallel:
-        places = fluid.layers.get_places()
+        places = fluid.layers.device.get_places()
         pd = fluid.layers.ParallelDo(places, use_nccl=use_nccl)
 
         with pd.do():

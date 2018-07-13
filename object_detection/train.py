@@ -64,7 +64,7 @@ def parallel_do(args,
         name='gt_difficult', shape=[1], dtype='int32', lod_level=1)
 
     if args.parallel:
-        places = fluid.layers.get_places()
+        places = fluid.layers.device.get_places()
         pd = fluid.layers.ParallelDo(places, use_nccl=args.use_nccl)
         with pd.do():
             image_ = pd.read_input(image)
