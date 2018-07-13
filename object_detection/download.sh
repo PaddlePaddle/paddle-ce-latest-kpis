@@ -2,8 +2,8 @@ DIR="$( cd "$(dirname "$0")" ; pwd -P )"
 cd "$DIR"
 
 # Download the data.
-cp labels/* data/pascalvoc/
-cd data/pascalvoc
+cp labels/* /root/.cache/paddle/dataset/pascalvoc
+cd /root/.cache/paddle/dataset/pascalvoc
 
 echo "Downloading..."
 wget http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar

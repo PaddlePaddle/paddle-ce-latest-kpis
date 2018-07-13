@@ -153,7 +153,7 @@ def _reader_creator(file_list,
 
 def train(file_list=TRAIN_LIST):
     return _reader_creator(
-        file_list, 'train', shuffle=True, color_jitter=False, rotate=False)
+        file_list, 'train', shuffle=False, color_jitter=False, rotate=False)
 
 
 def test(file_list=TEST_LIST):

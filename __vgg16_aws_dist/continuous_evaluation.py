@@ -4,8 +4,8 @@ sys.path.append(os.environ['ceroot'])
 from kpi import LessWorseKpi, GreaterWorseKpi
 
 kpis_specs = {
-    "speedup": [LessWorseKpi, 0.01],
-    "train_speed": [LessWorseKpi, 0.01],
+    "speedup": [LessWorseKpi, 0.01, 0],
+    "train_speed": [LessWorseKpi, 0.01, 0],
     # "converge_speed":[GreaterWorseKpi, 0.01],
     # "gpu_memory":[GreaterWorseKpi, 0.01],
     # "acc_4passes":[GreaterWorseKpi, 0.01],
@@ -33,9 +33,9 @@ def generate_kpi_id(kpi_name, cluster_spec):
     return kpi_name + "_" + generate_cluster_id(cluster_spec)
 
 
-for kpi_type_name, (Kpi_class, diff_thre) in kpis_specs.items():
+for kpi_type_name, (Kpi_class, diff_thre, skip_head) in kpis_specs.items():
     for cluster_spec in cluster_specs:
         kpi_id = generate_kpi_id(kpi_type_name, cluster_spec)
-        the_kpi = Kpi_class(kpi_id, diff_thre)
+        the_kpi = Kpi_class(kpi_id, diff_thre, skip_head)
         tracking_kpis.append(the_kpi)
         kpis_map[kpi_id] = the_kpi
