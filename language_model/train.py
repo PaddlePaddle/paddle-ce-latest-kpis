@@ -87,7 +87,7 @@ def train(train_reader,
                        init_low_bound, init_high_bound)
         avg_cost = fluid.layers.mean(x=cost)
     else:
-        places = fluid.layers.get_places()
+        places = fluid.layers.device.get_places()
         pd = fluid.layers.ParallelDo(places)
         with pd.do():
             cost = network(
