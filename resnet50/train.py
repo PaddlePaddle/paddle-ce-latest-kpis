@@ -3,16 +3,13 @@ from __future__ import division
 from __future__ import print_function
 
 import argparse
+import distutils.util
 import functools
 import numpy as np
 import time
 import commands
 import subprocess
 import threading
-
-import cProfile
-import pstats
-import StringIO
 
 import paddle
 import paddle.fluid as fluid
@@ -22,7 +19,7 @@ import paddle.fluid.profiler as profiler
 import models
 import models.resnet
 
-from continuous_evaluation import tracking_kpis
+# from continuous_evaluation import tracking_kpis
 
 
 def parse_args():
@@ -61,11 +58,16 @@ def parse_args():
         choices=['NCHW', 'NHWC'],
         help='The data data_format, now only support NCHW.')
     parser.add_argument(
-        '--device',
+        '--use_gpu',
+        type=distutils.util.strtobool,
+        default=False,
+        help='Whether to use gpu.')
+    parser.add_argument(
+        '--reduce_strategy',
         type=str,
-        default='GPU',
-        choices=['CPU', 'GPU'],
-        help='The device type.')
+        default='AllReduce',
+        choices=['AllReduce', 'Reduce'],
+        help='The reduce strategy.')
     parser.add_argument(
         "--gpu_id",
         type=int,
@@ -142,6 +144,33 @@ def run_benchmark(model, args):
     opts = optimizer.minimize(avg_cost)
     fluid.memory_optimize(fluid.default_main_program())
 
+    place = core.CUDAPlace(0) if args.use_gpu else core.CPUPlace()
+    exe = fluid.Executor(place)
+    exe.run(fluid.default_startup_program())
+
+    exec_strategy = fluid.ExecutionStrategy()
+    exec_strategy.allow_op_delay = True
+    build_strategy = fluid.BuildStrategy()
+    build_strategy.reduce_strategy = fluid.BuildStrategy.ReduceStrategy.Reduce \
+        if args.reduce_strategy == "Reduce" else fluid.BuildStrategy.ReduceStrategy.AllReduce
+
+    train_exe = fluid.ParallelExecutor(
+        loss_name=avg_cost.name,
+        use_cuda=True if args.use_gpu else False,
+        build_strategy=build_strategy,
+        exec_strategy=exec_strategy)
+
+    # train_acc_kpi = None
+    # for kpi in tracking_kpis:
+    #     kpi_name = '%s_%s_%s_%s_train_acc' % (args.data_set, args.batch_size, args.reduce_strategy,str(args.use_gpu)) 
+    #     if kpi.name == kpi_name:
+    #         train_acc_kpi = kpi
+    # train_speed_kpi = None
+    # for kpi in tracking_kpis:
+    #     kpi_name = '%s_%s_%s_%s_train_speed' % (args.data_set, args.batch_size, args.reduce_strategy,str(args.use_gpu))
+    #     if kpi.name == kpi_name:
+    #         train_speed_kpi = kpi
+
     train_reader, test_reader = init_reader(args)
 
     def test(exe):
@@ -160,24 +189,9 @@ def run_benchmark(model, args):
 
         return test_accuracy.eval()
 
-    place = core.CPUPlace() if args.device == 'CPU' else core.CUDAPlace(0)
-    exe = fluid.Executor(place)
-    exe.run(fluid.default_startup_program())
-
+    im_num, total_train_time, total_iters = 0, 0.0, 0
     accuracy = fluid.average.WeightedAverage()
-
-    im_num = 0
-    total_train_time = 0.0
-    total_iters = 0
-
-    train_acc_kpi = None
-    for kpi in tracking_kpis:
-        if kpi.name == '%s_%s_train_acc' % (args.data_set, args.batch_size):
-            train_acc_kpi = kpi
-    train_speed_kpi = None
-    for kpi in tracking_kpis:
-        if kpi.name == '%s_%s_train_speed' % (args.data_set, args.batch_size):
-            train_speed_kpi = kpi
+    fetch_list = [avg_cost.name, batch_acc.name, batch_size_tensor.name]
 
     for pass_id in range(args.pass_num):
         every_pass_loss = []
@@ -194,11 +208,11 @@ def run_benchmark(model, args):
             label = np.array(map(lambda x: x[1], data)).astype(
                 'int64').reshape([-1, 1])
 
-            loss, acc, weight = exe.run(
-                fluid.default_main_program(),
-                feed={'data': image,
-                      'label': label},
-                fetch_list=[avg_cost, batch_acc, batch_size_tensor])
+            loss, acc, weight = train_exe.run(
+                fetch_list=fetch_list, feed={'data': image,
+                                             'label': label})
+            loss, acc, weight = \
+                loss.mean(), float(acc.sum()), int(weight.sum())
 
             accuracy.add(value=acc, weight=weight)
 
@@ -221,17 +235,17 @@ def run_benchmark(model, args):
             % (pass_id, np.mean(every_pass_loss), pass_train_acc,
                pass_test_acc, pass_duration))
 
-    if pass_id == args.pass_num - 1 and args.data_set == 'cifar10':
-        train_acc_kpi.add_record(np.array(pass_train_acc, dtype='float32'))
-        train_acc_kpi.persist()
+    # if pass_id == args.pass_num - 1 and args.data_set == 'cifar10':
+    #     train_acc_kpi.add_record(np.array(pass_train_acc, dtype='float32'))
+    #     train_acc_kpi.persist()
 
-    if total_train_time > 0.0 and iter != args.skip_batch_num:
-        examples_per_sec = im_num / total_train_time
-        sec_per_batch = total_train_time / \
-            (iter * args.pass_num - args.skip_batch_num)
-        train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float32'))
+    # if total_train_time > 0.0 and iter != args.skip_batch_num:
+    #     examples_per_sec = im_num / total_train_time
+    #     sec_per_batch = total_train_time / \
+    #         (iter * args.pass_num - args.skip_batch_num)
+    #     train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float32'))
 
-    train_speed_kpi.persist()
+    # train_speed_kpi.persist()
 
     print('\nTotal examples: %d, total time: %.5f' %
           (im_num, total_train_time))
@@ -271,7 +285,7 @@ if __name__ == '__main__':
     if args.data_format == 'NHWC':
         raise ValueError('Only support NCHW data_format now.')
 
-    if args.device == 'GPU':
+    if args.use_gpu:
         collect_memory_thread = threading.Thread(
             target=collect_gpu_memory_data, args=(is_alive, ))
         collect_memory_thread.setDaemon(True)
