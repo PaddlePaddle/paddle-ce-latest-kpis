@@ -286,6 +286,9 @@ if __name__ == '__main__':
         'resnet_cifar10': models.resnet.resnet_cifar10
     }
 
+    args.data_set = "cifar10" \
+        if args.model == "resnet_cifar10" else "flowers"
+
     args = parse_args()
     print_arguments(args)
 
