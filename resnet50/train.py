@@ -19,7 +19,7 @@ import paddle.fluid.profiler as profiler
 import models
 import models.resnet
 
-# from continuous_evaluation import tracking_kpis
+from continuous_evaluation import tracking_kpis
 
 
 def parse_args():
@@ -64,9 +64,9 @@ def parse_args():
         help='The reduce strategy.')
     parser.add_argument(
         "--gpu_id",
-        type=int,
-        default=3,
-        help="The GPU Card Id. (default: %(default)d)")
+        type=str,
+        default=0,
+        help="The GPU Cards Id. (default: %(default)d)")
     parser.add_argument(
         '--data_set',
         type=str,
@@ -163,17 +163,23 @@ def run_benchmark(model, args):
         build_strategy=build_strategy,
         exec_strategy=exec_strategy)
 
-    # train_acc_kpi = None
-    # for kpi in tracking_kpis:
-    #     kpi_name = '%s_%s_%s_%s_train_acc' % (args.data_set, args.batch_size, args.reduce_strategy,str(args.use_gpu)) 
-    #     if kpi.name == kpi_name:
-    #         train_acc_kpi = kpi
-    # train_speed_kpi = None
-    # for kpi in tracking_kpis:
-    #     kpi_name = '%s_%s_%s_%s_train_speed' % (args.data_set, args.batch_size, args.reduce_strategy,str(args.use_gpu))
-    #     if kpi.name == kpi_name:
-    #         train_speed_kpi = kpi
+    # Record KPI
+    train_acc_kpi = None
+    for kpi in tracking_kpis:
+        kpi_name = '%s_%s_%s_%s_train_acc' % (args.data_set, args.batch_size,
+                                              args.reduce_strategy, "GPU"
+                                              if args.use_gpu else "CPU")
+        if kpi.name == kpi_name:
+            train_acc_kpi = kpi
+    train_speed_kpi = None
+    for kpi in tracking_kpis:
+        kpi_name = '%s_%s_%s_%s_train_speed' % (args.data_set, args.batch_size,
+                                                args.reduce_strategy, "GPU"
+                                                if args.use_gpu else "CPU")
+        if kpi.name == kpi_name:
+            train_speed_kpi = kpi
 
+    # Prepare reader
     train_reader, test_reader = init_reader(args)
 
     def test(test_exe):
@@ -238,17 +244,16 @@ def run_benchmark(model, args):
             % (pass_id, np.mean(every_pass_loss), pass_train_acc,
                pass_test_acc, pass_duration))
 
-    # if pass_id == args.pass_num - 1 and args.data_set == 'cifar10':
-    #     train_acc_kpi.add_record(np.array(pass_train_acc, dtype='float32'))
-    #     train_acc_kpi.persist()
-
-    # if total_train_time > 0.0 and iter != args.skip_batch_num:
-    #     examples_per_sec = im_num / total_train_time
-    #     sec_per_batch = total_train_time / \
-    #         (iter * args.pass_num - args.skip_batch_num)
-    #     train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float32'))
-
-    # train_speed_kpi.persist()
+    # Record KPI
+    if pass_id == args.pass_num - 1 and args.data_set == 'cifar10':
+        train_acc_kpi.add_record(np.array(pass_train_acc, dtype='float32'))
+        train_acc_kpi.persist()
+    if total_train_time > 0.0 and iter != args.skip_batch_num:
+        examples_per_sec = im_num / total_train_time
+        sec_per_batch = total_train_time / \
+            (iter * args.pass_num - args.skip_batch_num)
+        train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float32'))
+    train_speed_kpi.persist()
 
     print('\nTotal examples: %d, total time: %.5f' %
           (im_num, total_train_time))
