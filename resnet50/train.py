@@ -85,7 +85,7 @@ def print_arguments(args):
     print('------------------------------------------------')
 
 
-def record_kpi(iter, pass_train_acc, total_train_time, im_num):
+def record_kpi(pass_id, iter, pass_train_acc, total_train_time, im_num):
     # Record KPI
     train_acc_kpi = None
     for kpi in tracking_kpis:
@@ -269,7 +269,7 @@ def run_benchmark(model, args):
             % (pass_id, np.mean(every_pass_loss), pass_train_acc,
                pass_test_acc, pass_duration))
 
-    record_kpi(iter, pass_train_acc, total_train_time, im_num)
+    record_kpi(pass_id, iter, pass_train_acc, total_train_time, im_num)
 
     examples_per_sec = im_num / total_train_time
     sec_per_batch = total_train_time / \
