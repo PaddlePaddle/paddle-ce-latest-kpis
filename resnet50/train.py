@@ -85,6 +85,35 @@ def print_arguments(args):
     print('------------------------------------------------')
 
 
+def record_kpi(iter, pass_train_acc, total_train_time, im_num):
+    # Record KPI
+    train_acc_kpi = None
+    for kpi in tracking_kpis:
+        kpi_name = '%s_%s_%s_%s_train_acc' % (args.data_set, args.batch_size,
+                                              args.reduce_strategy, "GPU"
+                                              if args.use_gpu else "CPU")
+        if kpi.name == kpi_name:
+            train_acc_kpi = kpi
+    train_speed_kpi = None
+    for kpi in tracking_kpis:
+        kpi_name = '%s_%s_%s_%s_train_speed' % (args.data_set, args.batch_size,
+                                                args.reduce_strategy, "GPU"
+                                                if args.use_gpu else "CPU")
+        if kpi.name == kpi_name:
+            train_speed_kpi = kpi
+
+    # Record KPI
+    if pass_id == args.pass_num - 1 and args.data_set == 'cifar10':
+        train_acc_kpi.add_record(np.array(pass_train_acc, dtype='float32'))
+        train_acc_kpi.persist()
+    if total_train_time > 0.0 and iter != args.skip_batch_num:
+        examples_per_sec = im_num / total_train_time
+        sec_per_batch = total_train_time / \
+            (iter * args.pass_num - args.skip_batch_num)
+        train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float32'))
+    train_speed_kpi.persist()
+
+
 def init_reader(args):
     train_reader = paddle.batch(
         paddle.reader.shuffle(
@@ -98,22 +127,6 @@ def init_reader(args):
         if args.data_set == 'cifar10' else paddle.dataset.flowers.test(),
         batch_size=args.batch_size)
     return train_reader, test_reader
-
-
-def get_data_shape(args):
-    if args.data_set == "cifar10":
-        class_dim = 10
-        if args.data_format == 'NCHW':
-            dshape = [3, 32, 32]
-        else:
-            dshape = [32, 32, 3]
-    else:
-        class_dim = 102
-        if args.data_format == 'NCHW':
-            dshape = [3, 224, 224]
-        else:
-            dshape = [224, 224, 3]
-    return dshape, class_dim
 
 
 def get_parallel_executor(args, avg_cost, train_program, test_program):
@@ -145,7 +158,24 @@ def get_parallel_executor(args, avg_cost, train_program, test_program):
     return train_exe, test_exe
 
 
+def get_data_shape(args):
+    if args.data_set == "cifar10":
+        class_dim = 10
+        if args.data_format == 'NCHW':
+            dshape = [3, 32, 32]
+        else:
+            dshape = [32, 32, 3]
+    else:
+        class_dim = 102
+        if args.data_format == 'NCHW':
+            dshape = [3, 224, 224]
+        else:
+            dshape = [224, 224, 3]
+    return dshape, class_dim
+
+
 def run_benchmark(model, args):
+
     dshape, class_dim = get_data_shape(args)
 
     input = fluid.layers.data(name='data', shape=dshape, dtype='float32')
@@ -172,23 +202,6 @@ def run_benchmark(model, args):
     train_exe, test_exe = get_parallel_executor(args, avg_cost,
                                                 fluid.default_main_program(),
                                                 inference_program)
-
-    # Record KPI
-    train_acc_kpi = None
-    for kpi in tracking_kpis:
-        kpi_name = '%s_%s_%s_%s_train_acc' % (args.data_set, args.batch_size,
-                                              args.reduce_strategy, "GPU"
-                                              if args.use_gpu else "CPU")
-        if kpi.name == kpi_name:
-            train_acc_kpi = kpi
-    train_speed_kpi = None
-    for kpi in tracking_kpis:
-        kpi_name = '%s_%s_%s_%s_train_speed' % (args.data_set, args.batch_size,
-                                                args.reduce_strategy, "GPU"
-                                                if args.use_gpu else "CPU")
-        if kpi.name == kpi_name:
-            train_speed_kpi = kpi
-
     # Prepare reader
     train_reader, test_reader = init_reader(args)
 
@@ -256,16 +269,11 @@ def run_benchmark(model, args):
             % (pass_id, np.mean(every_pass_loss), pass_train_acc,
                pass_test_acc, pass_duration))
 
-    # Record KPI
-    if pass_id == args.pass_num - 1 and args.data_set == 'cifar10':
-        train_acc_kpi.add_record(np.array(pass_train_acc, dtype='float32'))
-        train_acc_kpi.persist()
-    if total_train_time > 0.0 and iter != args.skip_batch_num:
-        examples_per_sec = im_num / total_train_time
-        sec_per_batch = total_train_time / \
+    record_kpi(iter, pass_train_acc, total_train_time, im_num)
+
+    examples_per_sec = im_num / total_train_time
+    sec_per_batch = total_train_time / \
             (iter * args.pass_num - args.skip_batch_num)
-        train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float32'))
-    train_speed_kpi.persist()
 
     print('\nTotal examples: %d, total time: %.5f' %
           (im_num, total_train_time))
@@ -296,10 +304,10 @@ if __name__ == '__main__':
         'resnet_cifar10': models.resnet.resnet_cifar10
     }
 
+    args = parse_args()
     args.data_set = "cifar10" \
         if args.model == "resnet_cifar10" else "flowers"
 
-    args = parse_args()
     print_arguments(args)
 
     global is_alive

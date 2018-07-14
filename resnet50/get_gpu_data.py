@@ -40,8 +40,8 @@ def save_gpu_data():
             mem_list.append(int(data.split("\n")[0].split(" ")[0]))
     gpu_memory_factor = None
     for kpi in tracking_kpis:
-        kpi_name = '%s_%s_%s_train_acc' % (args.data_set, args.batch_size,
-                                           args.reduce_strategy)
+        kpi_name = '%s_%s_%s_gpu_memory' % (args.data_set, args.batch_size,
+                                            args.reduce_strategy)
         if kpi.name == kpi_name:
             gpu_memory_kpi = kpi
     gpu_memory_kpi.add_record(max(mem_list))
