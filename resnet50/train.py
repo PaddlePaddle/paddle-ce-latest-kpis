@@ -160,6 +160,12 @@ def run_benchmark(model, args):
         build_strategy=build_strategy,
         exec_strategy=exec_strategy)
 
+    test_exe = fluid.ParallelExecutor(
+        use_cuda=True if args.use_gpu else False,
+        share_vars_from=train_exe,
+        build_strategy=build_strategy,
+        exec_strategy=exec_strategy)
+
     # train_acc_kpi = None
     # for kpi in tracking_kpis:
     #     kpi_name = '%s_%s_%s_%s_train_acc' % (args.data_set, args.batch_size, args.reduce_strategy,str(args.use_gpu)) 
@@ -173,18 +179,19 @@ def run_benchmark(model, args):
 
     train_reader, test_reader = init_reader(args)
 
-    def test(exe):
+    def test(test_exe):
         test_accuracy = fluid.average.WeightedAverage()
         for batch_id, data in enumerate(test_reader()):
             img_data = np.array(map(lambda x: x[0].reshape(dshape),
                                     data)).astype("float32")
-            y_data = np.array(map(lambda x: x[1], data)).astype("int64")
-            y_data = y_data.reshape([-1, 1])
+            y_data = np.array(map(lambda x: x[1], data)).astype(
+                "int64").reshape([-1, 1])
 
-            acc, weight = exe.run(inference_program,
-                                  feed={"data": img_data,
-                                        "label": y_data},
-                                  fetch_list=[batch_acc, batch_size_tensor])
+            acc, weight = test_exe.run(
+                fetch_list=[batch_acc.name, batch_size_tensor.name],
+                feed={"data": img_data,
+                      "label": y_data})
+            acc, weight = float(acc.sum()), int(weight.sum())
             test_accuracy.add(value=acc, weight=weight)
 
         return test_accuracy.eval()
@@ -229,7 +236,7 @@ def run_benchmark(model, args):
 
         total_train_time += pass_duration
         pass_train_acc = accuracy.eval()
-        pass_test_acc = test(exe)
+        pass_test_acc = test(test_exe)
         print(
             "Pass:%d, Loss:%f, Train Accuray:%f, Test Accuray:%f, Handle Images Duration: %f\n"
             % (pass_id, np.mean(every_pass_loss), pass_train_acc,
