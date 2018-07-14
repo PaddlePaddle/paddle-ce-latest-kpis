@@ -116,6 +116,35 @@ def get_data_shape(args):
     return dshape, class_dim
 
 
+def get_parallel_executor(args, avg_cost, train_program, test_program):
+    # Init Parameter
+    place = core.CUDAPlace(0) if args.use_gpu else core.CPUPlace()
+    exe = fluid.Executor(place)
+    exe.run(fluid.default_startup_program())
+
+    exec_strategy = fluid.ExecutionStrategy()
+    exec_strategy.allow_op_delay = True
+    build_strategy = fluid.BuildStrategy()
+    build_strategy.reduce_strategy = fluid.BuildStrategy.ReduceStrategy.Reduce \
+        if args.reduce_strategy == "Reduce" \
+        else fluid.BuildStrategy.ReduceStrategy.AllReduce
+
+    train_exe = fluid.ParallelExecutor(
+        loss_name=avg_cost.name,
+        main_program=train_program,
+        use_cuda=True if args.use_gpu else False,
+        build_strategy=build_strategy,
+        exec_strategy=exec_strategy)
+
+    test_exe = fluid.ParallelExecutor(
+        main_program=test_program,
+        use_cuda=True if args.use_gpu else False,
+        share_vars_from=train_exe,
+        build_strategy=build_strategy,
+        exec_strategy=exec_strategy)
+    return train_exe, test_exe
+
+
 def run_benchmark(model, args):
     dshape, class_dim = get_data_shape(args)
 
@@ -139,29 +168,10 @@ def run_benchmark(model, args):
 
     fluid.memory_optimize(fluid.default_main_program())
 
-    # Init Parameter
-    place = core.CUDAPlace(0) if args.use_gpu else core.CPUPlace()
-    exe = fluid.Executor(place)
-    exe.run(fluid.default_startup_program())
-
     # Init ParallelExecutor
-    exec_strategy = fluid.ExecutionStrategy()
-    exec_strategy.allow_op_delay = True
-    build_strategy = fluid.BuildStrategy()
-    build_strategy.reduce_strategy = fluid.BuildStrategy.ReduceStrategy.Reduce \
-        if args.reduce_strategy == "Reduce" else fluid.BuildStrategy.ReduceStrategy.AllReduce
-
-    train_exe = fluid.ParallelExecutor(
-        loss_name=avg_cost.name,
-        use_cuda=True if args.use_gpu else False,
-        build_strategy=build_strategy,
-        exec_strategy=exec_strategy)
-
-    test_exe = fluid.ParallelExecutor(
-        use_cuda=True if args.use_gpu else False,
-        share_vars_from=train_exe,
-        build_strategy=build_strategy,
-        exec_strategy=exec_strategy)
+    train_exe, test_exe = get_parallel_executor(args, avg_cost,
+                                                fluid.default_main_program(),
+                                                inference_program)
 
     # Record KPI
     train_acc_kpi = None
