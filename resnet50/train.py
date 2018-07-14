@@ -33,12 +33,6 @@ def parse_args():
     parser.add_argument(
         '--batch_size', type=int, default=32, help='The minibatch size.')
     parser.add_argument(
-        '--log_dir',
-        '-f',
-        type=str,
-        default='./',
-        help='The path of the log file')
-    parser.add_argument(
         '--skip_batch_num',
         type=int,
         default=5,
@@ -142,12 +136,15 @@ def run_benchmark(model, args):
 
     optimizer = fluid.optimizer.Momentum(learning_rate=0.01, momentum=0.9)
     opts = optimizer.minimize(avg_cost)
+
     fluid.memory_optimize(fluid.default_main_program())
 
+    # Init Parameter
     place = core.CUDAPlace(0) if args.use_gpu else core.CPUPlace()
     exe = fluid.Executor(place)
     exe.run(fluid.default_startup_program())
 
+    # Init ParallelExecutor
     exec_strategy = fluid.ExecutionStrategy()
     exec_strategy.allow_op_delay = True
     build_strategy = fluid.BuildStrategy()
@@ -203,8 +200,7 @@ def run_benchmark(model, args):
     for pass_id in range(args.pass_num):
         every_pass_loss = []
         accuracy.reset()
-        iter = 0
-        pass_duration = 0.0
+        iter, pass_duration = 0, 0.0
         for batch_id, data in enumerate(train_reader()):
             batch_start = time.time()
             if iter == args.iterations:
