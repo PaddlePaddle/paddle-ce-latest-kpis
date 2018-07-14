@@ -194,7 +194,8 @@ def run_benchmark(model, args):
                 fetch_list=[batch_acc.name, batch_size_tensor.name],
                 feed={"data": img_data,
                       "label": y_data})
-            acc, weight = float(acc.sum()), int(weight.sum())
+            acc = float((acc * weight).sum() / weight.sum())
+            weight = int(weight.sum())
             test_accuracy.add(value=acc, weight=weight)
 
         return test_accuracy.eval()
@@ -220,9 +221,10 @@ def run_benchmark(model, args):
             loss, acc, weight = train_exe.run(
                 fetch_list=fetch_list, feed={'data': image,
                                              'label': label})
-            loss, acc, weight = \
-                loss.mean(), float(acc.sum()), int(weight.sum())
 
+            acc = float((acc * weight).sum() / weight.sum())
+            loss = (loss * weight).sum() / weight.sum()
+            weight = int(weight.sum())
             accuracy.add(value=acc, weight=weight)
 
             if iter >= args.skip_batch_num or pass_id != 0:

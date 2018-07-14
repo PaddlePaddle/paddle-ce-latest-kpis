@@ -4,7 +4,7 @@ sys.path.append(os.environ['ceroot'])
 from kpi import CostKpi, DurationKpi, AccKpi
 
 cifar10_128_AllReduce_GPU_train_acc_kpi = AccKpi(
-    'cifar10_128_AlReduce_GPU_train_acc', 0.03, 0, actived=True)
+    'cifar10_128_AllReduce_GPU_train_acc', 0.03, 0, actived=True)
 cifar10_128_AllReduce_GPU_train_speed_kpi = AccKpi(
     'cifar10_128_AllReduce_GPU_train_speed', 0.06, 0, actived=True)
 cifar10_128_AllReduce_gpu_memory_kpi = DurationKpi(
