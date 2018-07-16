@@ -10,6 +10,8 @@ File: get_gpu_data.py
 Author: paddle(paddle@baidu.com)
 Date: 2018/04/02 15:57:14
 """
+import os
+import sys
 import argparse
 from continuous_evaluation import tracking_kpis
 

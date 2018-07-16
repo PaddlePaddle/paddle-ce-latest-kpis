@@ -26,16 +26,16 @@ for pid in $(ps -ef | grep nvidia-smi | grep -v grep | cut -c 9-15); do
 done
 
 # CPU Test
-# cifar10 128
-python train.py --use_gpu=false --reduce_strategy="AllReduce" --batch_size=128 --model=resnet_cifar10  --pass_num=10 
-python train.py --use_gpu=false --reduce_strategy="Reduce" --batch_size=128 --model=resnet_cifar10  --pass_num=10
+# cifar10 64
+python train.py --use_gpu=false --reduce_strategy="AllReduce" --batch_size=64 --model=resnet_cifar10  --pass_num=10 
+python train.py --use_gpu=false --reduce_strategy="Reduce" --batch_size=64 --model=resnet_cifar10  --pass_num=10
 
-#flowers 64
-python train.py --use_gpu=false --reduce_strategy="AllReduce" --batch_size=64 --model=resnet_imagenet --pass_num=10
-python train.py --use_gpu=false --reduce_strategy="Reduce" --batch_size=64 --model=resnet_imagenet --pass_num=10
+#flowers 16
+python train.py --use_gpu=false --reduce_strategy="AllReduce" --batch_size=16 --model=resnet_imagenet --pass_num=10
+python train.py --use_gpu=false --reduce_strategy="Reduce" --batch_size=16 --model=resnet_imagenet --pass_num=10
 
 
-# single card
+# Single card
 cudaid=${resnet50_cudaid:=0} # use 0-th card as default
 export CUDA_VISIBLE_DEVICES=$cudaid 
 export CPU_NUM=1
@@ -54,8 +54,8 @@ for pid in $(ps -ef | grep nvidia-smi | grep -v grep | cut -c 9-15); do
 done
 
 # CPU Test
-# cifar10 128
-python train.py --use_gpu=false --batch_size=128 --model=resnet_cifar10  --pass_num=10 
+# cifar10 64
+python train.py --use_gpu=false --batch_size=64 --model=resnet_cifar10  --pass_num=10 
 
 #flowers 64
-python train.py --use_gpu=false --batch_size=64 --model=resnet_imagenet --pass_num=10
+python train.py --use_gpu=false --batch_size=16 --model=resnet_imagenet --pass_num=10

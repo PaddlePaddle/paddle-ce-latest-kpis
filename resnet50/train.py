@@ -7,6 +7,8 @@ import distutils.util
 import functools
 import numpy as np
 import time
+import os
+import sys
 import commands
 import subprocess
 import threading
@@ -115,7 +117,7 @@ def record_kpi(pass_id, iter, pass_train_acc, total_train_time, im_num):
             train_speed_kpi = kpi
 
     # Record KPI
-    if pass_id == args.pass_num - 1 and args.data_set == 'cifar10':
+    if pass_id == args.pass_num - 1:
         train_acc_kpi.add_record(np.array(pass_train_acc, dtype='float32'))
         train_acc_kpi.persist()
     if total_train_time > 0.0 and iter != args.skip_batch_num:
@@ -123,7 +125,7 @@ def record_kpi(pass_id, iter, pass_train_acc, total_train_time, im_num):
         sec_per_batch = total_train_time / \
             (iter * args.pass_num - args.skip_batch_num)
         train_speed_kpi.add_record(np.array(examples_per_sec, dtype='float32'))
-    train_speed_kpi.persist()
+        train_speed_kpi.persist()
 
 
 def init_reader(args):
