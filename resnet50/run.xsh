@@ -5,7 +5,7 @@ export OMP_NUM_THREADS=1
 cudaid=${resnet50_cudaid:=0,1,2,3} # use 0-th card as default
 export CUDA_VISIBLE_DEVICES=$cudaid 
 # export FLAGS_benchmark=true 
-export FLAGS_fraction_of_gpu_memory_to_use=0.0
+# export FLAGS_fraction_of_gpu_memory_to_use=0.0
 export CPU_NUM=4
 # GPU Test
 # cifar10 128
