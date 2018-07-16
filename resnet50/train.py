@@ -103,18 +103,22 @@ def record_kpi(pass_id, iter, pass_train_acc, total_train_time, im_num):
         run_info = ("GPU" if args.use_gpu else "CPU") + "_" \
                 + cards + "_Cards"
 
+    kpi_name_base = '%s_%s_%s_train' % (args.data_set, args.batch_size,
+                                        run_info)
+
     train_acc_kpi = None
     for kpi in tracking_kpis:
-        kpi_name = '%s_%s_%s_train_acc' % (args.data_set, args.batch_size,
-                                           run_info)
-        if kpi.name == kpi_name:
+        if kpi.name == kpi_name_base + "_acc":
             train_acc_kpi = kpi
+            break
+    assert train_acc_kpi is not None
+
     train_speed_kpi = None
     for kpi in tracking_kpis:
-        kpi_name = '%s_%s_%s_train_speed' % (args.data_set, args.batch_size,
-                                             run_info)
-        if kpi.name == kpi_name:
+        if kpi.name == kpi_name_base + "_speed":
             train_speed_kpi = kpi
+            break
+    assert train_speed_kpi is not None
 
     # Record KPI
     if pass_id == args.pass_num - 1:
