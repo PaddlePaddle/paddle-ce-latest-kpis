@@ -87,18 +87,30 @@ def print_arguments(args):
 
 def record_kpi(pass_id, iter, pass_train_acc, total_train_time, im_num):
     # Record KPI
+    if args.use_gpu:
+        cards = os.environ.get('CPU_NUM')
+    else:
+        cards = os.environ.get('CUDA_VISIBLE_DEVICES')
+        cards = str(len(cards.split(",")))
+
+    if int(cards) > 1:
+        run_info = args.reduce_strategy + "_" \
+                + ("GPU" if args.use_gpu else "CPU") + "_" \
+                + cards + "_Cards"
+    else:
+        run_info = ("GPU" if args.use_gpu else "CPU") + "_" \
+                + cards + "_Cards"
+
     train_acc_kpi = None
     for kpi in tracking_kpis:
-        kpi_name = '%s_%s_%s_%s_train_acc' % (args.data_set, args.batch_size,
-                                              args.reduce_strategy, "GPU"
-                                              if args.use_gpu else "CPU")
+        kpi_name = '%s_%s_%s_train_acc' % (args.data_set, args.batch_size,
+                                           run_info)
         if kpi.name == kpi_name:
             train_acc_kpi = kpi
     train_speed_kpi = None
     for kpi in tracking_kpis:
-        kpi_name = '%s_%s_%s_%s_train_speed' % (args.data_set, args.batch_size,
-                                                args.reduce_strategy, "GPU"
-                                                if args.use_gpu else "CPU")
+        kpi_name = '%s_%s_%s_train_speed' % (args.data_set, args.batch_size,
+                                             run_info)
         if kpi.name == kpi_name:
             train_speed_kpi = kpi
 

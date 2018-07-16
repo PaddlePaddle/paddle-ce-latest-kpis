@@ -2,7 +2,7 @@
 
 export MKL_NUM_THREADS=1
 export OMP_NUM_THREADS=1
-cudaid=${resnet50_cudaid:=0,1,2,3} # use 0-th card as default
+cudaid=${resnet50_cudaid:=0,1,2,3} 
 export CUDA_VISIBLE_DEVICES=$cudaid 
 # export FLAGS_benchmark=true 
 # export FLAGS_fraction_of_gpu_memory_to_use=0.0
@@ -33,3 +33,29 @@ python train.py --use_gpu=false --reduce_strategy="Reduce" --batch_size=128 --mo
 #flowers 64
 python train.py --use_gpu=false --reduce_strategy="AllReduce" --batch_size=64 --model=resnet_imagenet --pass_num=10
 python train.py --use_gpu=false --reduce_strategy="Reduce" --batch_size=64 --model=resnet_imagenet --pass_num=10
+
+
+# single card
+cudaid=${resnet50_cudaid:=0} # use 0-th card as default
+export CUDA_VISIBLE_DEVICES=$cudaid 
+export CPU_NUM=1
+# GPU Test
+# cifar10 128
+python train.py --use_gpu=true --batch_size=128 --model=resnet_cifar10 --pass_num=10 --gpu_id=$cudaid
+python get_gpu_data.py --batch_size=128 --data_set=cifar10
+
+#flowers 64
+python train.py --use_gpu=true --batch_size=64 --model=resnet_imagenet --pass_num=10 --gpu_id=$cudaid
+python get_gpu_data.py --batch_size=64 --data_set=flowers
+
+for pid in $(ps -ef | grep nvidia-smi | grep -v grep | cut -c 9-15); do
+    echo $pid
+    kill -9 $pid
+done
+
+# CPU Test
+# cifar10 128
+python train.py --use_gpu=false --batch_size=128 --model=resnet_cifar10  --pass_num=10 
+
+#flowers 64
+python train.py --use_gpu=false --batch_size=64 --model=resnet_imagenet --pass_num=10

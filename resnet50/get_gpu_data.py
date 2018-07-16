@@ -32,6 +32,13 @@ args = parser.parse_args()
 
 
 def save_gpu_data():
+    cards = os.environ.get('CUDA_VISIBLE_DEVICES')
+    cards = str(len(cards.split(",")))
+    if int(cards) > 1:
+        run_info = args.reduce_strategy + "_" + cards + "_Cards"
+    else:
+        run_info = cards + "_Cards"
+
     mem_list = []
     with open('memory.txt', 'r') as f:
         for i, data in enumerate(f.readlines()):
@@ -41,7 +48,7 @@ def save_gpu_data():
     gpu_memory_factor = None
     for kpi in tracking_kpis:
         kpi_name = '%s_%s_%s_gpu_memory' % (args.data_set, args.batch_size,
-                                            args.reduce_strategy)
+                                            run_info)
         if kpi.name == kpi_name:
             gpu_memory_kpi = kpi
     gpu_memory_kpi.add_record(max(mem_list))
