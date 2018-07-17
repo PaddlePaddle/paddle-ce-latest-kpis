@@ -23,6 +23,9 @@ import models.resnet
 
 from continuous_evaluation import tracking_kpis
 
+fluid.default_startup_program().random_seed = 1
+fluid.default_main_program().random_seed = 1
+
 
 def parse_args():
     parser = argparse.ArgumentParser('Convolution model benchmark.')
@@ -62,7 +65,7 @@ def parse_args():
         '--reduce_strategy',
         type=str,
         default='AllReduce',
-        choices=['AllReduce', 'Reduce'],
+        choices=['AllReduce', 'Reduce', 'None'],
         help='The reduce strategy.')
     parser.add_argument(
         "--gpu_id",
@@ -87,13 +90,18 @@ def print_arguments(args):
     print('------------------------------------------------')
 
 
-def record_kpi(pass_id, iter, pass_train_acc, total_train_time, im_num):
-    # Record KPI
+def get_cards(args):
     if args.use_gpu:
         cards = os.environ.get('CPU_NUM')
     else:
         cards = os.environ.get('CUDA_VISIBLE_DEVICES')
         cards = str(len(cards.split(",")))
+    return cards
+
+
+def record_kpi(pass_id, iter, pass_train_acc, total_train_time, im_num):
+    # Record KPI
+    cards = get_cards(args)
 
     if int(cards) > 1:
         run_info = args.reduce_strategy + "_" \
@@ -111,14 +119,14 @@ def record_kpi(pass_id, iter, pass_train_acc, total_train_time, im_num):
         if kpi.name == kpi_name_base + "_acc":
             train_acc_kpi = kpi
             break
-    assert train_acc_kpi is not None
+    assert train_acc_kpi is not None, kpi_name_base + "_acc" + " is not found."
 
     train_speed_kpi = None
     for kpi in tracking_kpis:
         if kpi.name == kpi_name_base + "_speed":
             train_speed_kpi = kpi
             break
-    assert train_speed_kpi is not None
+    assert train_speed_kpi is not None, kpi_name_base + "_speed" + " is not found."
 
     # Record KPI
     if pass_id == args.pass_num - 1:
@@ -134,10 +142,8 @@ def record_kpi(pass_id, iter, pass_train_acc, total_train_time, im_num):
 
 def init_reader(args):
     train_reader = paddle.batch(
-        paddle.reader.shuffle(
-            paddle.dataset.cifar.train10()
-            if args.data_set == 'cifar10' else paddle.dataset.flowers.train(),
-            buf_size=5120),
+        paddle.dataset.cifar.train10()
+        if args.data_set == 'cifar10' else paddle.dataset.flowers.train(),
         batch_size=args.batch_size)
 
     test_reader = paddle.batch(
@@ -202,6 +208,9 @@ def run_benchmark(model, args):
     cost = fluid.layers.cross_entropy(input=predict, label=label)
     avg_cost = fluid.layers.mean(x=cost)
 
+    fluid.default_main_program().seed = 1
+    fluid.default_startup_program().seed = 1
+
     batch_size_tensor = fluid.layers.create_tensor(dtype='int64')
     batch_acc = fluid.layers.accuracy(
         input=predict, label=label, total=batch_size_tensor)
@@ -220,6 +229,7 @@ def run_benchmark(model, args):
     train_exe, test_exe = get_parallel_executor(args, avg_cost,
                                                 fluid.default_main_program(),
                                                 inference_program)
+
     # Prepare reader
     train_reader, test_reader = init_reader(args)
 
@@ -323,8 +333,13 @@ if __name__ == '__main__':
     }
 
     args = parse_args()
+
     args.data_set = "cifar10" \
         if args.model == "resnet_cifar10" else "flowers"
+
+    cards = get_cards(args)
+    if int(cards) == 1:
+        args.reduce_strategy = "None"
 
     print_arguments(args)
 

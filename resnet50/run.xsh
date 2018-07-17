@@ -11,6 +11,7 @@ export CPU_NUM=4
 # cifar10 128
 python train.py --use_gpu=true --reduce_strategy="AllReduce" --batch_size=128 --model=resnet_cifar10 --pass_num=5 --gpu_id=$cudaid
 python get_gpu_data.py --batch_size=128 --data_set=cifar10 --reduce_strategy="AllReduce"
+
 python train.py --use_gpu=true --reduce_strategy="Reduce"  --batch_size=128 --model=resnet_cifar10 --pass_num=5 --gpu_id=$cudaid
 python get_gpu_data.py --batch_size=128 --data_set=cifar10 --reduce_strategy="Reduce"
 for pid in $(ps -ef | grep nvidia-smi | grep -v grep | cut -c 9-15); do
