@@ -30,12 +30,12 @@ done
 
 # CPU Test
 # cifar10 16
-python train.py --use_gpu=false --reduce_strategy="AllReduce" --batch_size=16 --model=resnet_cifar10  --pass_num=5 
-python train.py --use_gpu=false --reduce_strategy="Reduce" --batch_size=16 --model=resnet_cifar10  --pass_num=5 
+python train.py --use_gpu=false --reduce_strategy="AllReduce" --batch_size=8 --model=resnet_cifar10  --pass_num=5 
+python train.py --use_gpu=false --reduce_strategy="Reduce" --batch_size=8 --model=resnet_cifar10  --pass_num=5 
 
 #flowers 16
-python train.py --use_gpu=false --reduce_strategy="AllReduce" --batch_size=16 --model=resnet_imagenet --pass_num=5 
-python train.py --use_gpu=false --reduce_strategy="Reduce" --batch_size=16 --model=resnet_imagenet --pass_num=5 
+python train.py --use_gpu=false --reduce_strategy="AllReduce" --batch_size=8 --model=resnet_imagenet --pass_num=5 
+python train.py --use_gpu=false --reduce_strategy="Reduce" --batch_size=8 --model=resnet_imagenet --pass_num=5 
 
 
 # Single card
@@ -61,7 +61,7 @@ done
 
 # CPU Test
 # cifar10 16
-python train.py --use_gpu=false --batch_size=16 --model=resnet_cifar10  --pass_num=5 
+python train.py --use_gpu=false --batch_size=8 --model=resnet_cifar10  --pass_num=5 
 
 #flowers 16
-python train.py --use_gpu=false --batch_size=16 --model=resnet_imagenet --pass_num=5
+python train.py --use_gpu=false --batch_size=8 --model=resnet_imagenet --pass_num=5
