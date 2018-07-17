@@ -402,7 +402,7 @@ def make_all_inputs(input_fields):
             dtype=input_descs[input_field][1],
             append_batch_size=False)
         inputs.append(input_var)
-        fluid.default_startup_program().global_block().clone_variable(
+        fluid.default_startup_program().global_block()._clone_variable(
             input_var)
     return inputs
 
