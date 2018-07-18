@@ -64,7 +64,7 @@ def parallel_do(args,
         name='gt_difficult', shape=[1], dtype='int32', lod_level=1)
 
     if args.parallel:
-        places = fluid.layers.get_places()
+        places = fluid.layers.device.get_places()
         pd = fluid.layers.ParallelDo(places, use_nccl=args.use_nccl)
         with pd.do():
             image_ = pd.read_input(image)
@@ -334,7 +334,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print_arguments(args)
 
-    data_dir = '/data/pascalvoc'
+    data_dir = '/root/.cache/paddle/dataset/pascalvoc'
     train_file_list = 'trainval.txt'
     val_file_list = 'test.txt'
     label_file = 'label_list'

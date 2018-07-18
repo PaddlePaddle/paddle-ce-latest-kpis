@@ -70,15 +70,11 @@ def main(train_data_file, test_data_file, vocab_file, target_file, emb_file,
         inference_program = fluid.io.get_inference_program(test_target)
 
     train_reader = paddle.batch(
-        paddle.reader.shuffle(
             reader.data_reader(train_data_file, word_dict, label_dict),
-            buf_size=20000),
-        batch_size=BATCH_SIZE)
+        batch_size=BATCH_SIZE, drop_last=False)
     test_reader = paddle.batch(
-        paddle.reader.shuffle(
             reader.data_reader(test_data_file, word_dict, label_dict),
-            buf_size=20000),
-        batch_size=BATCH_SIZE)
+        batch_size=BATCH_SIZE, drop_last=False)
 
     place = fluid.CUDAPlace(0) if use_gpu else fluid.CPUPlace()
     feeder = fluid.DataFeeder(feed_list=[word, mark, target], place=place)
@@ -137,12 +133,13 @@ def main(train_data_file, test_data_file, vocab_file, target_file, emb_file,
 
 
 if __name__ == "__main__":
+    base_dir = "/root/.cache/paddle/dataset/data"
     main(
         train_data_file="data/train",
         test_data_file="data/test",
-        vocab_file="data/vocab.txt",
+        vocab_file="%s/vocab.txt" % base_dir,
         target_file="data/target.txt",
-        emb_file="data/wordVectors.txt",
+        emb_file="%s/wordVectors.txt" % base_dir,
         model_save_dir="models",
         num_passes=2300,
         use_gpu=True,
