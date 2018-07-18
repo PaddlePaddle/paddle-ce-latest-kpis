@@ -2,7 +2,6 @@ from functools import partial
 import numpy as np
 import paddle.fluid as fluid
 import paddle.fluid.layers as layers
-
 from transformer_config import *
 
 
