@@ -1,0 +1,13 @@
+#!/home/users/minqiyang/conda/miniconda2/bin/python
+# -*- coding: utf-8 -*-
+
+import sys
+
+try:
+    from paddlecli.shell import main
+    main()
+except Exception as e:
+    sys.stderr.write("%s\n" % e)
+    sys.exit(1)
+
+sys.exit(0)
