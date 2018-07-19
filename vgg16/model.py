@@ -14,7 +14,6 @@ import paddle.fluid as fluid
 import paddle.fluid.core as core
 import argparse
 import functools
-
 from continuous_evaluation import tracking_kpis
 
 parser = argparse.ArgumentParser(description=__doc__)
