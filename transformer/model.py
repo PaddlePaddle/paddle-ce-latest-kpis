@@ -1,6 +1,5 @@
 from functools import partial
 import numpy as np
-
 import paddle.fluid as fluid
 import paddle.fluid.layers as layers
 
@@ -18,7 +17,6 @@ def position_encoding_init(n_position, d_pos_vec):
     position_enc[1:, 0::2] = np.sin(position_enc[1:, 0::2])  # dim 2i
     position_enc[1:, 1::2] = np.cos(position_enc[1:, 1::2])  # dim 2i+1
     return position_enc.astype("float32")
-
 
 def multi_head_attention(queries,
                          keys,
@@ -402,7 +400,7 @@ def make_all_inputs(input_fields):
             dtype=input_descs[input_field][1],
             append_batch_size=False)
         inputs.append(input_var)
-        fluid.default_startup_program().global_block().clone_variable(
+        fluid.default_startup_program().global_block()._clone_variable(
             input_var)
     return inputs
 
