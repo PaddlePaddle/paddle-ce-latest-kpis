@@ -19,6 +19,7 @@ from __future__ import print_function
 import functools
 import numpy as np
 import time
+import os
 
 import cProfile, pstats, StringIO
 
@@ -26,10 +27,7 @@ import paddle
 import paddle.fluid as fluid
 import paddle.fluid.core as core
 import paddle.fluid.profiler as profiler
-from models.model_base import get_decay_learning_rate
-from models.model_base import get_regularization
-from models.model_base import set_error_clip
-from models.model_base import set_gradient_clip
+from recordio_converter import imagenet_train, imagenet_test
 
 
 def conv_bn_layer(input, ch_out, filter_size, stride, padding, act='relu'):
@@ -74,7 +72,7 @@ def layer_warp(block_func, input, ch_out, count, stride):
     return res_out
 
 
-def resnet_imagenet(input, class_dim, args, depth=50, data_format='NCHW'):
+def resnet_imagenet(input, class_dim, depth=50, data_format='NCHW'):
 
     cfg = {
         18: ([2, 2, 2, 1], basicblock),
@@ -98,12 +96,10 @@ def resnet_imagenet(input, class_dim, args, depth=50, data_format='NCHW'):
         pool_stride=1,
         global_pooling=True)
     out = fluid.layers.fc(input=pool2, size=class_dim, act='softmax')
-    set_error_clip(args.error_clip_method, out.name, args.error_clip_min,
-                   args.error_clip_max)
     return out
 
 
-def resnet_cifar10(input, class_dim, args, depth=32, data_format='NCHW'):
+def resnet_cifar10(input, class_dim, depth=32, data_format='NCHW'):
     assert (depth - 2) % 6 == 0
 
     n = (depth - 2) // 6
@@ -116,8 +112,6 @@ def resnet_cifar10(input, class_dim, args, depth=32, data_format='NCHW'):
     pool = fluid.layers.pool2d(
         input=res3, pool_size=8, pool_type='avg', pool_stride=1)
     out = fluid.layers.fc(input=pool, size=class_dim, act='softmax')
-    set_error_clip(args.error_clip_method, out.name, args.error_clip_min,
-                   args.error_clip_max)
     return out
 
 
@@ -130,22 +124,54 @@ def get_model(args):
         else:
             dshape = [32, 32, 3]
         model = resnet_cifar10
-    else:
+        train_reader = paddle.dataset.cifar.train10()
+        test_reader = paddle.dataset.cifar.test10()
+    elif args.data_set == "flowers":
         class_dim = 102
         if args.data_format == 'NCHW':
             dshape = [3, 224, 224]
         else:
             dshape = [224, 224, 3]
         model = resnet_imagenet
+        train_reader = paddle.dataset.flowers.train()
+        test_reader = paddle.dataset.flowers.test()
+    elif args.data_set == "imagenet":
+        class_dim = 1000
+        if args.data_format == 'NCHW':
+            dshape = [3, 224, 224]
+        else:
+            dshape = [224, 224, 3]
+        model = resnet_imagenet
+        if not args.data_path:
+            raise Exception(
+                "Must specify --data_path when training with imagenet")
+        train_reader = imagenet_train(args.data_path)
+        test_reader = imagenet_test(args.data_path)
 
-    input = fluid.layers.data(name='data', shape=dshape, dtype='float32')
-    label = fluid.layers.data(name='label', shape=[1], dtype='int64')
+    if args.use_reader_op:
+        filelist = [
+            os.path.join(args.data_path, f) for f in os.listdir(args.data_path)
+        ]
+        data_file = fluid.layers.open_files(
+            filenames=filelist,
+            shapes=[[-1] + dshape, (-1, 1)],
+            lod_levels=[0, 0],
+            dtypes=["float32", "int64"],
+            thread_num=args.gpus,
+            pass_num=args.pass_num)
+        data_file = fluid.layers.double_buffer(
+            fluid.layers.batch(
+                data_file, batch_size=args.batch_size))
+        input, label = fluid.layers.read_file(data_file)
+    else:
+        input = fluid.layers.data(name='data', shape=dshape, dtype='float32')
+        label = fluid.layers.data(name='label', shape=[1], dtype='int64')
 
     if args.device == 'CPU' and args.cpus > 1:
         places = fluid.layers.get_places(args.cpus)
         pd = fluid.layers.ParallelDo(places)
         with pd.do():
-            predict = model(pd.read_input(input), class_dim, args=args)
+            predict = model(pd.read_input(input), class_dim)
             label = pd.read_input(label)
             cost = fluid.layers.cross_entropy(input=predict, label=label)
             avg_cost = fluid.layers.mean(x=cost)
@@ -158,7 +184,7 @@ def get_model(args):
         avg_cost = fluid.layers.mean(avg_cost)
         batch_acc = fluid.layers.mean(batch_acc)
     else:
-        predict = model(input, class_dim, args=args)
+        predict = model(input, class_dim)
         cost = fluid.layers.cross_entropy(input=predict, label=label)
         avg_cost = fluid.layers.mean(x=cost)
         batch_acc = fluid.layers.accuracy(input=predict, label=label)
@@ -168,29 +194,12 @@ def get_model(args):
         inference_program = fluid.io.get_inference_program(
             target_vars=[batch_acc])
 
-    # set gradient clip
-    set_gradient_clip(args.gradient_clip_method, args.gradient_clip_norm)
+    optimizer = fluid.optimizer.Momentum(learning_rate=0.01, momentum=0.9)
 
-    optimizer = fluid.optimizer.Momentum(
-        learning_rate=get_decay_learning_rate(
-            decay_method=args.learning_rate_decay_method,
-            learning_rate=0.01,
-            decay_steps=args.learning_rate_decay_steps,
-            decay_rate=args.learning_rate_decay_rate),
-        regularization=get_regularization(
-            regularizer_method=args.weight_decay_regularizer_method,
-            regularizer_coeff=args.weight_decay_regularizer_coeff),
-        momentum=0.9)
-
-    train_reader = paddle.batch(
+    batched_train_reader = paddle.batch(
         paddle.reader.shuffle(
-            paddle.dataset.cifar.train10()
-            if args.data_set == 'cifar10' else paddle.dataset.flowers.train(),
-            buf_size=5120),
-        batch_size=args.batch_size)
-    test_reader = paddle.batch(
-        paddle.dataset.cifar.test10()
-        if args.data_set == 'cifar10' else paddle.dataset.flowers.test(),
-        batch_size=args.batch_size)
+            train_reader, buf_size=5120),
+        batch_size=args.batch_size * args.gpus)
+    batched_test_reader = paddle.batch(train_reader, batch_size=args.batch_size)
 
-    return avg_cost, inference_program, optimizer, train_reader, test_reader, batch_acc
+    return avg_cost, inference_program, optimizer, batched_train_reader, batched_test_reader, batch_acc

@@ -7,10 +7,10 @@ PADDLE_PATH=$CURRENT_FILE_DIR/../../..
 paddle_build_path=$PADDLE_PATH/build
 paddle_docker_hub_tag="paddlepaddlece/paddle:latest"
 fluid_benchmark_dockerhub_tag="paddlepaddlece/fluid_benchmark:latest"
-training_command="update_method:pserver,acc_target:0.6,iterations:100,pass_num:1"
+training_command="gpus:2,device:GPU,model:resnet,update_method:pserver"
 
 # clean up docker
-docker system prune -f
+# docker system prune -f
 
 # loginto docker hub
 # login is now performed in teamcity
@@ -18,8 +18,8 @@ docker system prune -f
 
 # create paddle docker image
 echo "going to build and push paddle production image"
-#docker build -t $paddle_docker_hub_tag $paddle_build_path
-#docker push $paddle_docker_hub_tag
+docker build -t $paddle_docker_hub_tag $paddle_build_path
+docker push $paddle_docker_hub_tag
 
 # build test docker image
 cd $CURRENT_FILE_DIR
@@ -36,6 +36,7 @@ if [ -d ~/.cache/paddle/dataset/flowers ]; then
     mkdir -p .cache/paddle/dataset/
     cp -r -f ~/.cache/paddle/dataset/flowers .cache/paddle/dataset/
 fi
+
 cd ..
 
 echo "going to build fluid_benchmark_for_aws docker image and push it"

@@ -22,13 +22,10 @@ import paddle.fluid as fluid
 import paddle.fluid.core as core
 import argparse
 import functools
-from models.model_base import get_decay_learning_rate
-from models.model_base import get_regularization
-from models.model_base import set_error_clip
-from models.model_base import set_gradient_clip
+import os
 
 
-def vgg16_bn_drop(input, args):
+def vgg16_bn_drop(input):
     def conv_block(input, num_filter, groups, dropouts):
         return fluid.nets.img_conv_group(
             input=input,
@@ -52,8 +49,6 @@ def vgg16_bn_drop(input, args):
     bn = fluid.layers.batch_norm(input=fc1, act='relu')
     drop2 = fluid.layers.dropout(x=bn, dropout_prob=0.5)
     fc2 = fluid.layers.fc(input=drop2, size=512, act=None)
-    set_error_clip(args.error_clip_method, fc1.name, args.error_clip_min,
-                   args.error_clip_max)
     return fc2
 
 
@@ -71,12 +66,27 @@ def get_model(args):
         else:
             data_shape = [224, 224, 3]
 
-    # Input data
-    images = fluid.layers.data(name='pixel', shape=data_shape, dtype='float32')
-    label = fluid.layers.data(name='label', shape=[1], dtype='int64')
+    if args.use_reader_op:
+        filelist = [
+            os.path.join(args.data_path, f) for f in os.listdir(args.data_path)
+        ]
+        data_file = fluid.layers.open_files(
+            filenames=filelist,
+            shapes=[[-1] + data_shape, (-1, 1)],
+            lod_levels=[0, 0],
+            dtypes=["float32", "int64"],
+            thread_num=args.gpus,
+            pass_num=args.pass_num)
+        data_file = fluid.layers.double_buffer(
+            fluid.layers.batch(
+                data_file, batch_size=args.batch_size))
+        images, label = fluid.layers.read_file(data_file)
+    else:
+        images = fluid.layers.data(name='data', shape=dshape, dtype='float32')
+        label = fluid.layers.data(name='label', shape=[1], dtype='int64')
 
     # Train program
-    net = vgg16_bn_drop(images, args=args)
+    net = vgg16_bn_drop(images)
     predict = fluid.layers.fc(input=net, size=classdim, act='softmax')
     cost = fluid.layers.cross_entropy(input=predict, label=label)
     avg_cost = fluid.layers.mean(x=cost)
@@ -92,19 +102,8 @@ def get_model(args):
         inference_program = fluid.io.get_inference_program(
             target_vars=[batch_acc, batch_size_tensor])
 
-    # set gradient clip
-    set_gradient_clip(args.gradient_clip_method, args.gradient_clip_norm)
-
     # Optimization
-    optimizer = fluid.optimizer.Adam(
-        learning_rate=get_decay_learning_rate(
-            decay_method=args.learning_rate_decay_method,
-            learning_rate=args.learning_rate,
-            decay_steps=args.learning_rate_decay_steps,
-            decay_rate=args.learning_rate_decay_rate),
-        regularization=get_regularization(
-            regularizer_method=args.weight_decay_regularizer_method,
-            regularizer_coeff=args.weight_decay_regularizer_coeff))
+    optimizer = fluid.optimizer.Adam(learning_rate=args.learning_rate)
 
     # data reader
     train_reader = paddle.batch(
@@ -112,7 +111,7 @@ def get_model(args):
             paddle.dataset.cifar.train10()
             if args.data_set == 'cifar10' else paddle.dataset.flowers.train(),
             buf_size=5120),
-        batch_size=args.batch_size)
+        batch_size=args.batch_size * args.gpus)
     test_reader = paddle.batch(
         paddle.dataset.cifar.test10()
         if args.data_set == 'cifar10' else paddle.dataset.flowers.test(),

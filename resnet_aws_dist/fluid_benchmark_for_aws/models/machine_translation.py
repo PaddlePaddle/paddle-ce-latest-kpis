@@ -26,10 +26,6 @@ import paddle.fluid as fluid
 import paddle.fluid.core as core
 import paddle.fluid.framework as framework
 from paddle.fluid.executor import Executor
-from models.model_base import get_decay_learning_rate
-from models.model_base import get_regularization
-from models.model_base import set_error_clip
-from models.model_base import set_gradient_clip
 
 
 def lstm_step(x_t, hidden_t_prev, cell_t_prev, size):
@@ -54,7 +50,7 @@ def lstm_step(x_t, hidden_t_prev, cell_t_prev, size):
 
 
 def seq_to_seq_net(embedding_dim, encoder_size, decoder_size, source_dict_dim,
-                   target_dict_dim, is_generating, beam_size, max_length, args):
+                   target_dict_dim, is_generating, beam_size, max_length):
     """Construct a seq2seq network."""
 
     def bi_lstm_encoder(input_seq, gate_size):
@@ -103,8 +99,6 @@ def seq_to_seq_net(embedding_dim, encoder_size, decoder_size, source_dict_dim,
                                    size=decoder_size,
                                    bias_attr=False,
                                    act='tanh')
-    set_error_clip(args.error_clip_method, encoded_proj.name,
-                   args.error_clip_min, args.error_clip_max)
 
     def lstm_decoder_with_attention(target_embedding, encoder_vec, encoder_proj,
                                     decoder_boot, decoder_size):
@@ -203,6 +197,8 @@ def lodtensor_to_ndarray(lod_tensor):
 
 
 def get_model(args):
+    if args.use_reader_op:
+        raise Exception("machine_translation do not support reader op for now.")
     embedding_dim = 512
     encoder_size = 512
     decoder_size = 512
@@ -217,29 +213,17 @@ def get_model(args):
         dict_size,
         False,
         beam_size=beam_size,
-        max_length=max_length,
-        args=args)
+        max_length=max_length)
 
     # clone from default main program
     inference_program = fluid.default_main_program().clone()
 
-    # set gradient clip
-    set_gradient_clip(args.gradient_clip_method, args.gradient_clip_norm)
-
-    optimizer = fluid.optimizer.Adam(
-        learning_rate=get_decay_learning_rate(
-            decay_method=args.learning_rate_decay_method,
-            learning_rate=args.learning_rate,
-            decay_steps=args.learning_rate_decay_steps,
-            decay_rate=args.learning_rate_decay_rate),
-        regularization=get_regularization(
-            regularizer_method=args.weight_decay_regularizer_method,
-            regularizer_coeff=args.weight_decay_regularizer_coeff))
+    optimizer = fluid.optimizer.Adam(learning_rate=args.learning_rate)
 
     train_batch_generator = paddle.batch(
         paddle.reader.shuffle(
             paddle.dataset.wmt14.train(dict_size), buf_size=1000),
-        batch_size=args.batch_size)
+        batch_size=args.batch_size * args.gpus)
 
     test_batch_generator = paddle.batch(
         paddle.reader.shuffle(

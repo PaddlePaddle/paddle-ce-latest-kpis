@@ -20,14 +20,11 @@ import numpy as np
 import argparse
 import time
 import cProfile
+import os
 
 import paddle
 import paddle.fluid as fluid
 import paddle.fluid.profiler as profiler
-from models.model_base import get_decay_learning_rate
-from models.model_base import get_regularization
-from models.model_base import set_error_clip
-from models.model_base import set_gradient_clip
 
 SEED = 1
 DTYPE = "float32"
@@ -36,7 +33,7 @@ DTYPE = "float32"
 # fluid.default_startup_program().random_seed = SEED
 
 
-def cnn_model(data, args):
+def cnn_model(data):
     conv_pool_1 = fluid.nets.simple_img_conv_pool(
         input=data,
         filter_size=5,
@@ -51,9 +48,6 @@ def cnn_model(data, args):
         pool_size=2,
         pool_stride=2,
         act="relu")
-
-    set_error_clip(args.error_clip_method, conv_pool_1.name,
-                   args.error_clip_min, args.error_clip_max)
 
     # TODO(dzhwinter) : refine the initializer and random seed settting
     SIZE = 10
@@ -72,15 +66,30 @@ def cnn_model(data, args):
 
 
 def get_model(args):
-    # Input data
-    images = fluid.layers.data(name='pixel', shape=[1, 28, 28], dtype=DTYPE)
-    label = fluid.layers.data(name='label', shape=[1], dtype='int64')
+    if args.use_reader_op:
+        filelist = [
+            os.path.join(args.data_path, f) for f in os.listdir(args.data_path)
+        ]
+        data_file = fluid.layers.open_files(
+            filenames=filelist,
+            shapes=[[-1, 1, 28, 28], (-1, 1)],
+            lod_levels=[0, 0],
+            dtypes=["float32", "int64"],
+            thread_num=args.gpus,
+            pass_num=args.pass_num)
+        data_file = fluid.layers.double_buffer(
+            fluid.layers.batch(
+                data_file, batch_size=args.batch_size))
+        images, label = fluid.layers.read_file(data_file)
+    else:
+        images = fluid.layers.data(name='pixel', shape=[1, 28, 28], dtype=DTYPE)
+        label = fluid.layers.data(name='label', shape=[1], dtype='int64')
 
     if args.device == 'CPU' and args.cpus > 1:
         places = fluid.layers.get_places(args.cpus)
         pd = fluid.layers.ParallelDo(places)
         with pd.do():
-            predict = cnn_model(pd.read_input(images), args)
+            predict = cnn_model(pd.read_input(images))
             label = pd.read_input(label)
             cost = fluid.layers.cross_entropy(input=predict, label=label)
             avg_cost = fluid.layers.mean(x=cost)
@@ -94,7 +103,7 @@ def get_model(args):
         batch_acc = fluid.layers.mean(batch_acc)
     else:
         # Train program
-        predict = cnn_model(images, args)
+        predict = cnn_model(images)
         cost = fluid.layers.cross_entropy(input=predict, label=label)
         avg_cost = fluid.layers.mean(x=cost)
 
@@ -104,25 +113,13 @@ def get_model(args):
     # inference program
     inference_program = fluid.default_main_program().clone()
 
-    # set gradient clip
-    # set_gradient_clip(args.gradient_clip_method, args.gradient_clip_norm)
-
     # Optimization
     opt = fluid.optimizer.AdamOptimizer(
-        learning_rate=get_decay_learning_rate(
-            decay_method=args.learning_rate_decay_method,
-            learning_rate=0.001,
-            decay_steps=args.learning_rate_decay_steps,
-            decay_rate=args.learning_rate_decay_rate),
-        regularization=get_regularization(
-            regularizer_method=args.weight_decay_regularizer_method,
-            regularizer_coeff=args.weight_decay_regularizer_coeff),
-        beta1=0.9,
-        beta2=0.999)
+        learning_rate=0.001, beta1=0.9, beta2=0.999)
 
     # Reader
     train_reader = paddle.batch(
-        paddle.dataset.mnist.train(), batch_size=args.batch_size)
+        paddle.dataset.mnist.train(), batch_size=args.batch_size * args.gpus)
     test_reader = paddle.batch(
         paddle.dataset.mnist.test(), batch_size=args.batch_size)
     return avg_cost, inference_program, opt, train_reader, test_reader, batch_acc
