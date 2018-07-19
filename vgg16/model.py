@@ -59,7 +59,6 @@ parser.add_argument(
     help='If set, test the testset during training.')
 args = parser.parse_args()
 
-
 def vgg16_bn_drop(input):
     """
     vgg16_bn_drop
