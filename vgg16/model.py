@@ -15,7 +15,6 @@ import paddle.fluid.core as core
 import argparse
 import functools
 from continuous_evaluation import tracking_kpis
-
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument(
     '--batch_size', type=int, default=128, help="Batch size for training.")
