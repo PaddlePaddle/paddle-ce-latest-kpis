@@ -18,6 +18,7 @@ import paddle.fluid as fluid
 import paddle.fluid.core as core
 import paddle.fluid.profiler as profiler
 
+sys.path.append("../resnet50_net")
 import models
 import models.resnet
 
@@ -92,10 +93,10 @@ def print_arguments(args):
 
 def get_cards(args):
     if args.use_gpu:
-        cards = os.environ.get('CPU_NUM')
-    else:
         cards = os.environ.get('CUDA_VISIBLE_DEVICES')
         cards = str(len(cards.split(",")))
+    else:
+        cards = os.environ.get('CPU_NUM')
     return cards
 
 
