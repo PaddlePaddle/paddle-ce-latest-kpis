@@ -11,6 +11,7 @@ import os
 import numpy as np
 from continuous_evaluation import train_avg_loss_kpi, train_seq_err_kpi
 
+
 parser = argparse.ArgumentParser(description=__doc__)
 add_arg = functools.partial(add_arguments, argparser=parser)
 # yapf: disable
