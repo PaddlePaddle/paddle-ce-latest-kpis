@@ -2,7 +2,6 @@
 VGG16 benchmark in Fluid
 """
 from __future__ import print_function
-
 import sys
 import time
 import numpy as np
@@ -14,9 +13,7 @@ import paddle.fluid as fluid
 import paddle.fluid.core as core
 import argparse
 import functools
-
 from continuous_evaluation import tracking_kpis
-
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument(
     '--batch_size', type=int, default=128, help="Batch size for training.")
@@ -61,7 +58,6 @@ parser.add_argument(
     action='store_true',
     help='If set, test the testset during training.')
 args = parser.parse_args()
-
 
 def vgg16_bn_drop(input):
     """
