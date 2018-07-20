@@ -8,7 +8,6 @@ from se_resnext import SE_ResNeXt
 from mobilenet import mobile_net
 import paddle.dataset.flowers as flowers
 import reader
-
 import argparse
 import functools
 import paddle.fluid.layers.ops as ops
