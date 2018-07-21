@@ -237,6 +237,8 @@ def run_benchmark(model, args):
     def test(test_exe):
         test_accuracy = fluid.average.WeightedAverage()
         for batch_id, data in enumerate(test_reader()):
+            if batch_id == args.iterations:
+                break
             img_data = np.array(map(lambda x: x[0].reshape(dshape),
                                     data)).astype("float32")
             y_data = np.array(map(lambda x: x[1], data)).astype(
