@@ -19,7 +19,8 @@ PADDLE_CLOUD_CLI_PATH=$CURRENT_FILE_DIR/paddle_cloud_cli/
 LOCAL_IMAGE_DIR=$CURRENT_FILE_DIR/$PADDLE_CLOUD_HELPER_PATH/paddle_cloud_docker_job/
 
 # 3. Clone helper and source all envs
-rm -rf $PADDLE_CLOUD_HELPER_PATH && git clone $PADDLE_CLOUD_HELPER_GIT_SERVER $PADDLE_CLOUD_HELPER_PATH && cd $PADDLE_CLOUD_HELPER_PATH && source envs.sh && cd $CURRENT_FILE_DIR
+# rm -rf $PADDLE_CLOUD_HELPER_PATH && git clone $PADDLE_CLOUD_HELPER_GIT_SERVER $PADDLE_CLOUD_HELPER_PATH &&
+  cd $PADDLE_CLOUD_HELPER_PATH && source envs.sh && cd $CURRENT_FILE_DIR
 
 # Prepare the docker image
 PADDLE_LOCAL_DOCKER_HUB_TAG=minqiyang/ce_dist_resnet50:${PADDLE_COMMIT}
