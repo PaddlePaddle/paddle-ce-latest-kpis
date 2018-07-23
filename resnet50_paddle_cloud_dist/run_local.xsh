@@ -71,7 +71,7 @@ train --cluster-name ${PADDLE_CLOUD_CLUSTER_NAME}
 --k8s-priority ${PADDLE_CLOUD_JOB_PRIORITY}
 --k8s-wall-time ${PADDLE_CLOUD_JOB_WALL_TIME}
 --job-name ${PADDLE_CLOUD_JOB_NAME}
---start-cmd "GLOG_logtostderr=1 GLOG_v=4 python fluid_benchmark.py --model resnet --data_set flowers --iterations 20 --device GPU --gpus 8 --batch_size 32 --pass_num 1000 --update_method pserver"
+--start-cmd "FLAGS_rpc_deadline=1800000 GLOG_logtostderr=1 GLOG_v=4 python fluid_benchmark.py --model resnet --data_set flowers --iterations 20 --device GPU --gpus 8 --batch_size 32 --pass_num 1000 --update_method pserver"
 --job-conf $PADDLE_CLOUD_HELPER_PATH/job_conf.py
 --files ${PADDLE_CLOUD_BENCHMARK_FILE}
 --k8s-not-local
@@ -95,7 +95,7 @@ train --cluster-name ${PADDLE_CLOUD_CLUSTER_NAME} \
 --k8s-priority ${PADDLE_CLOUD_JOB_PRIORITY} \
 --k8s-wall-time ${PADDLE_CLOUD_JOB_WALL_TIME} \
 --job-name ${PADDLE_CLOUD_JOB_NAME} \
---start-cmd "GLOG_logtostderr=1 GLOG_v=4 python fluid_benchmark.py --model resnet --data_set flowers --iterations 20 --device GPU --gpus 8 --batch_size 32 --pass_num 1000 --update_method pserver" \
+--start-cmd "FLAGS_rpc_deadline=1800000 GLOG_logtostderr=1 GLOG_v=4 python fluid_benchmark.py --model resnet --data_set flowers --iterations 20 --device GPU --gpus 8 --batch_size 32 --pass_num 1000 --update_method pserver" \
 --job-conf $PADDLE_CLOUD_HELPER_PATH/job_conf.py \
 --files ${PADDLE_CLOUD_BENCHMARK_FILE} \
 --k8s-not-local \
