@@ -1,1 +1,0 @@
-../resnet50_net/continuous_evaluation.py

@@ -1,1 +1,0 @@
-../resnet50_net/train.py
