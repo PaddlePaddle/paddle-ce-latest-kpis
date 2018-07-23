@@ -18,7 +18,6 @@ import paddle.fluid as fluid
 import paddle.fluid.core as core
 import paddle.fluid.profiler as profiler
 
-sys.path.append("../resnet50_net")
 import models
 import models.resnet
 

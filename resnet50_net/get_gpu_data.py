@@ -5,11 +5,6 @@
 # Copyright (c) 2018 Baidu.com, Inc. All Rights Reserved
 # 
 ########################################################################
-"""
-File: get_gpu_data.py
-Author: paddle(paddle@baidu.com)
-Date: 2018/04/02 15:57:14
-"""
 import os
 import sys
 import argparse
@@ -50,10 +45,11 @@ def save_gpu_data():
 
     kpi_name = '%s_%s_%s_gpu_memory' % (args.data_set, args.batch_size,
                                         run_info)
-    gpu_memory_factor = None
+    gpu_memory_kpi = None
     for kpi in tracking_kpis:
         if kpi.name == kpi_name:
             gpu_memory_kpi = kpi
+    assert gpu_memory_kpi is not None, kpi_nam + "is not found."
     gpu_memory_kpi.add_record(max(mem_list))
     gpu_memory_kpi.persist()
 
