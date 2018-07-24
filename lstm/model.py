@@ -24,6 +24,7 @@ import paddle.fluid.profiler as profiler
 
 from continuous_evaluation import tracking_kpis
 
+fluid.default_startup_program().random_seed = 81
 
 def parse_args():
     parser = argparse.ArgumentParser("Understand Sentiment by Dynamic RNN.")
@@ -173,9 +174,7 @@ def main():
     exe.run(fluid.default_startup_program())
 
     train_reader = batch(
-        paddle.reader.shuffle(
             crop_sentence(imdb.train(word_dict), args.crop_size),
-            buf_size=25000),
         batch_size=args.batch_size)
 
     train_acc_kpi = None
