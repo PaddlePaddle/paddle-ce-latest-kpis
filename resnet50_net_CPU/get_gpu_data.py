@@ -13,6 +13,9 @@ Date: 2018/04/02 15:57:14
 import os
 import sys
 import argparse
+
+curdir = os.getcwd()
+sys.path.insert(0, curdir)
 from continuous_evaluation import tracking_kpis
 
 parser = argparse.ArgumentParser(description=__doc__)

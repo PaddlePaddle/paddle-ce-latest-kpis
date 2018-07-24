@@ -18,10 +18,10 @@ import paddle.fluid as fluid
 import paddle.fluid.core as core
 import paddle.fluid.profiler as profiler
 
-sys.path.append("../resnet50_net")
 import models
 import models.resnet
-
+curdir = os.getcwd()
+sys.path.insert(0, curdir)
 from continuous_evaluation import tracking_kpis
 
 fluid.default_startup_program().random_seed = 1
