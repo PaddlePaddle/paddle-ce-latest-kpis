@@ -1,0 +1,1 @@
+../resnet50_net_CPU/train.py
