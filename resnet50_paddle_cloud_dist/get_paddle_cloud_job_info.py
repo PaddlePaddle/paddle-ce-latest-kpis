@@ -11,7 +11,7 @@ def _fetch_job_id(result):
     return result.split("=")[1].strip()
 
 def _wait_paddle_job_success(job_id):
-    retry_times = 60
+    retry_times = 150
     retry_interval = 60 # secs
     while retry_times:
         try:

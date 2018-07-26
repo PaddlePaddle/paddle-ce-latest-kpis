@@ -3,7 +3,7 @@
 # TODO(minqiyang): move these hack lines to envs
 CURRENT_FILE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PADDLE_PATH=$CURRENT_FILE_DIR/../../Paddle
-PADDLE_BUILD_PATH=$PADDLE_PATH/build52/develop
+PADDLE_BUILD_PATH=$PADDLE_PATH/build
 PADDLE_BENCHMARK_PATH=$PADDLE_PATH/benchmark/fluid
 PADDLE_CLOUD_FILES_PATH=./fluid
 
@@ -45,8 +45,8 @@ PADDLE_CLOUD_JOB_WALL_TIME=1:00:00
 PADDLE_CLOUD_PSERVER_COUNT=2
 PADDLE_CLOUD_TRAINER_COUNT=2
 PADDLE_CLOUD_PSERVER_CPUS=10
-PADDLE_CLOUD_TRAINER_CPUS=20
-PADDLE_CLOUD_TRAINER_GPUS=8
+PADDLE_CLOUD_TRAINER_CPUS=2
+PADDLE_CLOUD_TRAINER_GPUS=2
 PADDLE_CLOUD_TRAINER_GPU_TYPE=baidu/gpu_p40
 PADDLE_CLOUD_PSERVER_MEM=10Gi
 PADDLE_CLOUD_TRAINER_MEM=100Gi
@@ -70,7 +70,7 @@ train --cluster-name ${PADDLE_CLOUD_CLUSTER_NAME}
 --k8s-priority ${PADDLE_CLOUD_JOB_PRIORITY}
 --k8s-wall-time ${PADDLE_CLOUD_JOB_WALL_TIME}
 --job-name ${PADDLE_CLOUD_JOB_NAME}
---start-cmd "GLOG_logtostderr=1 GLOG_v=4 python fluid_benchmark.py --model resnet --data_set flowers --iterations 20 --device GPU --gpus 8 --batch_size 32 --pass_num 1000 --update_method pserver"
+--start-cmd "GLOG_logtostderr=1 GLOG_v=4 python fluid_benchmark.py --model resnet --data_set flowers --iterations 20 --device GPU --gpus ${PADDLE_CLOUD_TRAINER_GPUS} --batch_size 32 --pass_num 90 --update_method pserver --no_random"
 --job-conf $PADDLE_CLOUD_HELPER_PATH/job_conf.py
 --files ${PADDLE_CLOUD_BENCHMARK_FILE}
 --k8s-not-local
@@ -94,7 +94,7 @@ train --cluster-name ${PADDLE_CLOUD_CLUSTER_NAME} \
 --k8s-priority ${PADDLE_CLOUD_JOB_PRIORITY} \
 --k8s-wall-time ${PADDLE_CLOUD_JOB_WALL_TIME} \
 --job-name ${PADDLE_CLOUD_JOB_NAME} \
---start-cmd "GLOG_logtostderr=1 GLOG_v=4 python fluid_benchmark.py --model resnet --data_set flowers --iterations 20 --device GPU --gpus 8 --batch_size 32 --pass_num 1000 --update_method pserver" \
+--start-cmd "GLOG_logtostderr=1 GLOG_v=4 python fluid_benchmark.py --model resnet --data_set flowers --iterations 20 --device GPU --gpus ${PADDLE_CLOUD_TRAINER_GPUS} --batch_size 32 --pass_num 90 --update_method pserver --no_random" \
 --job-conf $PADDLE_CLOUD_HELPER_PATH/job_conf.py \
 --files ${PADDLE_CLOUD_BENCHMARK_FILE} \
 --k8s-not-local \

@@ -16,6 +16,7 @@ import argparse
 import cProfile
 import time
 import os
+import threading
 
 import numpy as np
 
@@ -281,6 +282,7 @@ def train_parallel(avg_loss, infer_prog, optimizer, train_reader, test_reader,
             batch_id += 1
 
         print_train_time(start_time, time.time(), num_samples)
+        print("current activate thread num: ", threading.active_count())
         if not args.no_test and batch_acc and not args.use_reader_op:
             # we have not implement record io for test
             # skip test when use args.use_reader_op
@@ -299,10 +301,10 @@ def print_arguments(args):
     print('------------------------------------------------')
 
 
-def print_test_acc(passid, test_acc):
+def print_test_acc(pass_id, test_acc):
     test_acc_str="Pass: %d, Test Accuracy: %f\n" % (pass_id, test_acc)
     print(test_acc_str)
-    with open('./output/training_result', 'wb') as f:
+    with open('./output/training_result', 'a+') as f:
         f.write(test_acc_str)
         f.flush()
 
@@ -313,7 +315,7 @@ def print_train_time(start_time, end_time, num_samples):
     train_time_str = '\nTotal examples: %d, total time: %.5f, %.5f examples/sed\n' % \
             (num_samples, train_elapsed, examples_per_sec)
     print(train_time_str)
-    with open('./output/training_result', 'wb') as f:
+    with open('./output/training_result', 'a+') as f:
         f.write(train_time_str)
         f.flush()
 
@@ -323,6 +325,8 @@ def print_paddle_envs():
     for k in os.environ:
         if "PADDLE_" in k:
             print "ENV %s:%s" % (k, os.environ[k])
+    print("ENV %s:%s" % ("POD_IP", os.getenv("POD_IP", "")))
+    print("ENV %s:%s" % ("TRAINING_ROLE", os.getenv("TRAINING_ROLE")))
     print('------------------------------------------------')
 
 
