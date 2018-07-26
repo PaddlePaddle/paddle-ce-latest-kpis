@@ -1,0 +1,1 @@
+../resnet50_net_CPU/get_gpu_data.py
