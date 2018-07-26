@@ -1,5 +1,4 @@
 #!/bin/bash
-
 export MKL_NUM_THREADS=1
 export OMP_NUM_THREADS=1
 cudaid=${resnet50_cudaid:=0} # use 0-th card as default
