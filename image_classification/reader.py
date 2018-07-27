@@ -10,7 +10,7 @@ random.seed(0)
 
 DATA_DIM = 224
 
-THREAD = 8
+THREAD = 1
 BUF_SIZE = 1024
 
 DATA_DIR = 'ILSVRC2012'
