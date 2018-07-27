@@ -2,7 +2,7 @@
 
 # TODO(minqiyang): move these hack lines to envs
 CURRENT_FILE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PADDLE_PATH=$CURRENT_FILE_DIR/../../Paddle
+PADDLE_PATH=$CURRENT_FILE_DIR/../../..
 PADDLE_BUILD_PATH=$PADDLE_PATH/build
 PADDLE_BENCHMARK_PATH=$PADDLE_PATH/benchmark/fluid
 PADDLE_CLOUD_FILES_PATH=./fluid
