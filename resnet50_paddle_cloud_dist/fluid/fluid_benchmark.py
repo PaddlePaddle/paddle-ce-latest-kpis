@@ -362,6 +362,7 @@ def main():
         if args.gpus > 1 and os.getenv("TRAINING_ROLE") == "TRAINER":
             train_args.extend([nccl_id_var, num_trainers, trainer_id])
             train_parallel(*train_args)
+            exit(0)
         train(*train_args)
         exit(0)
 
