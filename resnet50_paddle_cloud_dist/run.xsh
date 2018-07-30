@@ -70,7 +70,7 @@ train --cluster-name ${PADDLE_CLOUD_CLUSTER_NAME}
 --k8s-priority ${PADDLE_CLOUD_JOB_PRIORITY}
 --k8s-wall-time ${PADDLE_CLOUD_JOB_WALL_TIME}
 --job-name ${PADDLE_CLOUD_JOB_NAME}
---start-cmd "GLOG_logtostderr=1 GLOG_v=4 python fluid_benchmark.py --model resnet --data_set flowers --iterations 20 --device GPU --gpus ${PADDLE_CLOUD_TRAINER_GPUS} --batch_size 32 --pass_num 50 --update_method pserver --no_random"
+--start-cmd "GLOG_logtostderr=1 GLOG_v=4 python fluid_benchmark.py --model resnet --data_set flowers --iterations 20 --device GPU --gpus ${PADDLE_CLOUD_TRAINER_GPUS} --batch_size 32 --pass_num 50 --update_method pserver --no_random --no_split_var"
 --job-conf $PADDLE_CLOUD_HELPER_PATH/job_conf.py
 --files ${PADDLE_CLOUD_BENCHMARK_FILE}
 --k8s-not-local
@@ -85,6 +85,9 @@ train --cluster-name ${PADDLE_CLOUD_CLUSTER_NAME}
 --image-addr "${PADDLE_CLOUD_DOCKER_HUB_TAG}"
 EOF
 
+#TODO(minqiyang):
+# 1. Fix the continuous increase of activate thread count
+# 2. Fix the no split var caused by ir
 PADDLE_CLOUD_RESULT=$(paddlecloud job --server ${PADDLE_CLOUD_SERVER} \
 --port ${PADDLE_CLOUD_PORT} \
 --user-ak ${PADDLE_CLOUD_AK} \
@@ -94,7 +97,7 @@ train --cluster-name ${PADDLE_CLOUD_CLUSTER_NAME} \
 --k8s-priority ${PADDLE_CLOUD_JOB_PRIORITY} \
 --k8s-wall-time ${PADDLE_CLOUD_JOB_WALL_TIME} \
 --job-name ${PADDLE_CLOUD_JOB_NAME} \
---start-cmd "GLOG_logtostderr=1 GLOG_v=4 python fluid_benchmark.py --model resnet --data_set flowers --iterations 20 --device GPU --gpus ${PADDLE_CLOUD_TRAINER_GPUS} --batch_size 32 --pass_num 50 --update_method pserver --no_random" \
+--start-cmd "GLOG_logtostderr=1 GLOG_v=4 python fluid_benchmark.py --model resnet --data_set flowers --iterations 20 --device GPU --gpus ${PADDLE_CLOUD_TRAINER_GPUS} --batch_size 32 --pass_num 50 --update_method pserver --no_random --no_split_var" \
 --job-conf $PADDLE_CLOUD_HELPER_PATH/job_conf.py \
 --files ${PADDLE_CLOUD_BENCHMARK_FILE} \
 --k8s-not-local \
@@ -121,8 +124,10 @@ python get_paddle_cloud_job_info.py $PADDLE_CLOUD_RET_CODE "$PADDLE_CLOUD_RESULT
 
 PADDLE_CLOUD_JOB_INFO_CODE=$?
 
+PADDLE_CLOUD_JOB_ID=$(cat ./paddle_cloud_job_id)
+
 if [ $PADDLE_CLOUD_JOB_INFO_CODE -eq 0 ]; then
-  ${HADOOP_BIN} fs -Dhadoop.job.ugi=${HADOOP_UGI} -fs ${HADOOP_FS} -get ${HADOOP_PATH}/training_result ./
+  ${HADOOP_BIN} fs -Dhadoop.job.ugi=${HADOOP_UGI} -fs ${HADOOP_FS} -get ${HADOOP_PATH}/${PADDLE_CLOUD_USER_ID}/${PADDLE_CLOUD_JOB_ID}/rank-00000/training_result ./
   python record_kpi.py ./training_result
 else
   exit 1

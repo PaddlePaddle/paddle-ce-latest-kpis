@@ -24,18 +24,20 @@ train_acc_kpi = tracking_kpis[1]
 with open('./training_result', 'r') as f:
     lines = f.readlines()
 
-print("training_result: ", lines)
-
 # persist train speed kpi
+training_speed = []
 for line in lines:
     train_speed_str_pattern = re.compile('Total examples')
     m = train_speed_str_pattern.match(line)
     if m:
         pattern = re.compile('\d+\.\d+')
         m = pattern.findall(line)
-        train_speed_kpi.add_record(np.array(m[1], dtype='float32'))
-        print("train_speed_kpi: ", m[1])
-        train_speed_kpi.persist()
+        training_speed.append(float(m[1]))
+
+training_speed = np.mean(training_speed)
+train_speed_kpi.add_record(np.array(training_speed, dtype='float32'))
+print("train_speed_kpi: ", training_speed)
+train_speed_kpi.persist()
 
 # persist train acc kpi
 for line in lines:
@@ -44,6 +46,8 @@ for line in lines:
     if m:
         pattern = re.compile('\d+\.\d+')
         m = pattern.findall(line)
-        train_acc_kpi.add_record(np.array(m[0], dtype='float32'))
-        print("train_acc_kpi:", m[0])
-        train_acc_kpi.persist()
+train_acc = float(m[0])
+
+train_acc_kpi.add_record(np.array(train_acc, dtype='float32'))
+print("train_acc_kpi:", train_acc)
+train_acc_kpi.persist()

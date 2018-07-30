@@ -3,7 +3,7 @@
 # TODO(minqiyang): move these hack lines to envs
 CURRENT_FILE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PADDLE_PATH=$CURRENT_FILE_DIR/../../Paddle
-PADDLE_BUILD_PATH=$PADDLE_PATH/build52/develop
+PADDLE_BUILD_PATH=$PADDLE_PATH/build52/fix_hang_up
 PADDLE_BENCHMARK_PATH=$PADDLE_PATH/benchmark/fluid
 PADDLE_CLOUD_FILES_PATH=./fluid
 
@@ -125,8 +125,10 @@ python get_paddle_cloud_job_info.py $PADDLE_CLOUD_RET_CODE "$PADDLE_CLOUD_RESULT
 
 PADDLE_CLOUD_JOB_INFO_CODE=$?
 
+PADDLE_CLOUD_JOB_ID=$(cat ./paddle_cloud_job_id)
+
 if [ $PADDLE_CLOUD_JOB_INFO_CODE -eq 0 ]; then
-  ${HADOOP_BIN} fs -Dhadoop.job.ugi=${HADOOP_UGI} -fs ${HADOOP_FS} -get ${HADOOP_PATH}/training_result ./
+  ${HADOOP_BIN} fs -Dhadoop.job.ugi=${HADOOP_UGI} -fs ${HADOOP_FS} -get ${HADOOP_PATH}/${PADDLE_CLOUD_USER_ID}/${PADDLE_CLOUD_JOB_ID}/rank-00000/training_result ./
   python record_kpi.py ./training_result
 else
   exit 1
