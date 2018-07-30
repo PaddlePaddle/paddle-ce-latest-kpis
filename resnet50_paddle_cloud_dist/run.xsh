@@ -126,8 +126,9 @@ PADDLE_CLOUD_JOB_INFO_CODE=$?
 
 PADDLE_CLOUD_JOB_ID=$(cat ./paddle_cloud_job_id)
 
+echo ${HADOOP_PATH}/${PADDLE_CLOUD_USER_ID}/${PADDLE_CLOUD_JOB_ID}/rank-00000/training_result
 if [ $PADDLE_CLOUD_JOB_INFO_CODE -eq 0 ]; then
-  ${HADOOP_BIN} fs -Dhadoop.job.ugi=${HADOOP_UGI} -fs ${HADOOP_FS} -get ${HADOOP_PATH}/${PADDLE_CLOUD_USER_ID}/${PADDLE_CLOUD_JOB_ID}/rank-00000/training_result ./
+  rm training_result && ${HADOOP_BIN} fs -Dhadoop.job.ugi=${HADOOP_UGI} -fs ${HADOOP_FS} -get ${HADOOP_PATH}/${PADDLE_CLOUD_USER_ID}/${PADDLE_CLOUD_JOB_ID}/rank-00000/training_result ./
   python record_kpi.py ./training_result
 else
   exit 1

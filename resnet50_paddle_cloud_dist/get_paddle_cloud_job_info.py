@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     job_id = _fetch_job_id(sys.argv[2])
     print("Get job_id: %s" % job_id)
-    with open('./paddle_cloud_job_id', 'a+') as f:
+    with open('./paddle_cloud_job_id', 'w+') as f:
         f.write(str(job_id))
         f.flush()
 
