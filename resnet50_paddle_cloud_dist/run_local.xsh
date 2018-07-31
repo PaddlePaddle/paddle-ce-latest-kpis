@@ -22,22 +22,21 @@ LOCAL_IMAGE_DIR=$CURRENT_FILE_DIR/$PADDLE_CLOUD_HELPER_PATH/paddle_cloud_docker_
 # rm -rf $PADDLE_CLOUD_HELPER_PATH && git clone $PADDLE_CLOUD_HELPER_GIT_SERVER $PADDLE_CLOUD_HELPER_PATH &&
   cd $PADDLE_CLOUD_HELPER_PATH && source envs.sh && cd $CURRENT_FILE_DIR
 
-# Prepare the docker image
+# 4. Prepare the docker image
 PADDLE_LOCAL_DOCKER_HUB_TAG=minqiyang/ce_dist_resnet50:${PADDLE_COMMIT}
 PADDLE_CLOUD_DOCKER_HUB_TAG=${PADDLE_CLOUD_DOCKER_SERVER}/${PADDLE_LOCAL_DOCKER_HUB_TAG}
 
-# Copy whl package to local image dir
-rm -rf $LOCAL_IMAGE_DIR/*.whl && cp $PADDLE_BUILD_PATH/python/dist/*.whl $LOCAL_IMAGE_DIR
+# 5. Copy whl package to local image dir
+PADDLE_CODE_HOST_PATH=/home/teamcity/system/git
+PADDLE_CODE_PATH=paddle_dist_ce_${PADDLE_COMMIT}
+docker run --privileged --net=host -v  ${PADDLE_CODE_HOST_PATH}:/paddle -e "WITH_ANAKIN=OFF" -e "WITH_DOC=OFF" -e "WITH_GPU=ON" -e "WITH_DISTRIBUTE=ON" -e "WITH_SWIG_PY=ON" -e "WITH_PYTHON=ON" -e "PYTHON_ABI=cp27-cp27mu" -e "https_proxy=http://172.19.61.250:3128" -e "PADDLE_COMMIT=${PADDLE_COMMIT}" paddlepaddle/paddle_manylinux_devel:cuda8.0_cudnn5 bash -c "cd /paddle && rm -rf ${PADDLE_CODE_PATH}* && mkdir ${PADDLE_CODE_PATH} && cd ${PADDLE_CODE_PATH} && git clone https://github.com/PaddlePaddle/Paddle && cd Paddle && ./paddle/scripts/paddle_build.sh build > /dev/null" && rm -rf $LOCAL_IMAGE_DIR/*.whl && cp $PADDLE_CODE_HOST_PATH/$PADDLE_CODE_PATH/Paddle/build/python/dist/*.whl $LOCAL_IMAGE_DIR && rm -rf $PADDLE_CODE_HOST_PATH/$PADDLE_CODE_PATH
 
-# Add fluid benchmark code to local image dir
-# rm -rf fluid && cp -r $PADDLE_BENCHMARK_PATH $CURRENT_FILE_DIR
-
-# Build docker image
-docker login -u $PADDLE_CLOUD_DOCKER_HUB_USERNAME -p $PADDLE_CLOUD_DOCKER_HUB_PASSWORD $PADDLE_CLOUD_DOCKER_SERVER
+# 6. Build docker image
+docker login -u $PADDLE_CLOUD_DOCKER_HUB_USERNAME -p $PADDLE_CLOUD_DOCKER_HUB_PASSWORD -e minqiyang@baidu.com $PADDLE_CLOUD_DOCKER_SERVER
 docker build -t $PADDLE_CLOUD_DOCKER_HUB_TAG $LOCAL_IMAGE_DIR
 docker push $PADDLE_CLOUD_DOCKER_HUB_TAG
 
-# Submit job to paddle cloud
+# 7. Submit job to paddle cloud
 PADDLE_CLOUD_JOB_VERSION=paddle-fluid-custom
 PADDLE_CLOUD_JOB_PRIORITY=high
 PADDLE_CLOUD_JOB_WALL_TIME=1:00:00
@@ -121,6 +120,7 @@ fi
 
 echo "PaddleCloud submit result:" $PADDLE_CLOUD_RESULT " ret code: " $PADDLE_CLOUD_RET_CODE
 
+# 8. Collect paddle cloud job result
 python get_paddle_cloud_job_info.py $PADDLE_CLOUD_RET_CODE "$PADDLE_CLOUD_RESULT"
 
 PADDLE_CLOUD_JOB_INFO_CODE=$?
