@@ -365,6 +365,7 @@ if __name__ == '__main__':
         'resnet_imagenet': resnet_imagenet,
         'resnet_cifar10': resnet_cifar10
     }
+
     args = parse_args()
     print_arguments(args)
     global is_alive
