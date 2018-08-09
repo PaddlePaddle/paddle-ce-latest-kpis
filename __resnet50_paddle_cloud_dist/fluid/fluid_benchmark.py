@@ -41,7 +41,8 @@ def append_nccl2_prepare(trainer_id):
         current_endpoint = os.getenv("PADDLE_CURRENT_IP") + ":" + port
         worker_endpoints.remove(current_endpoint)
 
-        nccl_id_var = fluid.default_startup_program().global_block().create_var(
+        nccl_id_var = fluid.default_startup_program().global_block(
+        ).create_var(
             name="NCCLID",
             persistable=True,
             type=fluid.core.VarDesc.VarType.RAW)
@@ -56,8 +57,9 @@ def append_nccl2_prepare(trainer_id):
             })
         return nccl_id_var, num_trainers, trainer_id
     else:
-        raise Exception("must set positive PADDLE_TRAINER_ID env variables for "
-                        "nccl-based dist train.")
+        raise Exception(
+            "must set positive PADDLE_TRAINER_ID env variables for "
+            "nccl-based dist train.")
 
 
 def dist_transpile(trainer_id, args):
@@ -116,8 +118,8 @@ def test(exe, inference_program, test_reader, feeder, batch_acc):
 
 # TODO(wuyi): replace train, train_parallel, test functions with new trainer
 # API once it is ready.
-def train(avg_loss, infer_prog, optimizer, train_reader, test_reader, batch_acc,
-          args, train_prog, startup_prog):
+def train(avg_loss, infer_prog, optimizer, train_reader, test_reader,
+          batch_acc, args, train_prog, startup_prog):
     if os.getenv("TRAINING_ROLE") == "PSERVER":
         place = core.CPUPlace()
         exe = fluid.Executor(place)
@@ -302,7 +304,7 @@ def print_arguments(args):
 
 
 def print_test_acc(pass_id, test_acc):
-    test_acc_str="Pass: %d, Test Accuracy: %f\n" % (pass_id, test_acc)
+    test_acc_str = "Pass: %d, Test Accuracy: %f\n" % (pass_id, test_acc)
     print(test_acc_str)
     with open('./output/training_result', 'a+') as f:
         f.write(test_acc_str)
@@ -371,7 +373,8 @@ def main():
     train_args.append(fluid.default_startup_program())
 
     if args.update_method == "nccl2":
-        nccl_id_var, num_trainers, trainer_id = append_nccl2_prepare(trainer_id)
+        nccl_id_var, num_trainers, trainer_id = append_nccl2_prepare(
+            trainer_id)
     if args.gpus == 1:
         # NOTE: parallel executor use profiler interanlly
         if args.use_nvprof and args.device == 'GPU':

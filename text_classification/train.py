@@ -14,6 +14,7 @@ from nets import gru_net
 from continuous_evaluation import *
 fluid.default_startup_program().random_seed = 99
 
+
 def parse_args():
     parser = argparse.ArgumentParser("text_classification model benchmark.")
     parser.add_argument(
@@ -23,6 +24,7 @@ def parse_args():
 
     args = parser.parse_args()
     return args
+
 
 def train(train_reader,
           word_dict,
@@ -103,6 +105,7 @@ def train(train_reader,
     else:
         lstm_train_cost_kpi_card4.persist()
         lstm_pass_duration_kpi_card4.persist()
+
 
 def train_net():
     args = parse_args()

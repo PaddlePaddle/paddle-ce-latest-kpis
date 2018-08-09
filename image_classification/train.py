@@ -21,10 +21,12 @@ from continuous_evaluation import (train_acc_top1_kpi, train_acc_top5_kpi,
                                    train_cost_kpi, train_speed_kpi)
 parser = argparse.ArgumentParser(description=__doc__)
 add_arg = functools.partial(add_arguments, argparser=parser)
-add_arg('batch_size',   int,  256, "Minibatch size.")
-add_arg('num_layers',   int,  50,  "How many layers for SE-ResNeXt model.")
-add_arg('with_mem_opt', bool, True, "Whether to use memory optimization or not.")
-add_arg('parallel_exe', bool, True, "Whether to use ParallelExecutor to train or not.")
+add_arg('batch_size', int, 256, "Minibatch size.")
+add_arg('num_layers', int, 50, "How many layers for SE-ResNeXt model.")
+add_arg('with_mem_opt', bool, True,
+        "Whether to use memory optimization or not.")
+add_arg('parallel_exe', bool, True,
+        "Whether to use ParallelExecutor to train or not.")
 add_arg('init_model', str, None, "Whether to use initialized model.")
 add_arg('pretrained_model', str, None, "Whether to use pretrained model.")
 add_arg('lr_strategy', str, "cosine_decay",

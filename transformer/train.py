@@ -13,6 +13,7 @@ from continuous_evaluation import *
 # random seed must set before configuring the network.
 fluid.default_startup_program().random_seed = 101
 
+
 def pad_batch_data(insts,
                    pad_idx,
                    n_head,
@@ -139,6 +140,7 @@ def read_multiple(reader, count):
 
     return __impl__
 
+
 def parse_args():
     parser = argparse.ArgumentParser("mnist model benchmark.")
     parser.add_argument(
@@ -174,8 +176,8 @@ def main():
     dev_count = fluid.core.get_cuda_device_count()
 
     train_data = paddle.batch(
-            paddle.dataset.wmt16.train(ModelHyperParams.src_vocab_size,
-                                       ModelHyperParams.trg_vocab_size),
+        paddle.dataset.wmt16.train(ModelHyperParams.src_vocab_size,
+                                   ModelHyperParams.trg_vocab_size),
         batch_size=TrainTaskConfig.batch_size)
 
     # Program to do validation.
@@ -222,8 +224,7 @@ def main():
     util_input_names = encoder_util_input_fields + decoder_util_input_fields
 
     train_exe = fluid.ParallelExecutor(
-        use_cuda=TrainTaskConfig.use_gpu,
-        loss_name=sum_cost.name)
+        use_cuda=TrainTaskConfig.use_gpu, loss_name=sum_cost.name)
 
     test_exe = fluid.ParallelExecutor(
         use_cuda=TrainTaskConfig.use_gpu,
@@ -284,10 +285,13 @@ def main():
                 test_avg_ppl_kpi.persist()
                 train_pass_duration_kpi.persist()
             else:
-                test_avg_ppl_kpi_card4.add_record(np.array(val_ppl, dtype='float32'))
+                test_avg_ppl_kpi_card4.add_record(
+                    np.array(
+                        val_ppl, dtype='float32'))
                 train_pass_duration_kpi_card4.add_record(time_consumed)
                 test_avg_ppl_kpi_card4.persist()
                 train_pass_duration_kpi_card4.persist()
-           
+
+
 if __name__ == "__main__":
     main()

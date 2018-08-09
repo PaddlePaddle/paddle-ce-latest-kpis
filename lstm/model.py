@@ -25,6 +25,7 @@ import paddle.fluid.profiler as profiler
 from continuous_evaluation import tracking_kpis
 fluid.default_startup_program().random_seed = 105
 
+
 def parse_args():
     parser = argparse.ArgumentParser("Understand Sentiment by Dynamic RNN.")
     parser.add_argument(

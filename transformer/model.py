@@ -17,6 +17,7 @@ def position_encoding_init(n_position, d_pos_vec):
     position_enc[1:, 1::2] = np.cos(position_enc[1:, 1::2])  # dim 2i+1
     return position_enc.astype("float32")
 
+
 def multi_head_attention(queries,
                          keys,
                          values,

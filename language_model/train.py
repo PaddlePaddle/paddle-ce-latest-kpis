@@ -12,6 +12,7 @@ from continuous_evaluation import *
 # random seed must set before configuring the network.
 fluid.default_startup_program().random_seed = 102
 
+
 def network(src, dst, vocab_size, hid_size, init_low_bound, init_high_bound):
     """ network definition """
     emb_lr_x = 10.0
@@ -51,6 +52,7 @@ def network(src, dst, vocab_size, hid_size, init_low_bound, init_high_bound):
     cost = fluid.layers.cross_entropy(input=fc, label=dst)
     return cost
 
+
 def parse_args():
     parser = argparse.ArgumentParser("mnist model benchmark.")
     parser.add_argument(
@@ -58,6 +60,7 @@ def parse_args():
 
     args = parser.parse_args()
     return args
+
 
 def train(train_reader,
           vocab,
@@ -144,10 +147,12 @@ def train(train_reader,
 
         if pass_idx == pass_num - 1:
             if args.gpu_card_num == 1:
-                imikolov_20_pass_duration_kpi.add_record(total_time / epoch_idx)
+                imikolov_20_pass_duration_kpi.add_record(total_time /
+                                                         epoch_idx)
                 imikolov_20_avg_ppl_kpi.add_record(newest_ppl)
             else:
-                imikolov_20_pass_duration_kpi_card4.add_record(total_time / epoch_idx)
+                imikolov_20_pass_duration_kpi_card4.add_record(total_time /
+                                                               epoch_idx)
                 imikolov_20_avg_ppl_kpi_card4.add_record(newest_ppl)
         save_dir = "%s/epoch_%d" % (model_dir, epoch_idx)
         feed_var_names = ["src_wordseq", "dst_wordseq"]
@@ -170,7 +175,9 @@ def train_net():
     args = parse_args()
     batch_size = 20
     vocab, train_reader, test_reader = utils.prepare_data(
-        batch_size=batch_size * args.gpu_card_num, buffer_size=1000, word_freq_threshold=0)
+        batch_size=batch_size * args.gpu_card_num,
+        buffer_size=1000,
+        word_freq_threshold=0)
     train(
         train_reader=train_reader,
         vocab=vocab,

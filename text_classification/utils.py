@@ -69,30 +69,24 @@ def prepare_data(data_type="imdb",
 
     if data_type == "imdb":
         train_reader = paddle.batch(
-                paddle.dataset.imdb.train(word_dict),
-            batch_size=batch_size)
+            paddle.dataset.imdb.train(word_dict), batch_size=batch_size)
 
         test_reader = paddle.batch(
-                paddle.dataset.imdb.test(word_dict), 
-            batch_size=batch_size)
+            paddle.dataset.imdb.test(word_dict), batch_size=batch_size)
 
     elif data_type == "light_imdb":
         train_reader = paddle.batch(
-                light_imdb.train(word_dict), 
-            batch_size=batch_size)
+            light_imdb.train(word_dict), batch_size=batch_size)
 
         test_reader = paddle.batch(
-                light_imdb.test(word_dict),
-            batch_size=batch_size)
+            light_imdb.test(word_dict), batch_size=batch_size)
 
     elif data_type == "tiny_imdb":
         train_reader = paddle.batch(
-                tiny_imdb.train(word_dict),
-            batch_size=batch_size)
+            tiny_imdb.train(word_dict), batch_size=batch_size)
 
         test_reader = paddle.batch(
-                tiny_imdb.test(word_dict),
-            batch_size=batch_size)
+            tiny_imdb.test(word_dict), batch_size=batch_size)
     else:
         raise RuntimeError("no such dataset")
 

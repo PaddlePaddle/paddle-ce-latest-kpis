@@ -13,11 +13,13 @@ if __name__ == "__main__":
 
     files = []
     for (dirpath, dirnames, filenames) in walk(sys.argv[1]):
-        files.extend([path.join(dirpath, filename) for filename in filenames
+        files.extend([
+            path.join(dirpath, filename)
+            for filename in filenames
             # NOTE(minqiyang): PaddleCloud will not accept Dockerfile and shell files
-            if not filename.endswith('.sh') and filename != "Dockerfile"])
+            if not filename.endswith('.sh') and filename != "Dockerfile"
+        ])
         continue
     for f in files:
         print(f)
     sys.stdout.flush()
-
