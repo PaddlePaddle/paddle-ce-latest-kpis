@@ -90,7 +90,7 @@ def train(batch_size, device, pass_num, iterations):
 
     # Evaluator
     #accuracy = fluid.evaluator.Evaluator(input=predict, label=label)
-   
+
     batch_size_tensor = fluid.layers.create_tensor(dtype='int64')
     batch_acc = fluid.layers.accuracy(
         input=predict, label=label, total=batch_size_tensor)
@@ -100,7 +100,7 @@ def train(batch_size, device, pass_num, iterations):
     inference_program = fluid.default_main_program().clone()
     with fluid.program_guard(inference_program):
         # test_target = accuracy.metrics + accuracy.states
-        target_vars=[batch_acc, batch_size_tensor]
+        target_vars = [batch_acc, batch_size_tensor]
         inference_program = fluid.io.get_inference_program(target_vars)
 
     # Optimization
@@ -163,7 +163,6 @@ def train(batch_size, device, pass_num, iterations):
             batch_end = time.time()
             every_pass_loss.append(loss)
             accuracy.add(value=acc, weight=weight)
-        
 
             if iter >= args.skip_batch_num or pass_id != 0:
                 batch_duration = time.time() - batch_start
@@ -172,18 +171,17 @@ def train(batch_size, device, pass_num, iterations):
 
             iter += 1
 
-            print(
-                    "Pass = %d, Iter = %d, Loss = %f, Accuracy = %f" %
-                    (pass_id, iter, loss, acc))
+            print("Pass = %d, Iter = %d, Loss = %f, Accuracy = %f" %
+                  (pass_id, iter, loss, acc))
         pass_train_acc = accuracy.eval()
         pass_test_acc = test(exe)
 
         total_train_time += pass_duration
-        pass_train_loss = np.mean(every_pass_loss) 
+        pass_train_loss = np.mean(every_pass_loss)
         print(
             "Pass:%d, Loss:%f, Train Accuray:%f, Test Accuray:%f, Handle Images Duration: %f\n"
-            % (pass_id, pass_train_loss, pass_train_acc,
-               pass_test_acc, pass_duration))
+            % (pass_id, pass_train_loss, pass_train_acc, pass_test_acc,
+               pass_duration))
     if pass_id == args.pass_num - 1:
         train_cost_kpi.add_record(np.array(pass_train_loss, dtype='float32'))
         train_cost_kpi.persist()

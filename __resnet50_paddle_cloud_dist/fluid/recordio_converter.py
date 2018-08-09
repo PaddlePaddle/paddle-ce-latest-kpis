@@ -45,7 +45,8 @@ def prepare_mnist(outpath, batch_size):
 
 def prepare_cifar10(outpath, batch_size):
     outfilepath = os.path.join(outpath, "cifar.recordio")
-    convert_2_recordio(cifar.train10, outfilepath, batch_size, [3, 32, 32], [1])
+    convert_2_recordio(cifar.train10, outfilepath, batch_size, [3, 32, 32],
+                       [1])
 
 
 def prepare_flowers(outpath, batch_size):

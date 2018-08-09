@@ -12,13 +12,16 @@ from utils import logger, load_dict
 from utils_extend import to_lodtensor, get_embedding
 from continuous_evaluation import *
 
+
 def parse_args():
-    parser = argparse.ArgumentParser("sequence_tagging_for_ner model benchmark.")
+    parser = argparse.ArgumentParser(
+        "sequence_tagging_for_ner model benchmark.")
     parser.add_argument(
         '--gpu_card_num', type=int, default=1, help='gpu card num used.')
 
     args = parser.parse_args()
     return args
+
 
 def test(exe, chunk_evaluator, inference_program, test_data, place):
     chunk_evaluator.reset(exe)
@@ -70,11 +73,13 @@ def main(train_data_file, test_data_file, vocab_file, target_file, emb_file,
         inference_program = fluid.io.get_inference_program(test_target)
 
     train_reader = paddle.batch(
-            reader.data_reader(train_data_file, word_dict, label_dict),
-        batch_size=BATCH_SIZE, drop_last=False)
+        reader.data_reader(train_data_file, word_dict, label_dict),
+        batch_size=BATCH_SIZE,
+        drop_last=False)
     test_reader = paddle.batch(
-            reader.data_reader(test_data_file, word_dict, label_dict),
-        batch_size=BATCH_SIZE, drop_last=False)
+        reader.data_reader(test_data_file, word_dict, label_dict),
+        batch_size=BATCH_SIZE,
+        drop_last=False)
 
     place = fluid.CUDAPlace(0) if use_gpu else fluid.CPUPlace()
     feeder = fluid.DataFeeder(feed_list=[word, mark, target], place=place)

@@ -33,7 +33,10 @@ def parse_args():
         '--batch_size', type=int, default=32, help='The minibatch size.')
     #  args related to learning rate
     parser.add_argument(
-        '--learning_rate', type=float, default=0.001, help='The learning rate.')
+        '--learning_rate',
+        type=float,
+        default=0.001,
+        help='The learning rate.')
     # TODO(wuyi): add "--use_fake_data" option back.
     parser.add_argument(
         '--skip_batch_num',
@@ -42,7 +45,10 @@ def parse_args():
         help='The first num of minibatch num to skip, for better performance test'
     )
     parser.add_argument(
-        '--iterations', type=int, default=80, help='The number of minibatches.')
+        '--iterations',
+        type=int,
+        default=80,
+        help='The number of minibatches.')
     parser.add_argument(
         '--pass_num', type=int, default=100, help='The number of passes.')
     parser.add_argument(
@@ -61,7 +67,8 @@ def parse_args():
         '--gpus',
         type=int,
         default=1,
-        help='If gpus > 1, will use ParallelExecutor to run, else use Executor.')
+        help='If gpus > 1, will use ParallelExecutor to run, else use Executor.'
+    )
     # this option is available only for vgg and resnet.
     parser.add_argument(
         '--cpus',
@@ -106,7 +113,8 @@ def parse_args():
         '--no_split_var',
         action='store_true',
         default=False,
-        help='Whether split variables into blocks when update_method is pserver')
+        help='Whether split variables into blocks when update_method is pserver'
+    )
     parser.add_argument(
         '--async_mode',
         action='store_true',

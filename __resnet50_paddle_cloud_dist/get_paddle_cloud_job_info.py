@@ -4,26 +4,38 @@ import sys
 import subprocess
 import time
 
+
 def _fetch_job_id(result):
     if "Congratulations" not in result:
         return None
 
     return result.split("=")[1].strip()
 
+
 def _wait_paddle_job_success(job_id):
     retry_times = 150
-    retry_interval = 60 # secs
+    retry_interval = 60  # secs
     while retry_times:
         try:
-            cmd = [ 'paddlecloud', 'job',
-                    '--server', os.getenv("PADDLE_CLOUD_SERVER"),
-                    '--port', os.getenv("PADDLE_CLOUD_PORT"),
-                    '--user-ak', os.getenv("PADDLE_CLOUD_AK"),
-                    '--user-sk', os.getenv("PADDLE_CLOUD_SK"),
-                    'state', ('%s' % job_id), ]
-            result = subprocess.Popen(cmd, stdout = subprocess.PIPE).communicate()[0].strip()
+            cmd = [
+                'paddlecloud',
+                'job',
+                '--server',
+                os.getenv("PADDLE_CLOUD_SERVER"),
+                '--port',
+                os.getenv("PADDLE_CLOUD_PORT"),
+                '--user-ak',
+                os.getenv("PADDLE_CLOUD_AK"),
+                '--user-sk',
+                os.getenv("PADDLE_CLOUD_SK"),
+                'state',
+                ('%s' % job_id),
+            ]
+            result = subprocess.Popen(
+                cmd, stdout=subprocess.PIPE).communicate()[0].strip()
         except Exception as e:
-            print("Failed to query paddle cloud job info, errmsg: %s" % e.message)
+            print("Failed to query paddle cloud job info, errmsg: %s" %
+                  e.message)
             return False
 
         data = json.loads(result)
@@ -35,7 +47,8 @@ def _wait_paddle_job_success(job_id):
             print("Failed to query paddle cloud job info, errdata: %s" % data)
             continue
 
-        print("State paddle cloud job, job state: %s" % data['data']['jobStatus'])
+        print("State paddle cloud job, job state: %s" %
+              data['data']['jobStatus'])
 
         if data['data']['jobStatus'] == "fail":
             print("Failed to execute paddle cloud job, errdata: %s" % data)
@@ -52,7 +65,8 @@ def _wait_paddle_job_success(job_id):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: python %s $PADDLE_CLOUD_RET_CODE $PADDLE_CLOUD_RESULT" % sys.argv[0])
+        print("Usage: python %s $PADDLE_CLOUD_RET_CODE $PADDLE_CLOUD_RESULT" %
+              sys.argv[0])
         exit(1)
 
     if sys.argv[1] != '0':
@@ -66,11 +80,11 @@ if __name__ == "__main__":
         f.flush()
 
     if not job_id:
-        print("Failed to get job info from $PADDLE_CLOUD_RESULT: %s" % sys.argv[2])
+        print("Failed to get job info from $PADDLE_CLOUD_RESULT: %s" %
+              sys.argv[2])
         exit(1)
 
     if not _wait_paddle_job_success(job_id):
         exit(1)
     else:
         exit(0)
-
