@@ -26,6 +26,8 @@ PADDLE_LOCAL_DOCKER_HUB_TAG=minqiyang/ce_dist_resnet50:${PADDLE_COMMIT}
 PADDLE_CLOUD_DOCKER_HUB_TAG=${PADDLE_CLOUD_DOCKER_SERVER}/${PADDLE_LOCAL_DOCKER_HUB_TAG}
 
 # 5. Copy whl package to local image dir
+docker system prune -f
+
 PADDLE_CODE_HOST_PATH=/home/teamcity/system/git
 PADDLE_CODE_PATH=paddle_dist_ce_${PADDLE_COMMIT}
 docker run --privileged --net=host -v  ${PADDLE_CODE_HOST_PATH}:/paddle -e "WITH_ANAKIN=OFF" -e "WITH_DOC=OFF" -e "WITH_GPU=ON" -e "WITH_DISTRIBUTE=ON" -e "WITH_SWIG_PY=ON" -e "WITH_PYTHON=ON" -e "PYTHON_ABI=cp27-cp27mu" -e "https_proxy=http://172.19.61.250:3128" -e "PADDLE_COMMIT=${PADDLE_COMMIT}" paddlepaddle/paddle_manylinux_devel:cuda8.0_cudnn5 bash -c "cd /paddle && rm -rf ${PADDLE_CODE_PATH}* && mkdir ${PADDLE_CODE_PATH} && cd ${PADDLE_CODE_PATH} && git clone https://github.com/PaddlePaddle/Paddle && cd Paddle && ./paddle/scripts/paddle_build.sh build > /dev/null" && rm -rf $LOCAL_IMAGE_DIR/*.whl && cp $PADDLE_CODE_HOST_PATH/$PADDLE_CODE_PATH/Paddle/build/python/dist/*.whl $LOCAL_IMAGE_DIR && rm -rf $PADDLE_CODE_HOST_PATH/$PADDLE_CODE_PATH
