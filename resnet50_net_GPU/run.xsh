@@ -4,6 +4,8 @@ export MKL_NUM_THREADS=1
 export OMP_NUM_THREADS=1
 cudaid=${resnet50_cudaid:=0,1,2,3} 
 export CUDA_VISIBLE_DEVICES=$cudaid 
+export FLAGS_cudnn_deterministic=true
+export FLAGS_cpu_deterministic=true
 # GPU Test
 # cifar10 128
 python train.py --use_gpu=true --reduce_strategy="AllReduce" --model=resnet_cifar10 --batch_size=128 --pass_num=5 --gpu_id=$cudaid

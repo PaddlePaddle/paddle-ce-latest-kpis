@@ -2,7 +2,8 @@
 
 export MKL_NUM_THREADS=1
 export OMP_NUM_THREADS=1
-
+export FLAGS_cpu_deterministic=true
+ 
 # CPU Test
 # cifar10 16
 export CPU_NUM=4
