@@ -331,7 +331,7 @@ def print_paddle_envs():
     print('------------------------------------------------')
 
 
-def check_port_open(endpoints):
+def check_port_open(ep_list):
     all_ok = True
     for ep in ep_list:
         ip_port = ep.split(":")
