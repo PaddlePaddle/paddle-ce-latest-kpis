@@ -332,7 +332,6 @@ def print_paddle_envs():
 
 
 def check_port_open(endpoints):
-    ep_list = endpoints.split(",")
     all_ok = True
     for ep in ep_list:
         ip_port = ep.split(":")
@@ -373,12 +372,18 @@ def main():
             raise Exception(
                 "Must configure correct environments to run dist train.")
         train_args.extend([train_prog, startup_prog])
+
+        port = os.getenv("PADDLE_PORT", "6174")
+        pserver_ips = os.getenv("PADDLE_PSERVERS", "")
+        eplist = []
+        for ip in pserver_ips.split(","):
+            eplist.append(':'.join([ip, port]))
+
         if args.gpus > 1 and os.getenv("TRAINING_ROLE") == "TRAINER":
             max_count = 100
-            time.sleep(60 * 2)
             flag = True
             while flag and max_count >= 0:
-                flag = not check_port_open(pserver_endpoints)
+                flag = not check_port_open(eplist)
                 max_count = max_count - 1
                 time.sleep(10)
             train_args.extend([nccl_id_var, num_trainers, trainer_id])
