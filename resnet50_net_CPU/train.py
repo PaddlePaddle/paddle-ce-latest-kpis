@@ -142,18 +142,17 @@ def record_kpi(pass_id, iter, pass_train_acc, total_train_time, im_num):
 
 
 def init_reader(args):
-    # For flowers dataset, there are two reason that leadding to loss unstable.
-    # 1. The return data of paddle.dataset.flowers.train 
-    # have some random, because the reader uses random crop strategy of
-    # doing data enhancement. Data enhancement maybe improve the accuracy 
-    # if we want to train the model to convergence. But it also leads to 
-    # the loss unstable during training at first several epochs.
-    # So, to enhance the loss stable, we should remove the random 
-    # cropping strategy. But it may reduce accuracy.
-    # 2. To accelerate the loading speed, flowers dataset 
-    # use multi-thread to read the images from disk, it is another 
-    # reason that making loss unstable. In order to read data in a fixed way, 
-    # we should use singal thread to read data. But it may reduce speed.
+    # For flowers dataset, there are two reasons that lead to loss unstable.
+    # 1. The return data of paddle.dataset.flowers.train have some random, 
+    # because the reader uses random crop strategy of doing data enhancement. 
+    # Data enhancement maybe improve the accuracy if we want to train the model 
+    # to convergence. But it also leads to the loss unstable during training
+    # at first several epochs. So, to enhance the loss stable, we should remove 
+    # the random cropping strategy. But it may reduce accuracy.
+    # 2. To accelerate the loading speed, flowers dataset use multi-thread to 
+    # read the images from disk, it is another reason that making loss unstable. 
+    # In order to read data in a fixed way, we should use the single thread to read 
+    # data. But it may reduce speed.
     train_reader = paddle.batch(
         paddle.dataset.cifar.train10()
         if args.data_set == 'cifar10' else \
