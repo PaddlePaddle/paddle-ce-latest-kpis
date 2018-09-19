@@ -4,6 +4,7 @@ import time
 import sys
 import paddle
 import paddle.fluid as fluid
+from paddle.fluid.layers.control_flow import ParallelDo
 from se_resnext import SE_ResNeXt
 from mobilenet import mobile_net
 import paddle.dataset.flowers as flowers
@@ -63,7 +64,7 @@ def train_parallel_do(args,
 
     if parallel:
         places = fluid.layers.device.get_places()
-        pd = fluid.layers.ParallelDo(places, use_nccl=use_nccl)
+        pd = ParallelDo(places, use_nccl=use_nccl)
 
         with pd.do():
             image_ = pd.read_input(image)

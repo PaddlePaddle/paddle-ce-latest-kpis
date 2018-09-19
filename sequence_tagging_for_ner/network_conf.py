@@ -2,6 +2,7 @@ import math
 
 import paddle.fluid as fluid
 from paddle.fluid.initializer import NormalInitializer
+from paddle.fluid.layers.control_flow import ParallelDo
 from utils import logger, load_dict, get_embedding
 
 
@@ -112,7 +113,7 @@ def ner_net(word_dict_len, label_dict_len, parallel, stack_num=2):
 
     if parallel:
         places = fluid.layers.device.get_places()
-        pd = fluid.layers.ParallelDo(places)
+        pd = ParallelDo(places)
         with pd.do():
             word_ = pd.read_input(word)
             mark_ = pd.read_input(mark)
