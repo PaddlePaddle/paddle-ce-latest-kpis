@@ -190,10 +190,7 @@ def get_model(args):
         avg_cost = fluid.layers.mean(x=cost)
         batch_acc = fluid.layers.accuracy(input=predict, label=label)
 
-    inference_program = fluid.default_main_program().clone()
-    with fluid.program_guard(inference_program):
-        inference_program = fluid.io.get_inference_program(
-            target_vars=[batch_acc])
+    inference_program = fluid.default_main_program().clone(for_test=True)
 
     optimizer = fluid.optimizer.Momentum(learning_rate=0.01, momentum=0.9)
 
