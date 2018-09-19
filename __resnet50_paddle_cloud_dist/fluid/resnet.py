@@ -28,6 +28,7 @@ import paddle.fluid as fluid
 import paddle.fluid.core as core
 import paddle.fluid.profiler as profiler
 from recordio_converter import imagenet_train, imagenet_test
+from paddle.fluid.layers.control_flow import ParallelDo
 
 
 def conv_bn_layer(input, ch_out, filter_size, stride, padding, act='relu'):
@@ -169,7 +170,7 @@ def get_model(args):
 
     if args.device == 'CPU' and args.cpus > 1:
         places = fluid.layers.get_places(args.cpus)
-        pd = fluid.layers.ParallelDo(places)
+        pd = ParallelDo(places)
         with pd.do():
             predict = model(pd.read_input(input), class_dim)
             label = pd.read_input(label)

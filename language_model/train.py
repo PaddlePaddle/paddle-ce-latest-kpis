@@ -5,8 +5,10 @@ import numpy as np
 import math
 
 import argparse
-import paddle.fluid as fluid
 import paddle
+import paddle.fluid as fluid
+from paddle.fluid.layers.control_flow import ParallelDo
+
 
 from continuous_evaluation import *
 # random seed must set before configuring the network.
@@ -88,7 +90,7 @@ def train(train_reader,
         avg_cost = fluid.layers.mean(x=cost)
     else:
         places = fluid.layers.device.get_places()
-        pd = fluid.layers.ParallelDo(places)
+        pd = ParallelDo(places)
         with pd.do():
             cost = network(
                 pd.read_input(src_wordseq),
