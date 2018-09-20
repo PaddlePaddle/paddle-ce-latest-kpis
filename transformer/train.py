@@ -161,6 +161,9 @@ def main():
         ModelHyperParams.d_inner_hid, ModelHyperParams.dropout,
         TrainTaskConfig.label_smooth_eps)
 
+    # Program to do validation.
+    test_program = fluid.default_main_program().clone(for_test=True)
+
     lr_scheduler = LearningRateScheduler(ModelHyperParams.d_model,
                                          TrainTaskConfig.warmup_steps,
                                          TrainTaskConfig.learning_rate)
@@ -178,8 +181,6 @@ def main():
                                        ModelHyperParams.trg_vocab_size),
         batch_size=TrainTaskConfig.batch_size)
 
-    # Program to do validation.
-    test_program = fluid.default_main_program().clone(for_test=True)
     val_data = paddle.batch(
         paddle.dataset.wmt16.validation(ModelHyperParams.src_vocab_size,
                                         ModelHyperParams.trg_vocab_size),

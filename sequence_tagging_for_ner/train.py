@@ -52,6 +52,8 @@ def main(train_data_file, test_data_file, vocab_file, target_file, emb_file,
     avg_cost, feature_out, word, mark, target = ner_net(
         word_dict_len, label_dict_len, parallel)
 
+    inference_program = fluid.default_main_program().clone(for_test=True)
+
     sgd_optimizer = fluid.optimizer.SGD(learning_rate=1e-3)
     sgd_optimizer.minimize(avg_cost)
 
@@ -63,8 +65,6 @@ def main(train_data_file, test_data_file, vocab_file, target_file, emb_file,
         label=target,
         chunk_scheme="IOB",
         num_chunk_types=int(math.ceil((label_dict_len - 1) / 2.0)))
-
-    inference_program = fluid.default_main_program().clone(for_test=True)
 
     train_reader = paddle.batch(
             reader.data_reader(train_data_file, word_dict, label_dict),
