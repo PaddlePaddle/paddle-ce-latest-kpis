@@ -3,8 +3,9 @@ import time
 import unittest
 import contextlib
 
-import paddle.fluid as fluid
 import paddle
+import paddle.fluid as fluid
+from paddle.fluid.layers.control_flow import ParallelDo
 import argparse
 import utils
 from nets import bow_net
@@ -46,7 +47,7 @@ def train(train_reader,
         cost, acc, prediction = network(data, label, len(word_dict))
     else:
         places = fluid.layers.device.get_places()
-        pd = fluid.layers.ParallelDo(places)
+        pd = ParallelDo(places)
         with pd.do():
             cost, acc, prediction = network(
                 pd.read_input(data), pd.read_input(label), len(word_dict))

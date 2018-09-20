@@ -179,9 +179,7 @@ def main():
         batch_size=TrainTaskConfig.batch_size)
 
     # Program to do validation.
-    test_program = fluid.default_main_program().clone()
-    with fluid.program_guard(test_program):
-        test_program = fluid.io.get_inference_program([avg_cost])
+    test_program = fluid.default_main_program().clone(for_test=True)
     val_data = paddle.batch(
         paddle.dataset.wmt16.validation(ModelHyperParams.src_vocab_size,
                                         ModelHyperParams.trg_vocab_size),

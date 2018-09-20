@@ -7,6 +7,7 @@ import shutil
 
 import paddle as paddle
 import paddle.fluid as fluid
+from paddle.fluid.layers.control_flow import ParallelDo
 import reader
 from mobilenet_ssd import mobile_net
 from utility import add_arguments, print_arguments
@@ -65,7 +66,7 @@ def parallel_do(args,
 
     if args.parallel:
         places = fluid.layers.device.get_places()
-        pd = fluid.layers.ParallelDo(places, use_nccl=args.use_nccl)
+        pd = ParallelDo(places, use_nccl=args.use_nccl)
         with pd.do():
             image_ = pd.read_input(image)
             gt_box_ = pd.read_input(gt_box)

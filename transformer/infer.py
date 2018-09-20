@@ -286,10 +286,8 @@ def main():
     fluid.io.load_vars(exe, InferTaskConfig.model_path, vars=decoder_params)
 
     # This is used here to set dropout to the test mode.
-    encoder_program = fluid.io.get_inference_program(
-        target_vars=[enc_output], main_program=encoder_program)
-    decoder_program = fluid.io.get_inference_program(
-        target_vars=[predict], main_program=decoder_program)
+    encoder_program = encoder_program.clone(for_test=True)
+    decoder_program = decoder_program.clone(for_test=True)
 
     test_data = paddle.batch(
         paddle.dataset.wmt16.test(ModelHyperParams.src_vocab_size,

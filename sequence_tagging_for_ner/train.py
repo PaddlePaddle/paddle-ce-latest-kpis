@@ -64,10 +64,7 @@ def main(train_data_file, test_data_file, vocab_file, target_file, emb_file,
         chunk_scheme="IOB",
         num_chunk_types=int(math.ceil((label_dict_len - 1) / 2.0)))
 
-    inference_program = fluid.default_main_program().clone()
-    with fluid.program_guard(inference_program):
-        test_target = chunk_evaluator.metrics + chunk_evaluator.states
-        inference_program = fluid.io.get_inference_program(test_target)
+    inference_program = fluid.default_main_program().clone(for_test=True)
 
     train_reader = paddle.batch(
             reader.data_reader(train_data_file, word_dict, label_dict),

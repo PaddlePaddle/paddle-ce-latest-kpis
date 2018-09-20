@@ -97,11 +97,7 @@ def train(batch_size, device, pass_num, iterations):
     accuracy = fluid.average.WeightedAverage()
 
     # inference program
-    inference_program = fluid.default_main_program().clone()
-    with fluid.program_guard(inference_program):
-        # test_target = accuracy.metrics + accuracy.states
-        target_vars=[batch_acc, batch_size_tensor]
-        inference_program = fluid.io.get_inference_program(target_vars)
+    inference_program = fluid.default_main_program().clone(for_test=True)
 
     # Optimization
     optimizer = fluid.optimizer.Momentum(learning_rate=0.01, momentum=0.9)
