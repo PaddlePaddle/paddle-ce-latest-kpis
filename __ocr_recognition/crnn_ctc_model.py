@@ -1,4 +1,5 @@
 import paddle.fluid as fluid
+from paddle.fluid.layers.control_flow import ParallelDo
 
 
 def conv_bn_pool(input,
@@ -143,7 +144,7 @@ def ctc_train_net(images, label, args, num_classes):
     gradient_clip = None
     if args.parallel:
         places = fluid.layers.device.get_places()
-        pd = fluid.layers.ParallelDo(places, use_nccl=True)
+        pd = ParallelDo(places, use_nccl=True)
         with pd.do():
             images_ = pd.read_input(images)
             label_ = pd.read_input(label)

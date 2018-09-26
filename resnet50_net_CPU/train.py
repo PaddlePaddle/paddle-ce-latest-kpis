@@ -142,14 +142,26 @@ def record_kpi(pass_id, iter, pass_train_acc, total_train_time, im_num):
 
 
 def init_reader(args):
+    # For flowers dataset, there are two reasons that lead to loss unstable.
+    # 1. The return data of paddle.dataset.flowers.train have some random, 
+    # because the reader uses random crop strategy of doing data enhancement. 
+    # Data enhancement maybe improve the accuracy if we want to train the model 
+    # to convergence. But it also leads to the loss unstable during training
+    # at first several epochs. So, to enhance the loss stable, we should remove 
+    # the random cropping strategy. But it may reduce accuracy.
+    # 2. To accelerate the loading speed, flowers dataset use multi-thread to 
+    # read the images from disk, it is another reason that making loss unstable. 
+    # In order to read data in a fixed way, we should use the single thread to read 
+    # data. But it may reduce speed.
     train_reader = paddle.batch(
         paddle.dataset.cifar.train10()
-        if args.data_set == 'cifar10' else paddle.dataset.flowers.train(),
+        if args.data_set == 'cifar10' else \
+        paddle.dataset.flowers.train(paddle.dataset.flowers.test_mapper, use_xmap=False),
         batch_size=args.batch_size)
 
     test_reader = paddle.batch(
-        paddle.dataset.cifar.test10()
-        if args.data_set == 'cifar10' else paddle.dataset.flowers.test(),
+        paddle.dataset.cifar.test10() if args.data_set == 'cifar10' else
+        paddle.dataset.flowers.test(use_xmap=False),
         batch_size=args.batch_size)
     return train_reader, test_reader
 
@@ -216,10 +228,7 @@ def run_benchmark(model, args):
     batch_acc = fluid.layers.accuracy(
         input=predict, label=label, total=batch_size_tensor)
 
-    inference_program = fluid.default_main_program().clone()
-    with fluid.program_guard(inference_program):
-        inference_program = fluid.io.get_inference_program(
-            target_vars=[batch_acc, batch_size_tensor])
+    inference_program = fluid.default_main_program().clone(for_test=True)
 
     optimizer = fluid.optimizer.Momentum(learning_rate=0.01, momentum=0.9)
     opts = optimizer.minimize(avg_cost)
@@ -288,7 +297,7 @@ def run_benchmark(model, args):
 
             every_pass_loss.append(loss)
             # print("Pass: %d, Iter: %d, loss: %s, acc: %s" %
-            #      (pass_id, iter, str(loss), str(acc)))
+            #     (pass_id, iter, str(loss), str(acc)))
             iter += 1
             total_iters += 1
 
