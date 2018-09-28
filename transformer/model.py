@@ -17,6 +17,7 @@ def position_encoding_init(n_position, d_pos_vec):
     position_enc[1:, 1::2] = np.cos(position_enc[1:, 1::2])  # dim 2i+1
     return position_enc.astype("float32")
 
+
 def multi_head_attention(queries,
                          keys,
                          values,
@@ -213,6 +214,7 @@ def prepare_encoder(src_word,
         size=[src_max_len, src_emb_dim],
         param_attr=fluid.ParamAttr(
             name=pos_enc_param_name, trainable=False))
+    src_pos_enc.stop_gradient = True
     enc_input = src_word_emb + src_pos_enc
     enc_input = layers.reshape(
         x=enc_input,
