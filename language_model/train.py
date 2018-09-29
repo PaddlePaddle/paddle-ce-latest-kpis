@@ -137,21 +137,21 @@ def train(train_reader,
 
         t1 = time.time()
         total_time += t1 - t0
-        print "epoch:%d num_steps:%d time_cost(s):%f" % (
-            epoch_idx, i, total_time / epoch_idx)
+        print "epoch:%d num_steps:%d time_cost(s):%f" % (epoch_idx, i,
+                                                         total_time / epoch_idx)
 
         if pass_idx == pass_num - 1:
             if args.gpu_card_num == 1:
                 imikolov_20_pass_duration_kpi.add_record(total_time / epoch_idx)
                 imikolov_20_avg_ppl_kpi.add_record(newest_ppl)
             else:
-                imikolov_20_pass_duration_kpi_card4.add_record(total_time / epoch_idx)
+                imikolov_20_pass_duration_kpi_card4.add_record(
+                    total_time / epoch_idx)
                 imikolov_20_avg_ppl_kpi_card4.add_record(newest_ppl)
         save_dir = "%s/epoch_%d" % (model_dir, epoch_idx)
         feed_var_names = ["src_wordseq", "dst_wordseq"]
         fetch_vars = [avg_cost]
-        fluid.io.save_inference_model(save_dir, feed_var_names, fetch_vars,
-                                      exe)
+        fluid.io.save_inference_model(save_dir, feed_var_names, fetch_vars, exe)
         print("model saved in %s" % save_dir)
     if args.gpu_card_num == 1:
         imikolov_20_pass_duration_kpi.persist()
@@ -168,7 +168,9 @@ def train_net():
     args = parse_args()
     batch_size = 20
     vocab, train_reader, test_reader = utils.prepare_data(
-        batch_size=batch_size * args.gpu_card_num, buffer_size=1000, word_freq_threshold=0)
+        batch_size=batch_size * args.gpu_card_num,
+        buffer_size=1000,
+        word_freq_threshold=0)
     train(
         train_reader=train_reader,
         vocab=vocab,

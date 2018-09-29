@@ -158,11 +158,6 @@ def main():
     batch_acc = fluid.layers.accuracy(input=logit, label=fluid.layers.data(name='label', \
                 shape=[1], dtype='int64'), total=batch_size_tensor)
 
-    inference_program = fluid.default_main_program().clone()
-    with fluid.program_guard(inference_program):
-        inference_program = fluid.io.get_inference_program(
-            target_vars=[batch_acc, batch_size_tensor])
-
     adam = fluid.optimizer.Adam()
     adam.minimize(loss)
 
