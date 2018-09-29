@@ -12,6 +12,7 @@ from continuous_evaluation import *
 # random seed must set before configuring the network.
 fluid.default_startup_program().random_seed = 102
 
+
 def network(src, dst, vocab_size, hid_size, init_low_bound, init_high_bound):
     """ network definition """
     emb_lr_x = 10.0
@@ -26,12 +27,13 @@ def network(src, dst, vocab_size, hid_size, init_low_bound, init_high_bound):
             learning_rate=emb_lr_x),
         is_sparse=True)
 
-    fc0 = fluid.layers.fc(input=emb,
-                          size=hid_size * 3,
-                          param_attr=fluid.ParamAttr(
-                              initializer=fluid.initializer.Uniform(
-                                  low=init_low_bound, high=init_high_bound),
-                              learning_rate=gru_lr_x))
+    fc0 = fluid.layers.fc(
+        input=emb,
+        size=hid_size * 3,
+        param_attr=fluid.ParamAttr(
+            initializer=fluid.initializer.Uniform(
+                low=init_low_bound, high=init_high_bound),
+            learning_rate=gru_lr_x))
     gru_h0 = fluid.layers.dynamic_gru(
         input=fc0,
         size=hid_size,
@@ -40,16 +42,18 @@ def network(src, dst, vocab_size, hid_size, init_low_bound, init_high_bound):
                 low=init_low_bound, high=init_high_bound),
             learning_rate=gru_lr_x))
 
-    fc = fluid.layers.fc(input=gru_h0,
-                         size=vocab_size,
-                         act='softmax',
-                         param_attr=fluid.ParamAttr(
-                             initializer=fluid.initializer.Uniform(
-                                 low=init_low_bound, high=init_high_bound),
-                             learning_rate=fc_lr_x))
+    fc = fluid.layers.fc(
+        input=gru_h0,
+        size=vocab_size,
+        act='softmax',
+        param_attr=fluid.ParamAttr(
+            initializer=fluid.initializer.Uniform(
+                low=init_low_bound, high=init_high_bound),
+            learning_rate=fc_lr_x))
 
     cost = fluid.layers.cross_entropy(input=fc, label=dst)
     return cost
+
 
 def parse_args():
     parser = argparse.ArgumentParser("mnist model benchmark.")
@@ -58,6 +62,7 @@ def parse_args():
 
     args = parser.parse_args()
     return args
+
 
 def train(train_reader,
           vocab,
@@ -76,29 +81,19 @@ def train(train_reader,
 
     vocab_size = len(vocab)
 
+    #Input data
     src_wordseq = fluid.layers.data(
         name="src_wordseq", shape=[1], dtype="int64", lod_level=1)
     dst_wordseq = fluid.layers.data(
         name="dst_wordseq", shape=[1], dtype="int64", lod_level=1)
 
+    # Train program
     avg_cost = None
-    if not parallel:
-        cost = network(src_wordseq, dst_wordseq, vocab_size, hid_size,
-                       init_low_bound, init_high_bound)
-        avg_cost = fluid.layers.mean(x=cost)
-    else:
-        places = fluid.layers.device.get_places()
-        pd = fluid.layers.ParallelDo(places)
-        with pd.do():
-            cost = network(
-                pd.read_input(src_wordseq),
-                pd.read_input(dst_wordseq), vocab_size, hid_size,
-                init_low_bound, init_high_bound)
-            pd.write_output(cost)
+    cost = network(src_wordseq, dst_wordseq, vocab_size, hid_size,
+                   init_low_bound, init_high_bound)
+    avg_cost = fluid.layers.mean(x=cost)
 
-        cost = pd()
-        avg_cost = fluid.layers.mean(x=cost)
-
+    # Optimization to minimize lost
     sgd_optimizer = fluid.optimizer.SGD(
         learning_rate=fluid.layers.exponential_decay(
             learning_rate=base_lr,
@@ -107,11 +102,15 @@ def train(train_reader,
             staircase=True))
     sgd_optimizer.minimize(avg_cost)
 
+    # Initialize executor
     place = fluid.CUDAPlace(0) if use_cuda else fluid.CPUPlace()
     exe = fluid.Executor(place)
-
     exe.run(fluid.default_startup_program())
+
+    train_exe = fluid.ParallelExecutor(use_cuda=True, loss_name=avg_cost.name)
+
     total_time = 0.0
+    fetch_list = [avg_cost.name]
     for pass_idx in xrange(pass_num):
         epoch_idx = pass_idx + 1
         print "epoch_%d start" % epoch_idx
@@ -125,17 +124,16 @@ def train(train_reader,
                 map(lambda x: x[0], data), place)
             lod_dst_wordseq = utils.to_lodtensor(
                 map(lambda x: x[1], data), place)
-            ret_avg_cost = exe.run(fluid.default_main_program(),
-                                   feed={
-                                       "src_wordseq": lod_src_wordseq,
-                                       "dst_wordseq": lod_dst_wordseq
-                                   },
-                                   fetch_list=[avg_cost],
-                                   use_program_cache=True)
-            avg_ppl = math.exp(ret_avg_cost[0])
-            newest_ppl = avg_ppl
+            ret_avg_cost = train_exe.run(
+                feed={
+                    "src_wordseq": lod_src_wordseq,
+                    "dst_wordseq": lod_dst_wordseq
+                },
+                fetch_list=fetch_list)
+            avg_ppl = np.exp(ret_avg_cost[0])
+            newest_ppl = np.mean(avg_ppl)
             if i % 100 == 0:
-                print "step:%d ppl:%.3f" % (i, avg_ppl)
+                print "step:%d ppl:%.3f" % (i, newest_ppl)
 
         t1 = time.time()
         total_time += t1 - t0
