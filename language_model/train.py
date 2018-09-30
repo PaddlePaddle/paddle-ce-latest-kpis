@@ -5,14 +5,13 @@ import numpy as np
 import math
 
 import argparse
-import paddle
 import paddle.fluid as fluid
-from paddle.fluid.layers.control_flow import ParallelDo
-
+import paddle
 
 from continuous_evaluation import *
 # random seed must set before configuring the network.
 fluid.default_startup_program().random_seed = 102
+
 
 def network(src, dst, vocab_size, hid_size, init_low_bound, init_high_bound):
     """ network definition """
@@ -28,12 +27,13 @@ def network(src, dst, vocab_size, hid_size, init_low_bound, init_high_bound):
             learning_rate=emb_lr_x),
         is_sparse=True)
 
-    fc0 = fluid.layers.fc(input=emb,
-                          size=hid_size * 3,
-                          param_attr=fluid.ParamAttr(
-                              initializer=fluid.initializer.Uniform(
-                                  low=init_low_bound, high=init_high_bound),
-                              learning_rate=gru_lr_x))
+    fc0 = fluid.layers.fc(
+        input=emb,
+        size=hid_size * 3,
+        param_attr=fluid.ParamAttr(
+            initializer=fluid.initializer.Uniform(
+                low=init_low_bound, high=init_high_bound),
+            learning_rate=gru_lr_x))
     gru_h0 = fluid.layers.dynamic_gru(
         input=fc0,
         size=hid_size,
@@ -42,16 +42,18 @@ def network(src, dst, vocab_size, hid_size, init_low_bound, init_high_bound):
                 low=init_low_bound, high=init_high_bound),
             learning_rate=gru_lr_x))
 
-    fc = fluid.layers.fc(input=gru_h0,
-                         size=vocab_size,
-                         act='softmax',
-                         param_attr=fluid.ParamAttr(
-                             initializer=fluid.initializer.Uniform(
-                                 low=init_low_bound, high=init_high_bound),
-                             learning_rate=fc_lr_x))
+    fc = fluid.layers.fc(
+        input=gru_h0,
+        size=vocab_size,
+        act='softmax',
+        param_attr=fluid.ParamAttr(
+            initializer=fluid.initializer.Uniform(
+                low=init_low_bound, high=init_high_bound),
+            learning_rate=fc_lr_x))
 
     cost = fluid.layers.cross_entropy(input=fc, label=dst)
     return cost
+
 
 def parse_args():
     parser = argparse.ArgumentParser("mnist model benchmark.")
@@ -60,6 +62,7 @@ def parse_args():
 
     args = parser.parse_args()
     return args
+
 
 def train(train_reader,
           vocab,
@@ -78,29 +81,19 @@ def train(train_reader,
 
     vocab_size = len(vocab)
 
+    #Input data
     src_wordseq = fluid.layers.data(
         name="src_wordseq", shape=[1], dtype="int64", lod_level=1)
     dst_wordseq = fluid.layers.data(
         name="dst_wordseq", shape=[1], dtype="int64", lod_level=1)
 
+    # Train program
     avg_cost = None
-    if not parallel:
-        cost = network(src_wordseq, dst_wordseq, vocab_size, hid_size,
-                       init_low_bound, init_high_bound)
-        avg_cost = fluid.layers.mean(x=cost)
-    else:
-        places = fluid.layers.device.get_places()
-        pd = ParallelDo(places)
-        with pd.do():
-            cost = network(
-                pd.read_input(src_wordseq),
-                pd.read_input(dst_wordseq), vocab_size, hid_size,
-                init_low_bound, init_high_bound)
-            pd.write_output(cost)
+    cost = network(src_wordseq, dst_wordseq, vocab_size, hid_size,
+                   init_low_bound, init_high_bound)
+    avg_cost = fluid.layers.mean(x=cost)
 
-        cost = pd()
-        avg_cost = fluid.layers.mean(x=cost)
-
+    # Optimization to minimize lost
     sgd_optimizer = fluid.optimizer.SGD(
         learning_rate=fluid.layers.exponential_decay(
             learning_rate=base_lr,
@@ -109,11 +102,15 @@ def train(train_reader,
             staircase=True))
     sgd_optimizer.minimize(avg_cost)
 
+    # Initialize executor
     place = fluid.CUDAPlace(0) if use_cuda else fluid.CPUPlace()
     exe = fluid.Executor(place)
-
     exe.run(fluid.default_startup_program())
+
+    train_exe = fluid.ParallelExecutor(use_cuda=True, loss_name=avg_cost.name)
+
     total_time = 0.0
+    fetch_list = [avg_cost.name]
     for pass_idx in xrange(pass_num):
         epoch_idx = pass_idx + 1
         print "epoch_%d start" % epoch_idx
@@ -127,35 +124,34 @@ def train(train_reader,
                 map(lambda x: x[0], data), place)
             lod_dst_wordseq = utils.to_lodtensor(
                 map(lambda x: x[1], data), place)
-            ret_avg_cost = exe.run(fluid.default_main_program(),
-                                   feed={
-                                       "src_wordseq": lod_src_wordseq,
-                                       "dst_wordseq": lod_dst_wordseq
-                                   },
-                                   fetch_list=[avg_cost],
-                                   use_program_cache=True)
-            avg_ppl = math.exp(ret_avg_cost[0])
-            newest_ppl = avg_ppl
+            ret_avg_cost = train_exe.run(
+                feed={
+                    "src_wordseq": lod_src_wordseq,
+                    "dst_wordseq": lod_dst_wordseq
+                },
+                fetch_list=fetch_list)
+            avg_ppl = np.exp(ret_avg_cost[0])
+            newest_ppl = np.mean(avg_ppl)
             if i % 100 == 0:
-                print "step:%d ppl:%.3f" % (i, avg_ppl)
+                print "step:%d ppl:%.3f" % (i, newest_ppl)
 
         t1 = time.time()
         total_time += t1 - t0
-        print "epoch:%d num_steps:%d time_cost(s):%f" % (
-            epoch_idx, i, total_time / epoch_idx)
+        print "epoch:%d num_steps:%d time_cost(s):%f" % (epoch_idx, i,
+                                                         total_time / epoch_idx)
 
         if pass_idx == pass_num - 1:
             if args.gpu_card_num == 1:
                 imikolov_20_pass_duration_kpi.add_record(total_time / epoch_idx)
                 imikolov_20_avg_ppl_kpi.add_record(newest_ppl)
             else:
-                imikolov_20_pass_duration_kpi_card4.add_record(total_time / epoch_idx)
+                imikolov_20_pass_duration_kpi_card4.add_record(
+                    total_time / epoch_idx)
                 imikolov_20_avg_ppl_kpi_card4.add_record(newest_ppl)
         save_dir = "%s/epoch_%d" % (model_dir, epoch_idx)
         feed_var_names = ["src_wordseq", "dst_wordseq"]
         fetch_vars = [avg_cost]
-        fluid.io.save_inference_model(save_dir, feed_var_names, fetch_vars,
-                                      exe)
+        fluid.io.save_inference_model(save_dir, feed_var_names, fetch_vars, exe)
         print("model saved in %s" % save_dir)
     if args.gpu_card_num == 1:
         imikolov_20_pass_duration_kpi.persist()
@@ -172,7 +168,9 @@ def train_net():
     args = parse_args()
     batch_size = 20
     vocab, train_reader, test_reader = utils.prepare_data(
-        batch_size=batch_size * args.gpu_card_num, buffer_size=1000, word_freq_threshold=0)
+        batch_size=batch_size * args.gpu_card_num,
+        buffer_size=1000,
+        word_freq_threshold=0)
     train(
         train_reader=train_reader,
         vocab=vocab,
