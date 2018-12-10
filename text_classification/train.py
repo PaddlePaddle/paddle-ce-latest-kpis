@@ -75,7 +75,8 @@ def train(train_reader,
         for data in train_reader():
             avg_cost_np, avg_acc_np = exe.run(fluid.default_main_program(),
                                               feed=feeder.feed(data),
-                                              fetch_list=[cost, acc])
+                                              fetch_list=[cost, acc],
+                                              use_program_cache=True)
             data_size = len(data)
             total_acc += data_size * avg_acc_np
             total_cost += data_size * avg_cost_np
