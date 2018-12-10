@@ -93,7 +93,8 @@ def main(train_data_file, test_data_file, vocab_file, target_file, emb_file,
             cost, batch_precision, batch_recall, batch_f1_score = exe.run(
                 fluid.default_main_program(),
                 feed=feeder.feed(data),
-                fetch_list=[avg_cost] + chunk_evaluator.metrics)
+                fetch_list=[avg_cost] + chunk_evaluator.metrics,
+                use_program_cache=True)
             batch_id = batch_id + 1
         t1 = time.time()
         total_time += t1 - start_time
