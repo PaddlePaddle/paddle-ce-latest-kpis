@@ -260,7 +260,8 @@ def main():
                     "@GRAD"] = 1. / total_num_token if TrainTaskConfig.use_avg_cost else np.asarray(
                         [1.], dtype="float32")
             outs = train_exe.run(fetch_list=[sum_cost.name, token_num.name],
-                                 feed=feed_list)
+                                 feed=feed_list,
+                                use_program_cache=True)
             sum_cost_val, token_num_val = np.array(outs[0]), np.array(outs[1])
             total_sum_cost = sum_cost_val.sum(
             )  # sum the cost from multi devices
