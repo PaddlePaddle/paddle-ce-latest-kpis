@@ -5,6 +5,7 @@ import contextlib
 
 import paddle
 import paddle.fluid as fluid
+from paddle.fluid.layers.control_flow import ParallelDo
 import argparse
 import utils
 from nets import bow_net
@@ -42,7 +43,21 @@ def train(train_reader,
 
     label = fluid.layers.data(name="label", shape=[1], dtype="int64")
 
-    cost, acc, prediction = network(data, label, len(word_dict))
+    if not parallel:
+        cost, acc, prediction = network(data, label, len(word_dict))
+    else:
+        places = fluid.layers.device.get_places()
+        pd = ParallelDo(places)
+        with pd.do():
+            cost, acc, prediction = network(
+                pd.read_input(data), pd.read_input(label), len(word_dict))
+
+            pd.write_output(cost)
+            pd.write_output(acc)
+
+        cost, acc = pd()
+        cost = fluid.layers.mean(cost)
+        acc = fluid.layers.mean(acc)
 
     sgd_optimizer = fluid.optimizer.Adagrad(learning_rate=lr)
     sgd_optimizer.minimize(cost)
