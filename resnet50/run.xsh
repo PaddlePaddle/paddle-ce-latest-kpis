@@ -6,12 +6,24 @@ cudaid=${resnet50_cudaid:=0} # use 0-th card as default
 export CUDA_VISIBLE_DEVICES=$cudaid
 
 # cifar10 128
+#mem
 FLAGS_benchmark=true FLAGS_fraction_of_gpu_memory_to_use=0.0 python model.py --device=GPU --batch_size=128 --data_set=cifar10 --model=resnet_cifar10 --pass_num=30 --gpu_id=$cudaid
 python get_gpu_data.py --batch_size=128 --data_set=cifar10
+#speed
+python model.py --device=GPU --batch_size=128 --data_set=cifar10 --model=resnet_cifar10 --pass_num=30 --gpu_id=$cudaid
+
+for pid in $(ps -ef | grep nvidia-smi | grep -v grep | cut -c 9-15); do
+    echo $pid
+    kill -9 $pid
+done
 
 #flowers 64
+#mem
 FLAGS_benchmark=true FLAGS_fraction_of_gpu_memory_to_use=0.0 python model.py --device=GPU --batch_size=64 --data_set=flowers --model=resnet_imagenet --pass_num=3 --gpu_id=$cudaid
 python get_gpu_data.py --batch_size=64 --data_set=flowers
+#speed
+python model.py --device=GPU --batch_size=64 --data_set=flowers --model=resnet_imagenet --pass_num=3 --gpu_id=$cudaid
+
 for pid in $(ps -ef | grep nvidia-smi | grep -v grep | cut -c 9-15); do
     echo $pid
     kill -9 $pid
