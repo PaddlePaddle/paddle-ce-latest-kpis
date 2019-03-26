@@ -38,7 +38,7 @@ flowers_64_AllReduce_4_Cards_gpu_memory_kpi = DurationKpi(
 flowers_64_Reduce_GPU_4_Cards_train_acc_kpi = AccKpi(
     'flowers_64_Reduce_GPU_4_Cards_train_acc', 0.02, 0, actived=True)
 flowers_64_Reduce_GPU_4_Cards_train_speed_kpi = AccKpi(
-    'flowers_64_Reduce_GPU_4_Cards_train_speed', 0.08, 0, actived=True)
+    'flowers_64_Reduce_GPU_4_Cards_train_speed', 0.08, 0, actived=False)
 flowers_64_Reduce_4_Cards_gpu_memory_kpi = DurationKpi(
     'flowers_64_Reduce_4_Cards_gpu_memory', 0.1, 0, actived=True)
 
