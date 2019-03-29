@@ -214,6 +214,7 @@ def run_benchmark(model, args):
         input=predict, label=label, total=batch_size_tensor)
 
     inference_program = fluid.default_main_program().clone(for_test=True)
+    inference_program = compiler.CompiledProgram(inference_program).with_data_parallel()
 
     optimizer = fluid.optimizer.Momentum(learning_rate=0.01, momentum=0.9)
     opts = optimizer.minimize(avg_cost)
