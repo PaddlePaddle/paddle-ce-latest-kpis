@@ -16,6 +16,7 @@ import StringIO
 
 import paddle
 import paddle.fluid as fluid
+import paddle.fluid.compiler as compiler
 import paddle.fluid.core as core
 import paddle.fluid.profiler as profiler
 
@@ -212,13 +213,10 @@ def run_benchmark(model, args):
     batch_acc = fluid.layers.accuracy(
         input=predict, label=label, total=batch_size_tensor)
 
-    inference_program = fluid.default_main_program().clone(for_test=True)
+    inference_program = compiler.CompiledProgram(inference_program).with_data_parallel()
 
     optimizer = fluid.optimizer.Momentum(learning_rate=0.01, momentum=0.9)
     opts = optimizer.minimize(avg_cost)
-
-    fluid.memory_optimize(fluid.default_main_program())
-
     train_reader = paddle.batch(
         paddle.reader.shuffle(
             paddle.dataset.cifar.train10()
@@ -249,6 +247,8 @@ def run_benchmark(model, args):
     place = core.CPUPlace() if args.device == 'CPU' else core.CUDAPlace(0)
     exe = fluid.Executor(place)
     exe.run(fluid.default_startup_program())
+    compiled_prog = compiler.CompiledProgram(fluid.default_main_program()).with_data_parallel(
+        loss_name=avg_cost.name)
     accuracy = fluid.average.WeightedAverage()
     if args.use_fake_data:
         data = train_reader().next()
@@ -285,7 +285,7 @@ def run_benchmark(model, args):
                 label = np.array(map(lambda x: x[1], data)).astype('int64')
                 label = label.reshape([-1, 1])
             loss, acc, weight = exe.run(
-                fluid.default_main_program(),
+                compiled_prog,
                 feed={'data': image,
                       'label': label},
                 fetch_list=[avg_cost, batch_acc, batch_size_tensor])
