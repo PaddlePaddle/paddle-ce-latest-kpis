@@ -178,6 +178,8 @@ def get_parallel_executor(args, avg_cost, train_program, test_program):
     build_strategy.reduce_strategy = fluid.BuildStrategy.ReduceStrategy.Reduce \
         if args.reduce_strategy == "Reduce" \
         else fluid.BuildStrategy.ReduceStrategy.AllReduce
+    if args.reduce_strategy == "Reduce":
+        build_strategy.fuse_broadcast_ops = True
 
     train_exe = fluid.ParallelExecutor(
         loss_name=avg_cost.name,
