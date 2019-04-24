@@ -117,8 +117,12 @@ def parallel_exe(args,
         fluid.io.load_vars(exe, pretrained_model, predicate=if_exist)
 
     if args.parallel:
+        loss.persistable = True
+        build_strategy = fluid.BuildStrategy()
+        build_strategy.enable_inplace = True
+        build_strategy.memory_optimize = True
         train_exe = fluid.ParallelExecutor(
-            use_cuda=args.use_gpu, loss_name=loss.name)
+            use_cuda=args.use_gpu, loss_name=loss.name, build_strategy=build_strategy)
 
     train_reader = paddle.batch(
         reader.train(data_args, train_file_list), batch_size=batch_size)
