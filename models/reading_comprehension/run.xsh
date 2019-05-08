@@ -4,5 +4,7 @@ cd utils
 bash download_thirdparty.sh
 cd ..
 cd src
-cp -r ../latest_kpis ./
+cp -r * ../
+cp __init__.py ../../
 ./.run_ce.sh
+cp *_factor.txt ../
