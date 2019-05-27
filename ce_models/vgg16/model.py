@@ -209,7 +209,7 @@ def main():
                 feed={"pixel": img_data,
                       "label": y_data},
                 fetch_list=[avg_cost, batch_acc, batch_size_tensor],
-                use_program_cache=True)
+                use_program_cache=False)
             accuracy.add(value=acc, weight=weight)
             iters += 1
             num_samples += len(y_data)
