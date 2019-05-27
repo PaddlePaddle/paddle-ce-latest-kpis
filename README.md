@@ -2,12 +2,10 @@
 
 ## Howtos
 
-### Contribute
-- Run `pre-commit run -a` before your PR, this will help to format code automatically
 
 ### Add New Evaluation Task
 
-Reference [mnist task](https://github.com/Superjomn/paddle-ce-latest-kpis/tree/master/mnist), 
+Reference [mnist task](https://github.com/PaddlePaddle/paddle-ce-latest-kpis/tree/develop/models/mnist), 
 the following files are required by CE framework:
 
 - `run.xsh` , a script to start this evaluation execution
@@ -21,7 +19,7 @@ the following files are required by CE framework:
 - if passed, PR from `fast` to `master` branch.
 
 ### Add new KPI to track
-Reference the interface [kpi.py](https://github.com/Superjomn/modelce/blob/master/kpi.py), there are two basic KPIs:
+Reference the interface [kpi.py](https://github.com/PaddlePaddle/continuous_evaluation/blob/develop/continuous_evaluation_py23/kpi.py), there are two basic KPIs:
 
 - LessWorseKpi
 - GreaterWorseKpi
