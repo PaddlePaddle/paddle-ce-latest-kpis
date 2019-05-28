@@ -208,7 +208,7 @@ def main():
                 fluid.default_main_program(),
                 feed={"pixel": img_data,
                       "label": y_data},
-                fetch_list=[avg_cost, batch_acc, batch_size_tensor],
+                fetch_list=[avg_cost.name, batch_acc.name, batch_size_tensor.name],
                 use_program_cache=True)
             accuracy.add(value=acc, weight=weight)
             iters += 1
