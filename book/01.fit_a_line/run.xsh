@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./run_ce.sh
+./.run_ce.sh
