@@ -5,6 +5,9 @@ export OMP_NUM_THREADS=1
 cudaid=${vgg16_cudaid:=0} # use 0-th card as default
 export CUDA_VISIBLE_DEVICES=$cudaid
 
+#open GC
+export FLAGS_eager_delete_tensor_gb=0.0
+export FLAGS_memory_fraction_of_eager_deletion=0.98
 
 #cifar10 128
 #mem
