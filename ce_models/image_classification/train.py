@@ -23,7 +23,6 @@ parser = argparse.ArgumentParser(description=__doc__)
 add_arg = functools.partial(add_arguments, argparser=parser)
 add_arg('batch_size',   int,  256, "Minibatch size.")
 add_arg('num_layers',   int,  50,  "How many layers for SE-ResNeXt model.")
-add_arg('with_mem_opt', bool, True, "Whether to use memory optimization or not.")
 add_arg('parallel_exe', bool, True, "Whether to use ParallelExecutor to train or not.")
 add_arg('init_model', str, None, "Whether to use initialized model.")
 add_arg('pretrained_model', str, None, "Whether to use pretrained model.")
@@ -98,9 +97,6 @@ def train_parallel_exe(args,
             regularization=fluid.regularizer.L2Decay(1e-4))
 
     opts = optimizer.minimize(avg_cost)
-
-    if args.with_mem_opt:
-        fluid.memory_optimize(fluid.default_main_program())
 
     place = fluid.CUDAPlace(0)
     exe = fluid.Executor(place)
