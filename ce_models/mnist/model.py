@@ -135,8 +135,6 @@ def run_benchmark(model, args):
         learning_rate=0.001, beta1=0.9, beta2=0.999)
     opt.minimize(avg_cost)
 
-    fluid.memory_optimize(fluid.default_main_program())
-
     # Initialize executor
     place = fluid.CPUPlace() if args.device == 'CPU' else fluid.CUDAPlace(0)
     exe = fluid.Executor(place)

@@ -161,8 +161,6 @@ def main():
     adam = fluid.optimizer.Adam()
     adam.minimize(loss)
 
-    fluid.memory_optimize(fluid.default_main_program())
-
     place = fluid.CPUPlace() if args.device == 'CPU' else fluid.CUDAPlace(0)
     exe = fluid.Executor(place)
     exe.run(fluid.default_startup_program())

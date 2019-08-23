@@ -136,8 +136,6 @@ def main():
     optimizer = fluid.optimizer.Adam(learning_rate=args.learning_rate)
     opts = optimizer.minimize(avg_cost)
 
-    fluid.memory_optimize(fluid.default_main_program())
-
     # Initialize executor
     place = core.CPUPlace() if args.device == 'CPU' else core.CUDAPlace(0)
     exe = fluid.Executor(place)

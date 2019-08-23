@@ -102,7 +102,6 @@ def train(batch_size, device, pass_num, iterations):
     # Optimization
     optimizer = fluid.optimizer.Momentum(learning_rate=0.01, momentum=0.9)
     opts = optimizer.minimize(avg_cost)
-    fluid.memory_optimize(fluid.default_main_program())
 
     train_reader = paddle.batch(
         paddle.dataset.cifar.train10(), batch_size=batch_size)
