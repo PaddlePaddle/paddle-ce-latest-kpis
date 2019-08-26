@@ -8,7 +8,7 @@ import paddle.fluid.profiler as profiler
 import numpy as np
 import nose.tools as tools
 import sys
-sys.path.append("/models/PaddleCV/orc_recognition")
+sys.path.append("/models/PaddleCV/ocr_recognition/")
 import data_reader
 from utility import print_arguments
 from utility import get_attention_feeder_for_infer, get_ctc_feeder_for_infer
@@ -205,13 +205,3 @@ class TestSaveLoadAPI(object):
         for i in range(0, len(expect)):
             tools.assert_almost_equal(expect[i], result[i], delta=1e-5)
 
-    def test_attention(self):
-        args = Arguments()
-        args.model = "attention"
-        args.model_path = "/models/pretrain_models/ocr_attention/ocr_attention_params"
-        print_arguments(args)
-        expect = get_norm_result(args)
-        result = get_inference_result(args)
-        assert len(expect) == len(result)
-        for i in range(0, len(expect)):
-            tools.assert_almost_equal(expect[i], result[i], delta=1e-5)

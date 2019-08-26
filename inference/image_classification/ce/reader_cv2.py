@@ -265,7 +265,7 @@ def _reader_creator(settings,
         rotate=rotate)
 
     return paddle.reader.xmap_readers(
-        mapper, data_reader, THREAD, BUF_SIZE, order=False)
+        mapper, data_reader, THREAD, BUF_SIZE, order=True)
 
 
 def train(settings, batch_size, data_dir=DATA_DIR, shuffle_seed=0):
