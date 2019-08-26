@@ -1,0 +1,1 @@
+nosetests -s -v --with-xunit --xunit-file=check_save_load_info.xml infer_ce.py
