@@ -279,8 +279,6 @@ def train():
     optimizer = fluid.optimizer.Adam(learning_rate=args.learning_rate)
     optimizer.minimize(avg_cost)
 
-    fluid.memory_optimize(fluid.default_main_program())
-
     train_batch_generator = paddle.batch(
         paddle.reader.shuffle(
             paddle.dataset.wmt14.train(args.dict_size), buf_size=1000),

@@ -350,8 +350,6 @@ def main():
     train_args.append(args)
     # Run optimizer.minimize(avg_loss)
     train_args[2].minimize(train_args[0])
-    if args.memory_optimize:
-        fluid.memory_optimize(fluid.default_main_program())
 
     if args.update_method == "pserver":
         train_prog, startup_prog = dist_transpile(trainer_id, args)

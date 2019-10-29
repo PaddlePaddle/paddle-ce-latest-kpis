@@ -234,8 +234,6 @@ def run_benchmark(model, args):
     optimizer = fluid.optimizer.Momentum(learning_rate=0.01, momentum=0.9)
     opts = optimizer.minimize(avg_cost)
 
-    fluid.memory_optimize(fluid.default_main_program())
-
     # Init ParallelExecutor
     train_exe, test_exe = get_parallel_executor(args, avg_cost,
                                                 fluid.default_main_program(),

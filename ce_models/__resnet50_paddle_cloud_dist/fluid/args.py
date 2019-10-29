@@ -87,10 +87,6 @@ def parse_args():
         action='store_true',
         help='If set, do not test the testset during training.')
     parser.add_argument(
-        '--memory_optimize',
-        action='store_true',
-        help='If set, optimize runtime memory before start.')
-    parser.add_argument(
         '--use_fake_data',
         action='store_true',
         help='If set ommit the actual read data operators.')
