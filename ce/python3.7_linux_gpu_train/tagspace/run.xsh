@@ -1,6 +1,7 @@
 #!/bin/bash
 export models_dir=$PWD/../../models_repo
 #copy models files
+rm -rf ${models_dir}/PaddleRec/tagspace/_ce.py
 rm -rf ${models_dir}/PaddleRec/tagspace/.run_ce.sh
 cp -r ${models_dir}/PaddleRec/tagspace/. ./
 if [ -d 'train_big_data' ];then rm -rf train_big_data

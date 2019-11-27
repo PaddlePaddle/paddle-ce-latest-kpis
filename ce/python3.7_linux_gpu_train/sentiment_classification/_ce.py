@@ -7,10 +7,10 @@ from kpi import CostKpi
 from kpi import DurationKpi
 from kpi import AccKpi
 
-each_step_duration_senta_card1 = DurationKpi('each_step_duration_senta_card1', 0.01, 0, actived=False)
+each_step_duration_senta_card1 = DurationKpi('each_step_duration_senta_card1', 0.01, 0, actived=True)
 train_loss_senta_card1 = CostKpi('train_loss_senta_card1', 0.05, 0, actived=True)
 train_acc_senta_card1 = AccKpi('train_acc_senta_card1', 0.02, 0, actived=True)
-each_step_duration_senta_card4 = DurationKpi('each_step_duration_senta_card4', 0.01, 0, actived=False)
+each_step_duration_senta_card4 = DurationKpi('each_step_duration_senta_card4', 0.01, 0, actived=True)
 train_loss_senta_card4 = CostKpi('train_loss_senta_card4', 0.05, 0, actived=True)
 train_acc_senta_card4 = AccKpi('train_acc_senta_card4', 0.02, 0, actived=True)
 

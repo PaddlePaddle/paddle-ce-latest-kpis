@@ -1,6 +1,7 @@
 #!/bin/bash
 export models_dir=$PWD/../../models_repo
 #copy models files
+rm -rf ${models_dir}/PaddleNLP/language_model/_ce.py
 rm -rf ${models_dir}/PaddleNLP/language_model/.run_ce.sh
 cp -r ${models_dir}/PaddleNLP/language_model/. ./
 if [ -d "data" ];then rm -rf data
