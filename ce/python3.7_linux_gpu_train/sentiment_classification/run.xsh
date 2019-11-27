@@ -1,6 +1,7 @@
 #!/bin/bash
 export models_dir=$PWD/../../models_repo
 #copy models files
+rm -rf ${models_dir}/PaddleNLP/sentiment_classification/_ce.py
 rm -rf ${models_dir}/PaddleNLP/sentiment_classification/.run_ce.sh
 cp -r ${models_dir}/PaddleNLP/sentiment_classification/. ./
 if [ -d "senta_data" ];then rm -rf senta_data

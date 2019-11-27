@@ -1,22 +1,26 @@
-# this file is only used for continuous evaluation test!
-
+####this file is only used for continuous evaluation test!
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import os
 import sys
 sys.path.append(os.environ['ceroot'])
-from kpi import CostKpi
-from kpi import DurationKpi
+from kpi import CostKpi, DurationKpi, AccKpi
 
-each_pass_duration_card1_kpi = DurationKpi('each_pass_duration_card1', 0.1, 0, actived=True)
-train_loss_card1_kpi = CostKpi('train_loss_card1', 0.05, 0, actived=True)
-each_pass_duration_card4_kpi = DurationKpi('each_pass_duration_card4', 0.1, 0, actived=True)
-train_loss_card4_kpi = CostKpi('train_loss_card4', 0.05, 0, actived=True)
+#### NOTE kpi.py should shared in models in some way!!!!
 
-tracking_kpis = [
-        each_pass_duration_card1_kpi,
-        train_loss_card1_kpi,
-        each_pass_duration_card4_kpi,
-        train_loss_card4_kpi,
-        ]
+d_train_cost_kpi = CostKpi('d_train_cost', 0.05, 0, actived=True, desc='train cost of discriminator')
+g_train_cost_kpi = CostKpi('g_train_cost', 0.05, 0, actived=True, desc='train cost of generator')
+train_speed_kpi = DurationKpi(
+    'duration',
+    0.05,
+    0,
+    actived=True,
+    unit_repr='second',
+    desc='train time used in one GPU card')
+
+
+tracking_kpis = [d_train_cost_kpi, g_train_cost_kpi, train_speed_kpi]
 
 
 def parse_log(log):
@@ -36,11 +40,12 @@ def parse_log(log):
     "
     '''
     for line in log.split('\n'):
-        fs = line.strip().split('\t')
+        fs = line.strip().split(',')
         print(fs)
         if len(fs) == 3 and fs[0] == 'kpis':
             kpi_name = fs[1]
             kpi_value = float(fs[2])
+            print("kpi {}={}".format(kpi_name, kpi_value))
             yield kpi_name, kpi_value
 
 
@@ -57,4 +62,7 @@ def log_to_ce(log):
 
 if __name__ == '__main__':
     log = sys.stdin.read()
+#    print("*****")
+#    print(log)
+#    print("****")
     log_to_ce(log)

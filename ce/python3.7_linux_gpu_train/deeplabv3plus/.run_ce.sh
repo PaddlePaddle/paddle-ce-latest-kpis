@@ -15,7 +15,7 @@ FLAGS_benchmark=true  python train.py \
 --save_weights_path=output1 \
 --dataset_path=$DATASET_PATH \
 --enable_ce 1> log_1card
-cat log_0card | python _ce.py
+cat log_1card | python _ce.py
 
 cudaid=${deeplabv3plus_m:=0,1,2,3} # use 0,1,2,3 card as default
 export CUDA_VISIBLE_DEVICES=$cudaid
