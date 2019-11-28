@@ -12,13 +12,9 @@ train_cost_1card_kpi = CostKpi(
     'train_cost_1card', 0.02, 0, actived=True, desc='train cost')
 train_duration_1card_kpi = DurationKpi(
     'train_duration_1card', 0.1, 0, actived=True, desc='train duration')
-train_cost_8card_kpi = CostKpi(
-    'train_cost_8card', 0.02, 0, actived=True, desc='train cost')
-train_duration_8card_kpi = DurationKpi(
-    'train_duration_8card', 0.1, 0, actived=True, desc='train duration')
+
 tracking_kpis = [
-    train_cost_1card_kpi, train_duration_1card_kpi, train_cost_8card_kpi,
-    train_duration_8card_kpi
+    train_cost_1card_kpi, train_duration_1card_kpi, 
 ]
 
 
