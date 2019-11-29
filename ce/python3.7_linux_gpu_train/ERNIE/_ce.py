@@ -41,10 +41,10 @@ def parse_log(log):
     for line in log.split('\n'):
         fs = line.strip().split('\t')
         print(fs)
-        if len(fs) == 3 and fs[0] == 'kpis':
+        if len(fs) == 4 and fs[1] == 'kpis':
             print("-----%s" % fs)
-            kpi_name = fs[1]
-            kpi_value = float(fs[2])
+            kpi_name = fs[2]
+            kpi_value = float(fs[3])
             yield kpi_name, kpi_value
 
 

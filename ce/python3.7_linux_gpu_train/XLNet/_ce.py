@@ -1,33 +1,35 @@
-# this file is only used for continuous evaluation test!
+####this file is only used for continuous evaluation test!
 
 import os
 import sys
-sys.path.append(os.environ['ceroot'])
-from kpi import CostKpi
-from kpi import DurationKpi
+sys.path.insert(0, os.environ['ceroot'])
+from kpi import CostKpi, DurationKpi, AccKpi
+
+#### NOTE kpi.py should shared in models in some way!!!!
 
 
-each_pass_duration_card1_kpi = DurationKpi('each_pass_duration_card1', 0.7, 0, actived=True)
-train_loss_card1_kpi = CostKpi('train_loss_card1', 0.08, 0, actived=True)
-each_pass_duration_card4_kpi = DurationKpi('each_pass_duration_card4', 0.5, 0, actived=True)
-train_loss_card4_kpi = CostKpi('train_loss_card4', 0.08, 0, actived=True)
+train_duration_sts_b_card1 = DurationKpi(
+    'train_duration_sts_b_card1', 0.01, 0, actived=True)
+train_cost_sts_b_card1 = CostKpi(
+    'train_cost_sts_b_card1', 0.02, 0, actived=True)
+train_duration_sts_b_card4 = DurationKpi(
+    'train_duration_sts_b_card4', 0.04, 0, actived=True)
+train_cost_sts_b_card4 = CostKpi(
+    'train_cost_sts_b_card4', 0.08, 0, actived=True)
 
 tracking_kpis = [
-        each_pass_duration_card1_kpi,
-        train_loss_card1_kpi,
-        each_pass_duration_card4_kpi,
-        train_loss_card4_kpi,
-        ]
+    train_duration_sts_b_card1,
+    train_cost_sts_b_card1,
+    train_duration_sts_b_card4,
+    train_cost_sts_b_card4,
+]
 
 
 def parse_log(log):
     '''
     This method should be implemented by model developers.
-
     The suggestion:
-
     each line in the log should be key, value, for example:
-
     "
     train_cost\t1.0
     test_cost\t1.0
@@ -40,6 +42,7 @@ def parse_log(log):
         fs = line.strip().split('\t')
         print(fs)
         if len(fs) == 3 and fs[0] == 'kpis':
+            print("-----%s" % fs)
             kpi_name = fs[1]
             kpi_value = float(fs[2])
             yield kpi_name, kpi_value
@@ -58,4 +61,7 @@ def log_to_ce(log):
 
 if __name__ == '__main__':
     log = sys.stdin.read()
+    print("*****")
+    print(log)
+    print("****")
     log_to_ce(log)

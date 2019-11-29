@@ -38,9 +38,9 @@ python -u ernie/run_classifier.py \
 }
 
 export CUDA_VISIBLE_DEVICES=0
-train 1> log_1card
+train > log_1card 2>&1
 cat log_1card | python _ce.py
 
 export CUDA_VISIBLE_DEVICES=0,1,2,3
-train 1> log_4cards
+train > log_4cards 2>&1
 cat log_4cards | python _ce.py

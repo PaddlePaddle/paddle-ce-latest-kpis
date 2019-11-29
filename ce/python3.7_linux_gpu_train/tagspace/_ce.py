@@ -8,10 +8,10 @@ from kpi import DurationKpi
 from kpi import AccKpi
 
 
-each_pass_duration_gpu1_kpi = DurationKpi('each_pass_duration_gpu1', 0.08, 0, actived=True)
-train_acc_gpu1_kpi = AccKpi('train_acc_gpu1', 0.08, 0)
-each_pass_duration_gpu4_kpi = DurationKpi('each_pass_duration_gpu4', 0.08, 0, actived=True)
-train_acc_gpu4_kpi = AccKpi('train_acc_gpu4', 0.08, 0)
+each_pass_duration_gpu1_kpi = DurationKpi('each_pass_duration_gpu1', 0.3, 0, actived=True)
+train_acc_gpu1_kpi = AccKpi('train_acc_gpu1', 0.08, 0, actived=True)
+each_pass_duration_gpu4_kpi = DurationKpi('each_pass_duration_gpu4', 0.4, 0, actived=True)
+train_acc_gpu4_kpi = AccKpi('train_acc_gpu4', 0.08, 0, actived=True)
 
 tracking_kpis = [
         each_pass_duration_gpu1_kpi,

@@ -2,6 +2,7 @@
 export ernie_dir=$PWD/../../ernie_repo
 #copy models files
 rm -rf ${ernie_dir}/.run_ce.sh
+rm -rf ${ernie_dir}/_ce.py
 cp -r ${ernie_dir}/. ./
 if [ -d "config" ];then rm -rf config
 fi
