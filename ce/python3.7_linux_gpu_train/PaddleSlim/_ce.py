@@ -18,7 +18,7 @@ def parse_log(log):
     '''
     parse log
     '''
-    pattern = r"^.*Final eval result: \['acc_top1', 'acc_top5'\]=\[(?P<test_acc_top1>0\.\d+)\s+(?P<test_acc_top5>0\.\d+)\s*\]"
+    pattern = r"^.*Final eval result: .*=\[(?P<test_acc_top1>0\.\d+)\s+(?P<test_acc_top5>0\.\d+)\s*\]"
     prog = re.compile(pattern)
     for line in log.split('\n'):
         result = prog.match(line)

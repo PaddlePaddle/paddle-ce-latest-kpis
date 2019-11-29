@@ -2,6 +2,7 @@
 export models_dir=$PWD/../../models_repo
 #copy models files
 rm -rf ${models_dir}/PaddleSlim/.run_ce.sh
+rm -rf ${models_dir}/PaddleSlim/_ce.py
 cp -r ${models_dir}/PaddleSlim/. ./
 if [ -d "data" ];then rm -rf data
 fi

@@ -8,8 +8,8 @@ from kpi import DurationKpi
 
 
 each_pass_duration_card1_kpi = DurationKpi('each_pass_duration_card1', 0.08, 0, actived=True)
-train_face_loss_card1_kpi = CostKpi('train_face_loss_card1', 0.08, 0, actived=True)
-train_head_loss_card1_kpi = CostKpi('train_head_loss_card1', 0.08, 0, actived=True)
+train_face_loss_card1_kpi = CostKpi('train_face_loss_card1', 0.2, 0, actived=True)
+train_head_loss_card1_kpi = CostKpi('train_head_loss_card1', 0.5, 0, actived=True)
 each_pass_duration_card4_kpi = DurationKpi('each_pass_duration_card4', 0.08, 0, actived=True)
 train_face_loss_card4_kpi = CostKpi('train_face_loss_card4', 0.08, 0, actived=True)
 train_head_loss_card4_kpi = CostKpi('train_head_loss_card4', 0.08, 0, actived=True)
