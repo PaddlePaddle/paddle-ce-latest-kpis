@@ -24,7 +24,7 @@ def parse_log(log):
         result = prog.match(line)
         if not result:
             continue
-        for kpi_name, kpi_value in result.groupdict().iteritems():
+        for kpi_name, kpi_value in result.groupdict().items():
             yield kpi_name, float(kpi_value)
 
 

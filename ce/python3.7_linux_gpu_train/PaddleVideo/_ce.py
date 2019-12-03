@@ -3,35 +3,35 @@
 import os
 import sys
 sys.path.append(os.environ['ceroot'])
-from kpi import CostKpi
-from kpi import DurationKpi
-from kpi import AccKpi
+from kpi import CostKpi, DurationKpi
 
-each_step_duration_senta_card1 = DurationKpi('each_step_duration_senta_card1', 0.3, 0, actived=True)
-train_loss_senta_card1 = CostKpi('train_loss_senta_card1', 0.05, 0, actived=True)
-train_acc_senta_card1 = AccKpi('train_acc_senta_card1', 0.02, 0, actived=True)
-each_step_duration_senta_card4 = DurationKpi('each_step_duration_senta_card4', 0.2, 0, actived=True)
-train_loss_senta_card4 = CostKpi('train_loss_senta_card4', 0.05, 0, actived=True)
-train_acc_senta_card4 = AccKpi('train_acc_senta_card4', 0.02, 0, actived=True)
-
+train_cost_card1_kpi = CostKpi(
+    'train_cost_card1', 0.08, 0, actived=True, desc='train cost')
+train_speed_card1_kpi = DurationKpi(
+    'train_speed_card1',
+    0.08,
+    0,
+    actived=True,
+    desc='train speed in one GPU card')
+train_cost_card4_kpi = CostKpi(
+    'train_cost_card4', 0.08, 0, actived=True, desc='train cost')
+train_speed_card4_kpi = DurationKpi(
+    'train_speed_card4',
+    0.3,
+    0,
+    actived=True,
+    desc='train speed in four GPU card')
 tracking_kpis = [
-        each_step_duration_senta_card1,
-        train_loss_senta_card1,
-        train_acc_senta_card1,
-        each_step_duration_senta_card4,
-        train_loss_senta_card4,
-        train_acc_senta_card4,
+    train_cost_card1_kpi, train_speed_card1_kpi, train_cost_card4_kpi,
+    train_speed_card4_kpi
 ]
 
 
 def parse_log(log):
     '''
     This method should be implemented by model developers.
-
     The suggestion:
-
     each line in the log should be key, value, for example:
-
     "
     train_cost\t1.0
     test_cost\t1.0
