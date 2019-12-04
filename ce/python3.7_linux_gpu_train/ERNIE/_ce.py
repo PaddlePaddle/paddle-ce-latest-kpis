@@ -12,7 +12,7 @@ train_acc_card1_kpi = AccKpi('train_acc_card1', 0.06, 0, actived=True)
 train_duration_card1_kpi = DurationKpi(
     'train_duration_card1', 0.01, 0, actived=True)
 train_loss_card4_kpi = CostKpi('train_loss_card4', 0.01, 0, actived=True)
-train_acc_card4_kpi = AccKpi('train_acc_card4', 0.02, 0, actived=True)
+train_acc_card4_kpi = AccKpi('train_acc_card4', 0.05, 0, actived=True)
 train_duration_card4_kpi = DurationKpi(
     'train_duration_card4', 0.02, 0, actived=True)
 
