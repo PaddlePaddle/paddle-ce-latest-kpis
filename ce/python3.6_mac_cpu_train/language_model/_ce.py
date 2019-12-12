@@ -5,14 +5,14 @@ import sys
 sys.path.append(os.environ['ceroot'])
 from kpi import CostKpi
 from kpi import DurationKpi
-from kpi import AccKpi
 
-each_step_duration_simnet_card1 = DurationKpi('each_step_duration_simnet_card1', 0.03, 0, actived=False)
-train_loss_simnet_card1 = CostKpi('train_loss_simnet_card1', 0.01, 0, actived=False)
+lstm_language_model_static_loss_card12 = CostKpi('lstm_language_model_static_loss_card12', 0.01, 0, actived=True)
+lstm_language_model_static_duration_card12 = DurationKpi(
+    'lstm_language_model_static_duration_card12', 0.03, 0, actived=True)
 
 tracking_kpis = [
-        each_step_duration_simnet_card1,
-        train_loss_simnet_card1,
+    lstm_language_model_static_loss_card12,
+    lstm_language_model_static_duration_card12,
 ]
 
 
@@ -35,7 +35,7 @@ def parse_log(log):
     for line in log.split('\n'):
         fs = line.strip().split('\t')
         print(fs)
-        if len(fs) == 3 and fs[0] == 'kpis':
+        if len(fs) == 3 and fs[0] == 'ptblm':
             kpi_name = fs[1]
             kpi_value = float(fs[2])
             yield kpi_name, kpi_value

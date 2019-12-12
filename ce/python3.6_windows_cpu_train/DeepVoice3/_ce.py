@@ -7,12 +7,13 @@ from kpi import CostKpi
 from kpi import DurationKpi
 from kpi import AccKpi
 
-each_step_duration_simnet_card1 = DurationKpi('each_step_duration_simnet_card1', 0.03, 0, actived=False)
-train_loss_simnet_card1 = CostKpi('train_loss_simnet_card1', 0.01, 0, actived=False)
+each_epoch_duration_frame1_card1 = DurationKpi("each_epoch_duration_frame1_card1", 0.1, 0, actived=True)
+train_cost_frame1_card1 = CostKpi("train_cost_frame1_card1", 0.1, 0, actived=True)
+
 
 tracking_kpis = [
-        each_step_duration_simnet_card1,
-        train_loss_simnet_card1,
+    each_epoch_duration_frame1_card1,
+    train_cost_frame1_card1,
 ]
 
 
