@@ -1,18 +1,30 @@
-# this file is only used for continuous evaluation test!
+# Copyright (c) 2019 PaddlePaddle Authors. All Rights Reserved.                                                                                                      
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+"""this file is only used for continuous evaluation test!"""
 
 import os
 import sys
 sys.path.append(os.environ['ceroot'])
 from kpi import CostKpi
 from kpi import DurationKpi
-from kpi import AccKpi
 
-each_step_duration_simnet_card1 = DurationKpi('each_step_duration_simnet_card1', 0.03, 0, actived=False)
-train_loss_simnet_card1 = CostKpi('train_loss_simnet_card1', 0.01, 0, actived=False)
+train_loss_card1 = CostKpi('train_loss_card1', 0.03, 0, actived=True)
+train_duration_card1 = DurationKpi('train_duration_card1', 0.8, 0, actived=True)
 
 tracking_kpis = [
-        each_step_duration_simnet_card1,
-        train_loss_simnet_card1,
+        train_loss_card1,
+        train_duration_card1,
 ]
 
 
