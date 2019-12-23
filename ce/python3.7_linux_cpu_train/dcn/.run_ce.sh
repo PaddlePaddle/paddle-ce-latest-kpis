@@ -21,6 +21,3 @@ if [ -d 'models' ]; then
 fi
 python local_train.py --enable_ce  --num_thread 20 --steps 1000 >dcn_cpu5_thread20.log 2>&1
 cat dcn_cpu5_thread20.log|grep data: |awk -F "[" 'END{print "kpis\ttest_auc_cpu5_thread20\t"$2}' |tr -d ']' | python _ce.py
-
-
-
