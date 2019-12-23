@@ -10,7 +10,7 @@ from kpi import AccKpi
 test_acc_top1_kpi = AccKpi(
     'test_acc_top1', 0.02, 0, actived=True, desc='TOP1 ACC')
 test_acc_top5_kpi = AccKpi(
-    'test_acc_top5', 0.02, 0, actived=True, desc='TOP5 ACC')
+    'test_acc_top5', 0.03, 0, actived=True, desc='TOP5 ACC')
 tracking_kpis = [test_acc_top1_kpi, test_acc_top5_kpi] 
 
 
