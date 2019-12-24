@@ -14,7 +14,7 @@ dcgan_d_loss_card1_kpi = CostKpi(
 dcgan_g_loss_card1_kpi = CostKpi(
     'dcgan_g_loss_card1', 0.02, 0, actived=True, desc='g_loss')
 dcgan_Batch_time_cost_card1_kpi = DurationKpi(
-    'dcgan_Batch_time_cost_card1', 0.02, 0, actived=True, desc='Batch_time_cost')
+    'dcgan_Batch_time_cost_card1', 0.05, 0, actived=True, desc='Batch_time_cost')
 
 tracking_kpis = [
     dcgan_d_loss_card1_kpi, dcgan_g_loss_card1_kpi, dcgan_Batch_time_cost_card1_kpi,
