@@ -7,9 +7,9 @@ from kpi import CostKpi
 from kpi import DurationKpi
 from kpi import AccKpi
 
-each_step_duration_emotion_detection_card1 = DurationKpi('each_step_duration_emotion_detection_card1', 0.08, 0, actived=False)
-train_loss_emotion_detection_card1 = CostKpi('train_loss_emotion_detection_card1', 0.05, 0, actived=False)
-train_acc_emotion_detection_card1 = CostKpi('train_acc_emotion_detection_card1', 0.05, 0, actived=False)
+each_step_duration_emotion_detection_card1 = DurationKpi('each_step_duration_emotion_detection_card1', 0.08, 0, actived=True)
+train_loss_emotion_detection_card1 = CostKpi('train_loss_emotion_detection_card1', 0.05, 0, actived=True)
+train_acc_emotion_detection_card1 = CostKpi('train_acc_emotion_detection_card1', 0.05, 0, actived=True)
 
 tracking_kpis = [
         each_step_duration_emotion_detection_card1,

@@ -1,31 +1,24 @@
-# this file is only used for continuous evaluation test!
+#This file is only used for continuous evaluation test!
 
 import os
 import sys
 sys.path.append(os.environ['ceroot'])
-from kpi import CostKpi
-from kpi import DurationKpi
-from kpi import AccKpi
+from kpi import CostKpi, DurationKpi, AccKpi
 
-each_step_duration_emotion_detection_card1 = DurationKpi('each_step_duration_emotion_detection_card1', 0.08, 0, actived=True)
-train_loss_emotion_detection_card1 = CostKpi('train_loss_emotion_detection_card1', 0.05, 0, actived=False)
-train_acc_emotion_detection_card1 = CostKpi('train_acc_emotion_detection_card1', 0.1, 0, actived=True)
+# NOTE kpi.py should shared in models in some way!!!!
+
+coco_train_cost_card1_kpi = CostKpi('coco_train_cost_card1', 0.05, 0, actived=True)
 
 tracking_kpis = [
-        each_step_duration_emotion_detection_card1,
-        train_loss_emotion_detection_card1,
-        train_acc_emotion_detection_card1,
+    coco_train_cost_card1_kpi,
 ]
 
 
 def parse_log(log):
     '''
     This method should be implemented by model developers.
-
     The suggestion:
-
     each line in the log should be key, value, for example:
-
     "
     train_cost\t1.0
     test_cost\t1.0
