@@ -9,7 +9,7 @@ from kpi import AccKpi
 
 
 each_pass_duration_cpu1_thread1_kpi = DurationKpi('each_pass_duration_cpu1_thread1', 0.08, 0, actived=True)
-train_acc_cpu1_thread1_kpi = AccKpi('train_acc_cpu1_thread1', 0.08, 0)
+train_acc_cpu1_thread1_kpi = AccKpi('train_acc_cpu1_thread1', 0.08, 0, actived=True)
 
 tracking_kpis = [
         each_pass_duration_cpu1_thread1_kpi,
