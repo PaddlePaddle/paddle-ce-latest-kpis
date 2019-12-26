@@ -4,7 +4,6 @@ rem copy models files
 xcopy "%models_dir%/PaddleCV/human_pose_estimation/." . /s /e /y /d
 
 pip install pathlib
-pip install --upgrade numpy
 if exist pretrained   (rd /s /q pretrained)
 md pretrained
 cd pretrained
