@@ -10,14 +10,14 @@ from kpi import CostKpi, DurationKpi, AccKpi
 #### NOTE kpi.py should shared in models in some way!!!!
 
 train_acc1_card1_kpi = AccKpi(
-    'train_acc1_card1', 0.02, 0, actived=False, desc='TOP1 ACC')
+    'train_acc1_card1', 0.02, 0, actived=True, desc='TOP1 ACC')
 train_acc5_card1_kpi = AccKpi(
-    'train_acc5_card1', 0.02, 0, actived=False, desc='TOP5 ACC')
+    'train_acc5_card1', 0.02, 0, actived=True, desc='TOP5 ACC')
 train_cost_card1_kpi = CostKpi('train_cost_card1', 0.02, 0, actived=True, desc='train cost')
 test_acc1_card1_kpi = AccKpi(
-    'test_acc1_card1', 0.02, 0, actived=False, desc='TOP1 ACC')
+    'test_acc1_card1', 0.02, 0, actived=True, desc='TOP1 ACC')
 test_acc5_card1_kpi = AccKpi(
-    'test_acc5_card1', 0.02, 0, actived=False, desc='TOP5 ACC')
+    'test_acc5_card1', 0.02, 0, actived=True, desc='TOP5 ACC')
 test_cost_card1_kpi = CostKpi('test_cost_card1', 0.02, 0, actived=True, desc='train cost')
 train_speed_card1_kpi = DurationKpi(
     'train_speed_card1',
@@ -52,7 +52,7 @@ def parse_log(log):
     for line in log.split('\n'):
         fs = line.strip().split('\t')
         print(fs)
-        if len(fs) == 3 and fs[0] == 'kpis':
+        if len(fs) == 3 and fs[0].split(':')[-1].strip() == 'kpis':
             print("-----%s" % fs)
             kpi_name = fs[1]
             kpi_value = float(fs[2])
