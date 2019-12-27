@@ -14,7 +14,7 @@ pix2pix_g_loss_gan_card1_kpi = CostKpi(
 pix2pix_g_loss_l1_card1_kpi = CostKpi(
     'pix2pix_g_loss_l1_card1', 0.02, 0, actived=True, desc='g_loss_l1')
 pix2pix_d_loss_real_card1_kpi = CostKpi(
-    'pix2pix_d_loss_real_card1', 0.02, 0, actived=True, desc='d_loss_real')
+    'pix2pix_d_loss_real_card1', 0.05, 0, actived=True, desc='d_loss_real')
 pix2pix_d_loss_fake_card1_kpi = CostKpi(
     'pix2pix_d_loss_fake_card1', 0.02, 0, actived=True, desc='d_loss_fake')
 pix2pix_Batch_time_cost_card1_kpi = DurationKpi(
