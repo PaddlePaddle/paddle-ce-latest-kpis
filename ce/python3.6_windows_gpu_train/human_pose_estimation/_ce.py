@@ -7,7 +7,7 @@ from kpi import CostKpi, DurationKpi, AccKpi
 
 # NOTE kpi.py should shared in models in some way!!!!
 
-coco_train_cost_card1_kpi = CostKpi('coco_train_cost_card1', 0.05, 0, actived=True)
+coco_train_cost_card1_kpi = CostKpi('coco_train_cost_card1', 0.1, 0, actived=True)
 
 tracking_kpis = [
     coco_train_cost_card1_kpi,
