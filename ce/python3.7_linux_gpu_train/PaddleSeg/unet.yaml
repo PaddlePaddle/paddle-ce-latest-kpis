@@ -1,0 +1,39 @@
+EVAL_CROP_SIZE: (2049, 1025) # (width, height), for unpadding rangescaling and stepscaling
+TRAIN_CROP_SIZE: (769, 769) # (width, height), for unpadding rangescaling and stepscaling
+AUG:
+    AUG_METHOD: "unpadding" # choice unpadding rangescaling and stepscaling
+    FIX_RESIZE_SIZE: (640, 640) # (width, height), for unpadding
+    INF_RESIZE_VALUE: 500  # for rangescaling
+    MAX_RESIZE_VALUE: 600  # for rangescaling
+    MIN_RESIZE_VALUE: 400  # for rangescaling
+    MAX_SCALE_FACTOR: 2.0  # for stepscaling
+    MIN_SCALE_FACTOR: 0.5  # for stepscaling
+    SCALE_STEP_SIZE: 0.25  # for stepscaling
+    MIRROR: False
+BATCH_SIZE: 16
+DATASET:
+    DATA_DIR: "./dataset/cityscapes/"
+    IMAGE_TYPE: "rgb"  # choice rgb or rgba
+    NUM_CLASSES: 19
+    TEST_FILE_LIST: "dataset/cityscapes/val.list"
+    TRAIN_FILE_LIST: "dataset/cityscapes/train.list"
+    VAL_FILE_LIST: "dataset/cityscapes/val.list"
+    IGNORE_INDEX: 255
+FREEZE:
+    MODEL_FILENAME: "model"
+    PARAMS_FILENAME: "params"
+MODEL:
+    DEFAULT_NORM_TYPE: "bn"
+    MODEL_NAME: "unet"
+TEST:
+    TEST_MODEL: ""
+TRAIN:
+    MODEL_SAVE_DIR: ""
+    PRETRAINED_MODEL_DIR: u"pretrain/unet_bn_coco"
+    SNAPSHOT_EPOCH: 1
+    SYNC_BATCH_NORM: False
+SOLVER:
+    LR: 0.01
+    LR_POLICY: "poly"
+    OPTIMIZER: "sgd"
+    NUM_EPOCHS: 2
