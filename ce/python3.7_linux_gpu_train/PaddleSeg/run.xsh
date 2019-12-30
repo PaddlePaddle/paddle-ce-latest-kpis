@@ -7,6 +7,6 @@ fi
 ln -s ${dataset_path}/cityscape dataset/cityscapes
 if [ -d 'pretrain' ];then rm -rf pretrain
 fi
-ln -s ${dataset_path}/seg_pretrain pretrain
+ln -s ${dataset_path}/paddleseg/pretrain pretrain
 pip install -r requirements.txt
 ./.run_ce.sh
