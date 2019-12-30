@@ -6,9 +6,9 @@ import sys
 sys.path.append(os.environ['ceroot'])
 from kpi import CostKpi, DurationKpi
 
-CascadeRCNN_train_loss_kpi = CostKpi('CascadeRCNN_train_loss', 0.08, 0, actived=False, desc='train cost')
-CascadeRCNN_train_time_kpi = DurationKpi('CascadeRCNN_train_time', 0.08, 0, actived=False,
-                                         desc='train speed in 8 GPU card')
+#CascadeRCNN_train_loss_kpi = CostKpi('CascadeRCNN_train_loss', 0.08, 0, actived=False, desc='train cost')
+#CascadeRCNN_train_time_kpi = DurationKpi('CascadeRCNN_train_time', 0.08, 0, actived=False,
+#                                         desc='train speed in 8 GPU card')
 FasterRCNN_train_loss_kpi = CostKpi('FasterRCNN_train_loss', 0.08, 0, actived=True, desc='train cost')
 FasterRCNN_train_time_kpi = DurationKpi('FasterRCNN_train_time', 0.08, 0, actived=True,
                                         desc='train speed in 8 GPU card')

@@ -6,7 +6,7 @@ sys.path.append(os.environ['ceroot'])
 from kpi import CostKpi, DurationKpi
 
 train_cost_card1_kpi = CostKpi(
-    'train_cost_card1', 0.08, 0, actived=True, desc='train cost')
+    'train_cost_card1', 0.08, 0, actived=False, desc='train cost')
 train_speed_card1_kpi = DurationKpi(
     'train_speed_card1',
     0.08,
