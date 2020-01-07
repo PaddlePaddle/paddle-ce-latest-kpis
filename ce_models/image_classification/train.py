@@ -13,7 +13,6 @@ import argparse
 import functools
 import paddle.fluid.layers.ops as ops
 from utility import add_arguments, print_arguments
-from paddle.fluid.initializer import init_on_cpu
 from paddle.fluid.layers.learning_rate_scheduler import _decay_step_counter
 import math
 
@@ -37,10 +36,9 @@ def cosine_decay(learning_rate, step_each_epoch, epochs=120):
     """
     global_step = _decay_step_counter()
 
-    with init_on_cpu():
-        epoch = ops.floor(global_step / step_each_epoch)
-        decayed_lr = learning_rate * \
-                     (ops.cos(epoch * (math.pi / epochs)) + 1)/2
+    epoch = ops.floor(global_step / step_each_epoch)
+    decayed_lr = learning_rate * \
+                 (ops.cos(epoch * (math.pi / epochs)) + 1)/2
     return decayed_lr
 
 
