@@ -8,7 +8,7 @@ from kpi import DurationKpi
 from kpi import AccKpi
 
 
-each_pass_duration_cpu1_thread1_kpi = DurationKpi('each_pass_duration_cpu1_thread1', 0.08, 0, actived=True)
+each_pass_duration_cpu1_thread1_kpi = DurationKpi('each_pass_duration_cpu1_thread1', 0.1, 0, actived=True)
 train_ppl_cpu1_thread1_kpi = CostKpi('train_ppl_cpu1_thread1', 0.08, 0, actived=True)
 
 tracking_kpis = [
