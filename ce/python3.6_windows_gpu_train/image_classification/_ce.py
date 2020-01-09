@@ -17,7 +17,7 @@ train_cost_card1_kpi = CostKpi('train_cost_card1', 0.02, 0, actived=True, desc='
 test_acc1_card1_kpi = AccKpi(
     'test_acc1_card1', 0.02, 0, actived=True, desc='TOP1 ACC')
 test_acc5_card1_kpi = AccKpi(
-    'test_acc5_card1', 0.02, 0, actived=True, desc='TOP5 ACC')
+    'test_acc5_card1', 0.08, 0, actived=True, desc='TOP5 ACC')
 test_cost_card1_kpi = CostKpi('test_cost_card1', 0.02, 0, actived=True, desc='train cost')
 train_speed_card1_kpi = DurationKpi(
     'train_speed_card1',
