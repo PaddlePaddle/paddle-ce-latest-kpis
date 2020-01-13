@@ -20,7 +20,7 @@ train_auc_val_cpu1_thread8_kpi = AccKpi('train_auc_val_cpu1_thread8', 0.08, 0, a
 train_batch_auc_val_cpu1_thread8_kpi = AccKpi(
     'train_batch_auc_val_cpu1_thread8', 0.08, 0, actived=True)
 each_pass_duration_cpu8_thread8_kpi = DurationKpi(
-    'each_pass_duration_cpu8_thread8', 0.08, 0, actived=True, actived=True)
+    'each_pass_duration_cpu8_thread8', 0.08, 0, actived=True)
 train_loss_cpu8_thread8_kpi = CostKpi('train_loss_cpu8_thread8', 0.08, 0, actived=True)
 train_auc_val_cpu8_thread8_kpi = AccKpi('train_auc_val_cpu8_thread8', 0.08, 0, actived=True)
 train_batch_auc_val_cpu8_thread8_kpi = AccKpi(

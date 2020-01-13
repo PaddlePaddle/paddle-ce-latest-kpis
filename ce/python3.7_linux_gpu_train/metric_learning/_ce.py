@@ -2,20 +2,18 @@
 
 import os
 import sys
-
 sys.path.append(os.environ['ceroot'])
-from kpi import CostKpi
-from kpi import DurationKpi
-from kpi import AccKpi
+from kpi import CostKpi, DurationKpi, AccKpi
 
 # NOTE kpi.py should shared in models in some way!!!!
 
-test_auc_cpu1_thread1_kpi = AccKpi(
-    'test_auc_cpu1_thread1', 0.005, 0, actived=True, desc='test_auc')
-test_auc_cpu1_thread10_kpi = AccKpi(
-    'test_auc_cpu1_thread10', 0.005, 0, actived=True, desc='test_auc')
-tracking_kpis = [test_auc_cpu1_thread1_kpi,
-                 test_auc_cpu1_thread10_kpi]
+train_cost_kpi = CostKpi('train_cost', 0.02, 0, actived=True)
+test_recall_kpi = AccKpi('test_recall', 0.02, 0, actived=True)
+
+tracking_kpis = [
+    train_cost_kpi,
+    test_recall_kpi,
+]
 
 
 def parse_log(log):
@@ -27,8 +25,11 @@ def parse_log(log):
     each line in the log should be key, value, for example:
 
     "
-    kpis\ttest_auc_cpu1_thread1\t0.753414
-    kpis\ttest_auc_cpu1_thread10\t0.752213
+    train_cost\t1.0
+    test_cost\t1.0
+    train_cost\t1.0
+    train_cost\t1.0
+    train_acc\t1.2
     "
     '''
     for line in log.split('\n'):
@@ -54,3 +55,4 @@ def log_to_ce(log):
 if __name__ == '__main__':
     log = sys.stdin.read()
     log_to_ce(log)
+
