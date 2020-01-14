@@ -1,34 +1,31 @@
-# this file is only used for continuous evaluation test!
+#This file is only used for continuous evaluation test!
 
 import os
 import sys
-
 sys.path.append(os.environ['ceroot'])
-from kpi import CostKpi
-from kpi import DurationKpi
-from kpi import AccKpi
+from kpi import CostKpi, DurationKpi, AccKpi
 
 # NOTE kpi.py should shared in models in some way!!!!
 
-test_auc_cpu1_thread1_kpi = AccKpi(
-    'test_auc_cpu1_thread1', 0.005, 0, actived=True, desc='test_auc')
-test_auc_cpu1_thread10_kpi = AccKpi(
-    'test_auc_cpu1_thread10', 0.005, 0, actived=True, desc='test_auc')
-tracking_kpis = [test_auc_cpu1_thread1_kpi,
-                 test_auc_cpu1_thread10_kpi]
+mpii_train_cost_card1_kpi = CostKpi('mpii_train_cost_card1', 0.1, 0, actived=True)
+mpii_train_cost_card8_kpi = CostKpi('mpii_train_cost_card8', 0.1, 0, actived=True)
+tracking_kpis = [
+    mpii_train_cost_card1_kpi,
+    mpii_train_cost_card8_kpi
+]
 
 
 def parse_log(log):
     '''
     This method should be implemented by model developers.
-
     The suggestion:
-
     each line in the log should be key, value, for example:
-
     "
-    kpis\ttest_auc_cpu1_thread1\t0.753414
-    kpis\ttest_auc_cpu1_thread10\t0.752213
+    train_cost\t1.0
+    test_cost\t1.0
+    train_cost\t1.0
+    train_cost\t1.0
+    train_acc\t1.2
     "
     '''
     for line in log.split('\n'):
