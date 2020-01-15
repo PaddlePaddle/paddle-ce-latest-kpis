@@ -9,3 +9,26 @@ set CUDA_VISIBLE_DEVICES=0
 python train.py --model=ResNet50 --num_epochs=2 --batch_size 8 --lr_strategy=cosine_decay --pretrained_model=ResNet50_pretrained --random_seed 1000 --use_gpu true --enable_ce=True 2>log
 type log  | python _ce.py
 
+rem eval
+python eval.py --model=ResNet50 --batch_size=32 --pretrained_model=ResNet50_pretrained --use_gpu True >%log_path%/ResNet50_E.log 2>&1 
+if not %errorlevel% == 0 (
+        move  %log_path%\ResNet50_E.log  %log_path%\FAIL\ResNet50_E.log
+        echo   ResNet50,eval,FAIL  >> %log_path%\result.log
+        echo  evaling of ResNet50 failed!
+) else (
+        move  %log_path%\ResNet50_E.log  %log_path%\SUCCESS\ResNet50_E.log
+        echo   ResNet50,eval,SUCCESS  >> %log_path%\result.log
+        echo   evaling of ResNet50 successfully!
+)
+rem infer
+python infer.py --model=ResNet50 --pretrained_model=ResNet50_pretrained --use_gpu True >%log_path%/ResNet50_I.log 2>&1
+if not %errorlevel% == 0 (
+        move  %log_path%\ResNet50_I.log  %log_path%\FAIL\ResNet50_I.log
+        echo   ResNet50,infer,FAIL  >> %log_path%\result.log
+        echo  infering of ResNet50 failed!
+) else (
+        move  %log_path%\ResNet50_I.log  %log_path%\SUCCESS\ResNet50_I.log
+        echo   ResNet50,infer,SUCCESS  >> %log_path%\result.log
+        echo   infering of ResNet50 successfully!
+)
+
