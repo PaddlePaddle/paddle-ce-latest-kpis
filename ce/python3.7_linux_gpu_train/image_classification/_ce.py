@@ -137,7 +137,7 @@ InceptionV4_time_card8_kpi = DurationKpi(
     actived=True,
     unit_repr='seconds/image',
     desc='train time in 8 GPU card')
-MobileNetV1_loss_card1_kpi = CostKpi('MobileNetV1_loss_card1', 0.02, 0, actived=True, desc='train cost')
+MobileNetV1_loss_card1_kpi = CostKpi('MobileNetV1_loss_card1', 0.05, 0, actived=True, desc='train cost')
 MobileNetV1_time_card1_kpi = DurationKpi(
     'MobileNetV1_time_card1',
     0.02,
