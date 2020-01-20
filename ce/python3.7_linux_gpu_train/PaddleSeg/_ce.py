@@ -8,7 +8,7 @@ from kpi import CostKpi, AccKpi
  
 deeplabv3p_loss_card1_kpi = CostKpi('deeplabv3p_loss_card1', 0.08, 0, actived=True, 
                                     desc='train loss in 1 GPU card')
-deeplabv3p_speed_card1_kpi = AccKpi('deeplabv3p_speed_card1', 0.03, 0, actived=True,
+deeplabv3p_speed_card1_kpi = AccKpi('deeplabv3p_speed_card1', 0.05, 0, actived=True,
                                          desc='train speed in 1 GPU card')
 deeplabv3p_loss_card8_kpi = CostKpi('deeplabv3p_loss_card8', 0.03, 0, actived=True, 
                                     desc='train loss in 8 GPU card')

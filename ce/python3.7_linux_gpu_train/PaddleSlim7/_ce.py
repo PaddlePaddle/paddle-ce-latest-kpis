@@ -20,7 +20,7 @@ slim_sen_prune_test_acc_top5_kpi = AccKpi(
     'slim_sen_prune_test_acc_top5', 0.04, 0, actived=True, desc='sen_prune TOP5 ACC')
 
 slim_quan_v1_test_acc_top1_kpi = AccKpi(
-    'slim_quan_v1_test_acc_top1', 0.04, 0, actived=True, desc='slim_quan_v1 TOP1 ACC')
+    'slim_quan_v1_test_acc_top1', 0.06, 0, actived=True, desc='slim_quan_v1 TOP1 ACC')
 slim_quan_v1_test_acc_top5_kpi = AccKpi(
     'slim_quan_v1_test_acc_top5', 0.04, 0, actived=True, desc='slim_quan_v1 TOP5 ACC')
 
