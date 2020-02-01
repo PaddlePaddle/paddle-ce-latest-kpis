@@ -22,7 +22,7 @@ AttentionCluster_time_card8_kpi = DurationKpi(
     actived=True,
     desc='train time in four GPU card')
 AttentionLSTM_loss_card1_kpi = CostKpi(
-    'AttentionLSTM_loss_card1', 0.08, 0, actived=True, desc='train cost')
+    'AttentionLSTM_loss_card1', 0.1, 0, actived=True, desc='train cost')
 AttentionLSTM_time_card1_kpi = DurationKpi(
     'AttentionLSTM_time_card1',
     0.08,
