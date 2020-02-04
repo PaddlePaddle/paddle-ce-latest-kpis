@@ -52,7 +52,7 @@ DarkNet_time_card1_kpi = DurationKpi(
 DarkNet_loss_card8_kpi = CostKpi('DarkNet_loss_card8', 0.02, 0, actived=True, desc='train cost')
 DarkNet_time_card8_kpi = DurationKpi(
     'DarkNet_time_card8',
-    0.02,
+    0.05,
     0,
     actived=True,
     unit_repr='seconds/image',
@@ -252,7 +252,7 @@ ShuffleNet_time_card8_kpi = DurationKpi(
 SqueezeNet_loss_card1_kpi = CostKpi('SqueezeNet_loss_card1', 0.02, 0, actived=True, desc='train cost')
 SqueezeNet_time_card1_kpi = DurationKpi(
     'SqueezeNet_time_card1',
-    0.05,
+    0.1,
     0,
     actived=True,
     unit_repr='seconds/image',

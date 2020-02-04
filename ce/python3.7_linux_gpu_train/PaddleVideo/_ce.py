@@ -110,7 +110,7 @@ NONLOCAL_time_card1_kpi = DurationKpi(
     actived=True,
     desc='train speed in one GPU card')
 NONLOCAL_loss_card8_kpi = CostKpi(
-    'NONLOCAL_loss_card8', 0.08, 0, actived=True, desc='train cost')
+    'NONLOCAL_loss_card8', 0.1, 0, actived=True, desc='train cost')
 NONLOCAL_time_card8_kpi = DurationKpi(
     'NONLOCAL_time_card8',
     0.08,
