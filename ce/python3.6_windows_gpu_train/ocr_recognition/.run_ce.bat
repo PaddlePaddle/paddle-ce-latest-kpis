@@ -14,7 +14,7 @@ if not %errorlevel% == 0 (
         echo   training of ocr_attention successfully!
 )
 rem eval
-python eval.py --model=crnn_ctc --model_path=output_ctc/model_00010 --use_gpu True > %log_path%/ocr_ctc_E.log
+python eval.py --model=crnn_ctc --model_path=output_ctc/model_00100 --use_gpu True > %log_path%/ocr_ctc_E.log
 if not %errorlevel% == 0 (
         move  %log_path%\ocr_ctc_E.log  %log_path%\FAIL\ocr_ctc_E.log
         echo   ocr_ctc,eval,FAIL  >> %log_path%\result.log
@@ -35,7 +35,7 @@ if not %errorlevel% == 0 (
         echo   evaling of ocr_attention successfully!
 )
 rem infer
-python iner.py --model=crnn_ctc --model_path=output_ctc/model_00010 --use_gpu True> %log_path%/ocr_ctc_I.log
+python iner.py --model=crnn_ctc --model_path=output_ctc/model_00100 --use_gpu True> %log_path%/ocr_ctc_I.log
 if not %errorlevel% == 0 (
         move  %log_path%\ocr_ctc_I.log  %log_path%\FAIL\ocr_ctc_I.log
         echo   ocr_ctc,infer,FAIL  >> %log_path%\result.log

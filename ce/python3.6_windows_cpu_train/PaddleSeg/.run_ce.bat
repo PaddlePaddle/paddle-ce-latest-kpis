@@ -2,6 +2,7 @@
 
 rem deeplabv3p
 set sed="C:\Program Files\Git\usr\bin\sed.exe"
+set PATH=C:\Program Files (x86)\GnuWin32\bin;%PATH%
 %sed% -i s/"BATCH_SIZE: 4"/"BATCH_SIZE: 2"/g configs/deeplabv3p_xception65_optic.yaml
 %sed% -i s/"    NUM_EPOCHS: 10"/"    NUM_EPOCHS: 1"/g configs/deeplabv3p_xception65_optic.yaml
 python pdseg/train.py --enable_ce --cfg ./configs/deeplabv3p_xception65_optic.yaml | grep "epoch"| gawk  -F "[= ]" "{if ($4 >=130) print \"kpis\tdeeplabv3p_loss_card1\t\"$8\"\nkpis\tdeeplabv3p_speed_card1\t\"$10}" | python _ce.py

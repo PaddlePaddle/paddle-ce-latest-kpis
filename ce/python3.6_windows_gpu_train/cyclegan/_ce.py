@@ -12,21 +12,21 @@ from kpi import CostKpi, DurationKpi, AccKpi
 cyclegan_g_A_loss_card1_kpi = CostKpi(
     'cyclegan_g_A_loss_card1', 0.1, 0, actived=True, desc='g_A_loss')
 cyclegan_g_A_cyc_loss_card1_kpi = CostKpi(
-    'cyclegan_g_A_cyc_loss_card1', 0.02, 0, actived=True, desc='g_A_cyc_loss')
+    'cyclegan_g_A_cyc_loss_card1', 0.1, 0, actived=True, desc='g_A_cyc_loss')
 cyclegan_g_A_idt_loss_card1_kpi = CostKpi(
-    'cyclegan_g_A_idt_loss_card1', 0.02, 0, actived=True, desc='g_A_idt_loss')
+    'cyclegan_g_A_idt_loss_card1', 0.1, 0, actived=True, desc='g_A_idt_loss')
 cyclegan_d_A_loss_card1_kpi = CostKpi(
-    'cyclegan_d_A_loss_card1', 0.05, 0, actived=True, desc='d_A_loss')
+    'cyclegan_d_A_loss_card1', 0.1, 0, actived=True, desc='d_A_loss')
 cyclegan_g_B_loss_card1_kpi = CostKpi(
     'cyclegan_g_B_loss_card1', 0.1, 0, actived=True, desc='g_B_loss')
 cyclegan_g_B_cyc_loss_card1_kpi = CostKpi(
-    'cyclegan_g_B_cyc_loss_card1', 0.02, 0, actived=True, desc='g_B_cyc_loss')
+    'cyclegan_g_B_cyc_loss_card1', 0.1, 0, actived=True, desc='g_B_cyc_loss')
 cyclegan_g_B_idt_loss_card1_kpi = CostKpi(
-    'cyclegan_g_B_idt_loss_card1', 0.02, 0, actived=True, desc='g_B_idt_loss')
+    'cyclegan_g_B_idt_loss_card1', 0.1, 0, actived=True, desc='g_B_idt_loss')
 cyclegan_d_B_loss_card1_kpi = CostKpi(
-    'cyclegan_d_B_loss_card1', 0.08, 0, actived=True, desc='d_B_loss')
+    'cyclegan_d_B_loss_card1', 0.1, 0, actived=True, desc='d_B_loss')
 cyclegan_Batch_time_cost_card1_kpi = DurationKpi(
-    'cyclegan_Batch_time_cost_card1', 0.05, 0, actived=True, desc='Batch_time_cost')
+    'cyclegan_Batch_time_cost_card1', 0.1, 0, actived=True, desc='Batch_time_cost')
 
 tracking_kpis = [
      cyclegan_g_A_loss_card1_kpi, cyclegan_g_A_cyc_loss_card1_kpi, cyclegan_g_A_idt_loss_card1_kpi,

@@ -5,6 +5,8 @@ set FLAGS_eager_delete_tensor_gb=0.0
 set FLAGS_fast_eager_deletion_mode=1
 set FLAGS_fraction_of_gpu_memory_to_use=0
 
+set PATH=C:\Program Files (x86)\GnuWin32\bin;%PATH%
+
 setlocal enabledelayedexpansion
 for %%I in (AlexNet DPN107 DarkNet53 DenseNet121 EfficientNet HRNet_W18_C GoogLeNet InceptionV4 Xception65_deeplab MobileNetV1 MobileNetV2 ResNet50 ResNet152_vd Res2Net50_vd_26w_4s ResNeXt101_32x4d ResNeXt101_32x8d_wsl SE_ResNeXt50_vd_32x4d ShuffleNetV2_swish SqueezeNet1_1 VGG19) do (
 python train.py --model=%%I --num_epochs=1 --batch_size 8 --lr=0.01 --lr_strategy=cosine_decay --random_seed 1000 --use_gpu false --enable_ce=True > %%I.log 2>&1
