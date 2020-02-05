@@ -10,21 +10,21 @@ from kpi import CostKpi, DurationKpi, AccKpi
 #### NOTE kpi.py should shared in models in some way!!!!
 
 stargan_g_loss_fake_card1_kpi = CostKpi(
-    'stargan_g_loss_fake_card1', 0.02, 0, actived=True, desc='g_loss_fake')
+    'stargan_g_loss_fake_card1', 0.1, 0, actived=True, desc='g_loss_fake')
 stargan_g_loss_rec_card1_kpi = CostKpi(
-    'stargan_g_loss_rec_card1', 0.02, 0, actived=True, desc='g_loss_rec')
+    'stargan_g_loss_rec_card1', 0.1, 0, actived=True, desc='g_loss_rec')
 stargan_g_loss_cls_card1_kpi = CostKpi(
-    'stargan_g_loss_cls_card1', 0.02, 0, actived=True, desc='g_loss_cls')
+    'stargan_g_loss_cls_card1', 0.1, 0, actived=True, desc='g_loss_cls')
 stargan_d_loss_real_card1_kpi = CostKpi(
-    'stargan_d_loss_real_card1', 0.02, 0, actived=True, desc='d_loss_real')
+    'stargan_d_loss_real_card1', 0.1, 0, actived=True, desc='d_loss_real')
 stargan_d_loss_fake_card1_kpi = CostKpi(
-    'stargan_d_loss_fake_card1', 0.02, 0, actived=True, desc='d_loss_fake')
+    'stargan_d_loss_fake_card1', 0.1, 0, actived=True, desc='d_loss_fake')
 stargan_d_loss_cls_card1_kpi = CostKpi(
-    'stargan_d_loss_cls_card1', 0.02, 0, actived=True, desc='d_loss_cls')
+    'stargan_d_loss_cls_card1', 0.1, 0, actived=True, desc='d_loss_cls')
 stargan_d_loss_gp_card1_kpi = CostKpi(
-    'stargan_d_loss_gp_card1', 0.02, 0, actived=True, desc='d_loss_gp')
+    'stargan_d_loss_gp_card1', 0.1, 0, actived=True, desc='d_loss_gp')
 stargan_Batch_time_cost_card1_kpi = DurationKpi(
-    'stargan_Batch_time_cost_card1', 0.02, 0, actived=True, desc='Batch_time_cost')
+    'stargan_Batch_time_cost_card1', 0.1, 0, actived=True, desc='Batch_time_cost')
 
 tracking_kpis = [
     stargan_g_loss_fake_card1_kpi, stargan_g_loss_rec_card1_kpi, stargan_g_loss_cls_card1_kpi,

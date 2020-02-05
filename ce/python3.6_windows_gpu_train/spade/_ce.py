@@ -10,17 +10,17 @@ from kpi import CostKpi, DurationKpi, AccKpi
 #### NOTE kpi.py should shared in models in some way!!!!
 
 spade_g_loss_gan_card1_kpi = CostKpi(
-    'spade_g_loss_gan_card1', 0.02, 0, actived=True, desc='g_loss_gan')
+    'spade_g_loss_gan_card1', 0.1, 0, actived=True, desc='g_loss_gan')
 spade_g_loss_vgg_card1_kpi = CostKpi(
-    'spade_g_loss_vgg_card1', 0.02, 0, actived=True, desc='g_loss_vgg')
+    'spade_g_loss_vgg_card1', 0.1, 0, actived=True, desc='g_loss_vgg')
 spade_g_loss_feat_card1_kpi = CostKpi(
-    'spade_g_loss_feat_card1', 0.02, 0, actived=True, desc='g_loss_feat')
+    'spade_g_loss_feat_card1', 0.1, 0, actived=True, desc='g_loss_feat')
 spade_d_loss_real_card1_kpi = CostKpi(
-    'spade_d_loss_real_card1', 0.05, 0, actived=True, desc='d_loss_real')
+    'spade_d_loss_real_card1', 0.1, 0, actived=True, desc='d_loss_real')
 spade_d_loss_fake_card1_kpi = CostKpi(
-    'spade_d_loss_fake_card1', 0.02, 0, actived=True, desc='d_loss_fake')
+    'spade_d_loss_fake_card1', 0.1, 0, actived=True, desc='d_loss_fake')
 spade_Batch_time_cost_card1_kpi = DurationKpi(
-    'spade_Batch_time_cost_card1', 0.02, 0, actived=True, desc='Batch_time_cost')
+    'spade_Batch_time_cost_card1', 0.1, 0, actived=True, desc='Batch_time_cost')
 
 tracking_kpis = [
     spade_g_loss_gan_card1_kpi, spade_g_loss_vgg_card1_kpi, spade_g_loss_feat_card1_kpi, 

@@ -42,7 +42,7 @@ if not %errorlevel% == 0 (
 )
 rem lexical_analysis_ernie
 rem train
-python run_ernie_sequence_labeling.py --mode train --ernie_config_path ./pretrained/ernie_config.json --model_save_dir ./ernie_models --init_pretraining_params ./pretrained/params/ --epoch 1 --save_steps 5 --validation_steps 5 --base_learning_rate 2e-4 --crf_learning_rate 0.2 --init_bound 0.1 --print_steps 1 --vocab_path ./pretrained/vocab.txt --batch_size 3 --random_seed 0 --num_labels 57  --max_seq_len 128 --train_data ./data/train.tsv --test_data ./data/test.tsv  --label_map_config ./conf/label_map.json --do_lower_case true --use_cuda true > %log_path%/lac_ernie_T.log 2>&1
+python run_ernie_sequence_labeling.py --mode train --ernie_config_path ./pretrained/ernie_config.json --model_save_dir ./ernie_models --init_pretraining_params ./pretrained/params/ --epoch 1 --save_steps 334 --validation_steps 334 --base_learning_rate 2e-4 --crf_learning_rate 0.2 --init_bound 0.1 --print_steps 1 --vocab_path ./pretrained/vocab.txt --batch_size 3 --random_seed 0 --num_labels 57  --max_seq_len 128 --train_data ./data/train.tsv --test_data ./data/test.tsv  --label_map_config ./conf/label_map.json --do_lower_case true --use_cuda true > %log_path%/lac_ernie_train.log 2>&1
 if not %errorlevel% == 0 (
         move  %log_path%\lac_ernie_train.log  %log_path%\FAIL\lac_ernie_train.log
         echo   lac_ernie,train,FAIL  >> %log_path%\result.log
@@ -53,7 +53,7 @@ if not %errorlevel% == 0 (
         echo   training of lac_ernie successfully!
 )
 rem eval
-python run_ernie_sequence_labeling.py --mode eval --ernie_config_path ./pretrained/ernie_config.json --init_checkpoint ./model_finetuned --init_bound 0.1 --vocab_path ./pretrained/vocab.txt --batch_size 64 --random_seed 0 --num_labels 57 --max_seq_len 128 --test_data ./data/test.tsv --label_map_config ./conf/label_map.json  --do_lower_case true  --use_cuda true > %log_path%/lac_ernie_E.log 2>&1 
+python run_ernie_sequence_labeling.py --mode eval --ernie_config_path ./pretrained/ernie_config.json --init_checkpoint ./model_finetuned --init_bound 0.1 --vocab_path ./pretrained/vocab.txt --batch_size 64 --random_seed 0 --num_labels 57 --max_seq_len 128 --test_data ./data/test.tsv --label_map_config ./conf/label_map.json  --do_lower_case true  --use_cuda true > %log_path%/lac_ernie_eval.log 2>&1 
 if not %errorlevel% == 0 (
         move  %log_path%\lac_ernie_eval.log  %log_path%\FAIL\lac_ernie_eval.log
         echo   lac_ernie,eval,FAIL  >> %log_path%\result.log
@@ -64,7 +64,7 @@ if not %errorlevel% == 0 (
         echo   eval of lac_ernie successfully!
  )
 rem infer
-python run_ernie_sequence_labeling.py --mode infer --ernie_config_path ./pretrained/ernie_config.json --init_checkpoint ./model_finetuned --init_bound 0.1 --vocab_path ./pretrained/vocab.txt --batch_size 64 --random_seed 0 --num_labels 57 --max_seq_len 128 --test_data ./data/test.tsv --label_map_config ./conf/label_map.json  --do_lower_case true  --use_cuda true > %log_path%/lac_ernie_I.log 2>&1  
+python run_ernie_sequence_labeling.py --mode infer --ernie_config_path ./pretrained/ernie_config.json --init_checkpoint ./model_finetuned --init_bound 0.1 --vocab_path ./pretrained/vocab.txt --batch_size 64 --random_seed 0 --num_labels 57 --max_seq_len 128 --test_data ./data/test.tsv --label_map_config ./conf/label_map.json  --do_lower_case true  --use_cuda true > %log_path%/lac_ernie_infer.log 2>&1  
 if not %errorlevel% == 0 (
         move  %log_path%\lac_ernie_infer.log  %log_path%\FAIL\lac_ernie_infer.log
         echo   lac_ernie,infer,FAIL  >> %log_path%\result.log
