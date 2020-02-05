@@ -292,7 +292,7 @@ Xception_time_card1_kpi = DurationKpi(
 Xception_loss_card8_kpi = CostKpi('Xception_loss_card8', 0.02, 0, actived=True, desc='train cost')
 Xception_time_card8_kpi = DurationKpi(
     'Xception_time_card8',
-    0.02,
+    0.05,
     0,
     actived=True,
     unit_repr='seconds/image',
