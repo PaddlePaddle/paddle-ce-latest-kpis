@@ -140,7 +140,7 @@ InceptionV4_time_card8_kpi = DurationKpi(
 MobileNetV1_loss_card1_kpi = CostKpi('MobileNetV1_loss_card1', 0.05, 0, actived=True, desc='train cost')
 MobileNetV1_time_card1_kpi = DurationKpi(
     'MobileNetV1_time_card1',
-    0.02,
+    0.1,
     0,
     actived=True,
     unit_repr='seconds/image',
@@ -217,7 +217,7 @@ ResNet_time_card8_kpi = DurationKpi(
     actived=True,
     unit_repr='seconds/image',
     desc='train time in 8 GPU card')
-SE_ResNeXt_loss_card1_kpi = CostKpi('SE_ResNeXt_loss_card1', 0.02, 0, actived=True, desc='train cost')
+SE_ResNeXt_loss_card1_kpi = CostKpi('SE_ResNeXt_loss_card1', 0.05, 0, actived=True, desc='train cost')
 SE_ResNeXt_time_card1_kpi = DurationKpi(
     'SE_ResNeXt_time_card1',
     0.02,
@@ -276,7 +276,7 @@ VGG_time_card1_kpi = DurationKpi(
 VGG_loss_card8_kpi = CostKpi('VGG_loss_card8', 0.05, 0, actived=True, desc='train cost')
 VGG_time_card8_kpi = DurationKpi(
     'VGG_time_card8',
-    0.08,
+    0.1,
     0,
     actived=True,
     unit_repr='seconds/image',
@@ -284,7 +284,7 @@ VGG_time_card8_kpi = DurationKpi(
 Xception_loss_card1_kpi = CostKpi('Xception_loss_card1', 0.02, 0, actived=True, desc='train cost')
 Xception_time_card1_kpi = DurationKpi(
     'Xception_time_card1',
-    0.05,
+    0.1,
     0,
     actived=True,
     unit_repr='seconds/image',
