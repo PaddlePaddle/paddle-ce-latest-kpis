@@ -57,7 +57,7 @@ DarkNet_time_card8_kpi = DurationKpi(
     actived=True,
     unit_repr='seconds/image',
     desc='train time in 8 GPU card')
-DenseNet_loss_card1_kpi = CostKpi('DenseNet_loss_card1', 0.02, 0, actived=True, desc='train cost')
+DenseNet_loss_card1_kpi = CostKpi('DenseNet_loss_card1', 0.05, 0, actived=True, desc='train cost')
 DenseNet_time_card1_kpi = DurationKpi(
     'DenseNet_time_card1',
     0.02,
@@ -84,7 +84,7 @@ EfficientNet_time_card1_kpi = DurationKpi(
 EfficientNet_loss_card8_kpi = CostKpi('EfficientNet_loss_card8', 0.02, 0, actived=True, desc='train cost')
 EfficientNet_time_card8_kpi = DurationKpi(
     'EfficientNet_time_card8',
-    0.05,
+    0.08,
     0,
     actived=True,
     unit_repr='seconds/image',
@@ -92,7 +92,7 @@ EfficientNet_time_card8_kpi = DurationKpi(
 GoogLeNet_loss_card1_kpi = CostKpi('GoogLeNet_loss_card1', 0.02, 0, actived=True, desc='train cost')
 GoogLeNet_time_card1_kpi = DurationKpi(
     'GoogLeNet_time_card1',
-    0.02,
+    0.05,
     0,
     actived=True,
     unit_repr='seconds/image',
