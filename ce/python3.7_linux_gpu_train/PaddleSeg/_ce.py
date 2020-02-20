@@ -6,7 +6,7 @@ import sys
 sys.path.append(os.environ['ceroot'])
 from kpi import CostKpi, AccKpi
  
-deeplabv3p_loss_card1_kpi = CostKpi('deeplabv3p_loss_card1', 0.08, 0, actived=True, 
+deeplabv3p_loss_card1_kpi = CostKpi('deeplabv3p_loss_card1', 0.1, 0, actived=True, 
                                     desc='train loss in 1 GPU card')
 deeplabv3p_speed_card1_kpi = AccKpi('deeplabv3p_speed_card1', 0.05, 0, actived=True,
                                          desc='train speed in 1 GPU card')
@@ -30,7 +30,7 @@ unet_loss_card8_kpi = CostKpi('unet_loss_card8', 0.03, 0, actived=True,
                               desc='train loss in 8 GPU card')
 unet_speed_card8_kpi = AccKpi('unet_speed_card8', 0.03, 0, actived=True,
                                   desc='train speed in 8 GPU card')
-pspnet_loss_card1_kpi = CostKpi('pspnet_loss_card1', 0.05, 0, actived=True,
+pspnet_loss_card1_kpi = CostKpi('pspnet_loss_card1', 0.08, 0, actived=True,
                                 desc='train loss in 1 GPU card')
 pspnet_speed_card1_kpi = AccKpi('pspnet_speed_card1', 0.03, 0, actived=True,
                                     desc='train speed in 1 GPU card')
