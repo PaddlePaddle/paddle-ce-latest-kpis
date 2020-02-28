@@ -5,18 +5,18 @@ import sys
 sys.path.append(os.environ['ceroot'])
 from kpi import CostKpi
 from kpi import DurationKpi
+from kpi import AccKpi
 
-train_duration_card1 = DurationKpi('train_duration_card1', 0.01, 0, actived=True)
-train_ppl_card1 = CostKpi('train_ppl_card1', 0.01, 0, actived=True)
-
-train_duration_card4 = DurationKpi('train_duration_card4', 0.01, 0, actived=False)
-train_ppl_card4 = CostKpi('train_ppl_card4', 0.01, 0, actived=True)
+each_step_duration_simnet_card1 = DurationKpi('each_step_duration_simnet_card1', 0.01, 0, actived=True)
+train_loss_simnet_card1 = CostKpi('train_loss_simnet_card1', 0.01, 0, actived=True)
+each_step_duration_simnet_card4 = DurationKpi('each_step_duration_simnet_card4', 0.01, 0, actived=True)
+train_loss_simnet_card4 = CostKpi('train_loss_simnet_card4', 0.01, 0, actived=True)
 
 tracking_kpis = [
-        train_duration_card1,
-        train_ppl_card1,
-        train_duration_card4,
-        train_ppl_card4,
+        each_step_duration_simnet_card1,
+        train_loss_simnet_card1,
+        each_step_duration_simnet_card4,
+        train_loss_simnet_card4,
 ]
 
 
@@ -33,7 +33,7 @@ def parse_log(log):
     test_cost\t1.0
     train_cost\t1.0
     train_cost\t1.0
-    train_ppl\t1.2
+    train_acc\t1.2
     "
     '''
     for line in log.split('\n'):
