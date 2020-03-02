@@ -3,7 +3,8 @@ set CUDA_VISIBLE_DEVICES=0
 
 set sed="C:\Program Files\Git\usr\bin\sed.exe"
 rem cascase_rcnn
-python tools/train.py -c configs/cascade_rcnn_r50_fpn_1x.yml --enable_ce=True -o max_iters=1000 FasterRCNNTrainFeed.shuffle=false CascadeBBoxAssigner.shuffle_before_sample=false FPNRPNHead.rpn_target_assign.use_random=false | python _ce.py
+%sed% -i s/"base_lr: 0.02"/"base_lr: 0.0025"/g configs/cascade_rcnn_r50_fpn_1x.yml
+python tools/train.py -c configs/cascade_rcnn_r50_fpn_1x.yml --enable_ce=True -o max_iters=200 FasterRCNNTrainFeed.shuffle=false CascadeBBoxAssigner.shuffle_before_sample=false FPNRPNHead.rpn_target_assign.use_random=false | python _ce.py
 rem eval
 python tools/eval.py -c configs/cascade_rcnn_r50_fpn_1x.yml -o use_gpu=True > %log_path%/cascade_rcnn_E.log 2>&1
 if not %errorlevel% == 0 (

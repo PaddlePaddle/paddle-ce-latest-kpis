@@ -35,7 +35,8 @@ if not %errorlevel% == 0 (
         echo   evaling of ocr_attention successfully!
 )
 rem infer
-python iner.py --model=crnn_ctc --model_path=output_ctc/model_00100 --use_gpu False > %log_path%/ocr_ctc_I.log
+mklink /j data %data_path%\ctc_data
+python iner.py --model=crnn_ctc --model_path=output_ctc/model_00100 --use_gpu False --input_images_dir=data/test_images --input_images_list=data/test.list > %log_path%/ocr_ctc_I.log
 if not %errorlevel% == 0 (
         move  %log_path%\ocr_ctc_I.log  %log_path%\FAIL\ocr_ctc_I.log
         echo   ocr_ctc,infer,FAIL  >> %log_path%\result.log
@@ -45,7 +46,7 @@ if not %errorlevel% == 0 (
         echo   ocr_ctc,infer,SUCCESS  >> %log_path%\result.log
         echo   infering of ocr_CTC successfully!
 )
-python infer.py --model=attention --model_path=output_attention/model_00010 --use_gpu False > %log_path%/ocr_attention_I.log 2>&1
+python infer.py --model=attention --model_path=output_attention/model_00010 --use_gpu False --input_images_dir=data/test_images --input_images_list=data/test.list > %log_path%/ocr_attention_I.log 2>&1
 if not %errorlevel% == 0 (
         move  %log_path%\ocr_attention_I.log  %log_path%\FAIL\ocr_attention_I.log
         echo   ocr_attention,infer,FAIL  >> %log_path%\result.log
