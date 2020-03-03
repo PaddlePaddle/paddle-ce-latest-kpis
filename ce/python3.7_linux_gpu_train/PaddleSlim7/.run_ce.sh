@@ -49,6 +49,7 @@ python compress.py \
         --batch_size 64 \
         --model "MobileNet" \
         --pretrained_model ./pretrain/MobileNetV1_pretrained \
+        --quant_only True \
         --compress_config ./configs/quantization.yaml >$PWD/3_quan_run.log 2>&1
 echo "quan_v1 log ok"
 cd ${current_dir}
