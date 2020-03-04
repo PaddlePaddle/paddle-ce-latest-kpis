@@ -2,7 +2,7 @@
 cls_train() {
     python train_cls.py \
         --model=${model_type} \
-        --batch_size=32 \
+        --batch_size=16 \
         --save_dir=checkpoints_${model_type}_cls \
         --epoch 1 \
         --enable_ce
