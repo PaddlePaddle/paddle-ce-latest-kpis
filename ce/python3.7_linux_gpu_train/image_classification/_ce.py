@@ -84,7 +84,7 @@ EfficientNet_time_card1_kpi = DurationKpi(
 EfficientNet_loss_card8_kpi = CostKpi('EfficientNet_loss_card8', 0.02, 0, actived=True, desc='train cost')
 EfficientNet_time_card8_kpi = DurationKpi(
     'EfficientNet_time_card8',
-    0.08,
+    0.1,
     0,
     actived=True,
     unit_repr='seconds/image',
