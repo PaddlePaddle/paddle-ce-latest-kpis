@@ -13,7 +13,7 @@ from kpi import AccKpi
 test_auc_gpu1_kpi = AccKpi(
     'test_auc_gpu1', 0.04, 0, actived=True, desc='test_auc_gpu1')
 test_auc_gpu2_kpi = AccKpi(
-    'test_auc_gpu2', 0.03, 0, actived=True, desc='test_auc_gpu2')
+    'test_auc_gpu2', 0.04, 0, actived=True, desc='test_auc_gpu2')
 tracking_kpis = [test_auc_gpu1_kpi,
                  test_auc_gpu2_kpi]
 
