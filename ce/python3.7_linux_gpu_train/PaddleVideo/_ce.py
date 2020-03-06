@@ -22,7 +22,7 @@ AttentionCluster_time_card8_kpi = DurationKpi(
     actived=True,
     desc='train time in four GPU card')
 AttentionLSTM_loss_card1_kpi = CostKpi(
-    'AttentionLSTM_loss_card1', 0.08, 0, actived=True, desc='train cost')
+    'AttentionLSTM_loss_card1', 0.1, 0, actived=True, desc='train cost')
 AttentionLSTM_time_card1_kpi = DurationKpi(
     'AttentionLSTM_time_card1',
     0.08,
@@ -110,25 +110,9 @@ NONLOCAL_time_card1_kpi = DurationKpi(
     actived=True,
     desc='train speed in one GPU card')
 NONLOCAL_loss_card8_kpi = CostKpi(
-    'NONLOCAL_loss_card8', 0.08, 0, actived=True, desc='train cost')
+    'NONLOCAL_loss_card8', 0.1, 0, actived=True, desc='train cost')
 NONLOCAL_time_card8_kpi = DurationKpi(
     'NONLOCAL_time_card8',
-    0.08,
-    0,
-    actived=True,
-    desc='train time in four GPU card')
-CTCN_loss_card1_kpi = CostKpi(
-    'CTCNN_loss_card1', 0.08, 0, actived=True, desc='train cost')
-CTCN_time_card1_kpi = DurationKpi(
-    'CTCN_time_card1',
-    0.08,
-    0,
-    actived=True,
-    desc='train speed in one GPU card')
-CTCN_loss_card8_kpi = CostKpi(
-    'CTCN_loss_card8', 0.08, 0, actived=True, desc='train cost')
-CTCN_time_card8_kpi = DurationKpi(
-    'CTCN_time_card8',
     0.08,
     0,
     actived=True,
@@ -146,8 +130,7 @@ tracking_kpis = [
     TSM_loss_card8_kpi, TSM_time_card8_kpi, TSN_loss_card1_kpi, 
     TSN_time_card1_kpi, TSN_loss_card8_kpi, TSN_time_card8_kpi,
     NONLOCAL_loss_card1_kpi, NONLOCAL_time_card1_kpi, NONLOCAL_loss_card8_kpi,
-    NONLOCAL_time_card8_kpi, CTCN_loss_card1_kpi, CTCN_time_card1_kpi,
-    CTCN_loss_card8_kpi, CTCN_time_card8_kpi
+    NONLOCAL_time_card8_kpi
 ]
 
 

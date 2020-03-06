@@ -5,16 +5,11 @@ export FLAGS_fraction_of_gpu_memory_to_use=0.98
 
 #model_list=(AttentionCluster AttentionLSTM NEXTVLAD STNET TSM TSN NONLOCAL CTCN BSN BMN ETS TALL)
 #config_list=(attention_cluster attention_lstm nextvlad stnet tsm tsn nonlocal ctcn bsn_tem bmn ets tall)
-model_list=(AttentionCluster AttentionLSTM NEXTVLAD STNET TSM TSN NONLOCAL CTCN)
-config_list=(attention_cluster attention_lstm nextvlad stnet tsm tsn nonlocal ctcn)
-for((i=0;i<8;i++));
+model_list=(AttentionCluster AttentionLSTM NEXTVLAD STNET TSM TSN NONLOCAL)
+config_list=(attention_cluster attention_lstm nextvlad stnet tsm tsn nonlocal)
+for((i=0;i<7;i++));
 do
 BATCH_SIZE=16
-
-#CTCN's batch_size is set as 2 to avoid out of memory
-if [ ${model_list[${i}]} == 'CTCN' ];then
-    BATCH_SIZE=2
-fi
 
 export CUDA_VISIBLE_DEVICES=0
 if [ ${model_list[${i}]} == 'NEXTVLAD' ];then
