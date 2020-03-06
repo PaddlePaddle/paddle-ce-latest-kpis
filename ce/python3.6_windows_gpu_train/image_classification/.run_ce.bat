@@ -48,7 +48,7 @@ if not !errorlevel! == 0 (
         echo   save_inference of %%I successfully!
 )
 rem predict
-python predict.py  --model_file=%%I/model --params_file=%%I/params  --image_path=data/ILSVRC2012/test/ILSVRC2012_val_00000001.jpeg  --data_dir=data/ILSVRC2012/test --gpu_id=0  --gpu_mem=1024 >%log_path%/%%I_P.log 2>&1
+python predict.py  --model_file=%%I/model --params_file=%%I/params  --image_path=data/ILSVRC2012/test/ILSVRC2012_val_00000001.jpeg --gpu_id=0  --gpu_mem=1024 >%log_path%/%%I_P.log 2>&1
 if not !errorlevel! == 0 (
         move  %log_path%\%%I_P.log  %log_path%\FAIL\%%I_P.log
         echo   %%I,predict,FAIL  >> %log_path%\result.log
