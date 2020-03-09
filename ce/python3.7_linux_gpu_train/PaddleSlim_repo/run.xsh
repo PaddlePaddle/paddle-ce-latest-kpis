@@ -7,5 +7,4 @@ if [ -d "demo/data" ];then rm -rf demo/data
 fi
 # 11
 ln -s ${dataset_path}/slim/slim1_data demo/data
-ln -s  ${dataset_path}/word2vec/demo_data data
 ./.run_ce.sh

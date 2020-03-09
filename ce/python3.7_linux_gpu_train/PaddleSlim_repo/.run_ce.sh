@@ -60,8 +60,8 @@ cd ${current_dir}/demo/quant/quant_embedding
 if [ -d "data" ];then
     rm -rf data
 fi
-# 需要在11 机器上放置demo数据,并在run.xsh中添加软链
-#ln -s ${dataset_path}/rec/word2vec/demo_data data
+# 需要在11 机器上放置demo数据
+ln -s  ${dataset_path}/word2vec/demo_data data
 if [ -d "v1_cpu5_b100_lr1dir" ];then
     rm -rf v1_cpu5_b100_lr1dir
 fi
