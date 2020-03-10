@@ -2,7 +2,7 @@
 
 set sed="C:\Program Files\Git\usr\bin\sed.exe"
 rem cascade_rcnn
-python tools/train.py -c configs/cascade_rcnn_r50_fpn_1x.yml --enable_ce=True -o max_iters=1000 use_gpu=false FasterRCNNTrainFeed.shuffle=false CascadeBBoxAssigner.shuffle_before_sample=false FPNRPNHead.rpn_target_assign.use_random=false | python _ce.py
+python tools/train.py -c configs/cascade_rcnn_r50_fpn_1x.yml -o max_iters=1000 use_gpu=false FasterRCNNTrainFeed.shuffle=false CascadeBBoxAssigner.shuffle_before_sample=false FPNRPNHead.rpn_target_assign.use_random=false | python _ce.py
 rem eval
 python tools/eval.py -c configs/cascade_rcnn_r50_fpn_1x.yml -o use_gpu=false > %log_path%/cascade_rcnn_E.log 2>&1
 if not %errorlevel% == 0 (
@@ -14,7 +14,6 @@ if not %errorlevel% == 0 (
         echo   cascade_rcnn,eval,SUCCESS  >> %log_path%\result.log
         echo   evaling of cascade_rcnn successfully!
 )
-pip install -r ../requirements.txt
 python tools/infer.py -c configs/cascade_rcnn_r50_fpn_1x.yml --infer_img=demo/000000570688.jpg -o use_gpu=false > %log_path%/cascade_rcnn_I.log 2>&1
 if not %errorlevel% == 0 (
         move  %log_path%\cascade_rcnn_I.log  %log_path%\FAIL\cascade_rcnn_I.log
@@ -28,7 +27,7 @@ if not %errorlevel% == 0 (
 
 rem faster_rcnn
 %sed% -i s/"base_lr: 0.02"/"base_lr: 0.0025"/g configs/faster_rcnn_r50_fpn_1x.yml
-python tools/train.py -c configs/faster_rcnn_r50_fpn_1x.yml --enable_ce=True -o max_iters=200 use_gpu=false FasterRCNNTrainFeed.shuffle=false | python _ce.py
+python tools/train.py -c configs/faster_rcnn_r50_fpn_1x.yml -o max_iters=200 use_gpu=false FasterRCNNTrainFeed.shuffle=false | python _ce.py
 rem eval
 python tools/eval.py -c configs/faster_rcnn_r50_fpn_1x.yml -o use_gpu=false > %log_path%/faster_rcnn_E.log 2>&1
 if not %errorlevel% == 0 (
@@ -40,7 +39,6 @@ if not %errorlevel% == 0 (
         echo   faster_rcnn,eval,SUCCESS  >> %log_path%\result.log
         echo   evaling of faster_rcnn successfully!
 )
-pip install -r ../requirements.txt
 python tools/infer.py -c configs/faster_rcnn_r50_fpn_1x.yml --infer_img=demo/000000570688.jpg -o use_gpu=false > %log_path%/faster_rcnn_I.log 2>&1
 if not %errorlevel% == 0 (
         move  %log_path%\faster_rcnn_I.log  %log_path%\FAIL\faster_rcnn_I.log
@@ -54,7 +52,7 @@ if not %errorlevel% == 0 (
 
 rem mask_rcnn
 %sed% -i s/"base_lr: 0.01"/"base_lr: 0.00125"/g configs/mask_rcnn_r50_fpn_1x.yml
-python tools/train.py -c configs/mask_rcnn_r50_fpn_1x.yml --enable_ce=True -o max_iters=200 use_gpu=false MaskRCNNTrainFeed.shuffle=false BBoxAssigner.shuffle_before_sample=false FPNRPNHead.rpn_target_assign.use_random=false | python _ce.py
+python tools/train.py -c configs/mask_rcnn_r50_fpn_1x.yml  -o max_iters=200 use_gpu=false MaskRCNNTrainFeed.shuffle=false BBoxAssigner.shuffle_before_sample=false FPNRPNHead.rpn_target_assign.use_random=false | python _ce.py
 rem eval
 python tools/eval.py -c configs/mask_rcnn_r50_fpn_1x.yml -o use_gpu=false > %log_path%/mask_rcnn_E.log 2>&1
 if not %errorlevel% == 0 (
@@ -66,7 +64,6 @@ if not %errorlevel% == 0 (
         echo   mask_rcnn,eval,SUCCESS  >> %log_path%\result.log
         echo   evaling of mask_rcnn successfully!
 )
-pip install -r ../requirements.txt
 python tools/infer.py -c configs/mask_rcnn_r50_fpn_1x.yml --infer_img=demo/000000570688.jpg -o use_gpu=false > %log_path%/mask_rcnn_I.log 2>&1
 if not %errorlevel% == 0 (
         move  %log_path%\mask_rcnn_I.log  %log_path%\FAIL\mask_rcnn_I.log
@@ -79,7 +76,7 @@ if not %errorlevel% == 0 (
 )
 
 rem yolov3
-python tools/train.py -c configs/yolov3_darknet.yml --enable_ce=True -o max_iters=200 use_gpu=false YoloTrainFeed.shuffle=false YoloTrainFeed.use_process=false | python _ce.py
+python tools/train.py -c configs/yolov3_darknet.yml -o max_iters=200 use_gpu=false YoloTrainFeed.shuffle=false YoloTrainFeed.use_process=false | python _ce.py
 rem eval
 python tools/eval.py -c configs/yolov3_darknet.yml -o use_gpu=false > %log_path%/yolov3_darknet_E.log 2>&1
 if not %errorlevel% == 0 (
@@ -91,7 +88,6 @@ if not %errorlevel% == 0 (
         echo   yolov3_darknet,eval,SUCCESS  >> %log_path%\result.log
         echo   evaling of yolov3_darknet successfully!
 )
-pip install -r ../requirements.txt
 python tools/infer.py -c configs/yolov3_darknet.yml --infer_img=demo/000000570688.jpg -o use_gpu=false > %log_path%/yolov3_darknet_I.log 2>&1
 if not %errorlevel% == 0 (
         move  %log_path%\yolov3_darknet_I.log  %log_path%\FAIL\yolov3_darknet_I.log

@@ -35,7 +35,7 @@ if not !errorlevel! == 0 (
         echo   infering of %%I successfully!
 )
 rem save_inference
-python infer.py  --model=%%I  --pretrained_model=output/%%I/0 --save_inference=True >%log_path%/%%I_SI.log 2>&1
+python infer.py  --model=%%I --use_gpu False --pretrained_model=output/%%I/0 --save_inference=True >%log_path%/%%I_SI.log 2>&1
 if not !errorlevel! == 0 (
         move  %log_path%\%%I_SI.log  %log_path%\FAIL\%%I_SI.log
         echo   %%I,save_inference,FAIL  >> %log_path%\result.log

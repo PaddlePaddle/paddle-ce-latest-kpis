@@ -17,8 +17,6 @@ ln -s ${data_path}/lexical_analysis\model_finetuned model_finetuned
 fi
 
 
-ln -s ${models_dir}/PaddleNLP/models ../models
-ln -s ${models_dir}/PaddleNLP/preprocess ../preprocess
+ln -s ${models_dir}/PaddleNLP/shared_modules ../shared_modules
 ./.run_ce.sh
-rm -rf ../models
-rm -rf ../preprocess
+rm -rf ../shared_modules
