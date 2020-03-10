@@ -9,4 +9,5 @@ cat log_cgan | python _ce.py
 python dc_gan.py --batch_size=121 --epoch=1 --run_ce=True --use_gpu=True 1> log_dcgan
 cat log_dcgan | python _ce.py
 
+#
 

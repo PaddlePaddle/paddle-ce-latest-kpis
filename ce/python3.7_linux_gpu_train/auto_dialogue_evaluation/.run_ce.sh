@@ -31,4 +31,28 @@ python -u main.py \
       --enable_ce="store_true" 1> log_card1
 cat log_card1 | python _ce.py
 
-
+#infer
+python -u main.py \
+      --do_predict=true \
+      --use_cuda=true \
+      --predict_file="ade/data/input/data/unlabel_data/test.ids" \
+      --init_from_params="ade/data/saved_models/matching_pretrained/params" \
+      --loss_type="CLS" \
+      --output_prediction_file="ade/data/output/pretrain_matching_predict" 1>infer
+if [ $? -ne 0 ];then
+    echo -e "auto_dialogue_evaluation,infer,FAIL"
+else
+    echo -e "auto_dialogue_evaluation,infer,SUCCESS"
+fi
+#eval
+python -u main.py \
+      --do_eval=true \
+      --use_cuda=true \
+      --evaluation_file="ade/data/input/data/unlabel_data/test.ids" \
+      --output_prediction_file="ade/data/output/pretrain_matching_predict" \
+      --loss_type="CLS" 1>eval
+if [ $? -ne 0 ];then
+    echo -e "auto_dialogue_evaluation,eval,FAIL"
+else
+    echo -e "auto_dialogue_evaluation,eval,SUCCESS"
+fi
