@@ -1,7 +1,7 @@
 @echo off
 set models_dir=./../../models_repo
 rem copy models files
-xcopy "%models_dir%/PaddleNLP/PaddleLARK/BERT/." . /s /e /y /d
+xcopy "%models_dir%/PaddleNLP/pretrain_language_models/BERT/." . /s /e /y /d
 
 if exist data (
 rd /s /q data

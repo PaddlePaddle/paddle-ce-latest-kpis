@@ -4,12 +4,12 @@ export models_dir=$PWD/../../models_repo
 cp -r -n ${models_dir}/PaddleNLP/language_model/. ./
 
 cd data
-if [ ! -d "simple-examples"];then
+if [ ! -d "simple-examples" ];then
 ln -s ${data_path}/simple-examples simple-examples
 fi
 cd ..
 
-ln -s ${models_dir}/PaddleNLP/models ../models
+ln -s ${models_dir}/PaddleNLP/shared_modules ../shared_modules
 ./.run_ce.sh
-rm -rf ../models
+rm -rf ../shared_modules
 
