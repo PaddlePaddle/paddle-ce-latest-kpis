@@ -1,9 +1,9 @@
 #!/bin/bash
 export models_dir=$PWD/../../models_repo
 #copy models files
-rm -rf ${models_dir}/PaddleCV/PaddleVideo/.run_ce.sh
-rm -rf ${models_dir}/PaddleCV/PaddleVideo/_ce.py
-cp -r ${models_dir}/PaddleCV/PaddleVideo/. ./
+rm -rf ${models_dir}/PaddleCV/video/.run_ce.sh
+rm -rf ${models_dir}/PaddleCV/video/_ce.py
+cp -r ${models_dir}/PaddleCV/video/. ./
 if [ -f "data/dataset/kinetics/*.list" ];then rm -rf data/dataset/kinetics/*.list
 fi
 ln -s ${dataset_path}/video/kinetics/train.list data/dataset/kinetics/train.list
