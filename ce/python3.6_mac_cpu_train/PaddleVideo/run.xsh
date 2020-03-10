@@ -1,7 +1,7 @@
 #!/bin/bash
 export models_dir=$PWD/../../models_repo
 #copy models files
-cp -r -n ${models_dir}/PaddleCV/PaddleVideo/. ./
+cp -r -n ${models_dir}/PaddleCV/video/. ./
 
 cd data/dataset
 rm -rf  kinetics

@@ -9,7 +9,7 @@ fi
 if [ ! -d "model_files" ];then
 ln -s ${data_path}/similarity_net/model_files model_files
 fi
-ln -s ${models_di}/PaddleNLP/models ../models
+ln -s ${models_di}/PaddleNLP/models ../shared_modules
 
 ./.run_ce.sh
-rm -rf ../modles
+rm -rf ../shared_modules

@@ -9,7 +9,7 @@ fi
 if [ ! -d "models" ];then
 ln -s ${data_path}/emotion_detection/models models
 fi
-ln -s ${models_di}/PaddleNLP/models ../models
+ln -s ${models_di}/PaddleNLP/shared_modules ../shared_modules
 
 ./.run_ce.sh
-rm -rf ../modles
+rm -rf ../shared_modules

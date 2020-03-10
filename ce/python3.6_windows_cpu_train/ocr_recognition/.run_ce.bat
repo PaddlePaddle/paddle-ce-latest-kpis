@@ -36,7 +36,7 @@ if not %errorlevel% == 0 (
 )
 rem infer
 mklink /j data %data_path%\ctc_data
-python iner.py --model=crnn_ctc --model_path=output_ctc/model_00100 --use_gpu False --input_images_dir=data/test_images --input_images_list=data/test.list > %log_path%/ocr_ctc_I.log
+python infer.py --model=crnn_ctc --model_path=output_ctc/model_00100 --use_gpu False --input_images_dir=data/test_images --input_images_list=data/test.list > %log_path%/ocr_ctc_I.log
 if not %errorlevel% == 0 (
         move  %log_path%\ocr_ctc_I.log  %log_path%\FAIL\ocr_ctc_I.log
         echo   ocr_ctc,infer,FAIL  >> %log_path%\result.log
