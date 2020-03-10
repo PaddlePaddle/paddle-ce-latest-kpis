@@ -29,10 +29,10 @@ MODEL:
         DEPTH_MULTIPLIER: 1
         LAYERS: 50
 TEST:
-    TEST_MODEL: "pretrain/pspnet50_bn_cityscapes"
+    TEST_MODEL: "saved/pspnet/final"
 TRAIN:
-    MODEL_SAVE_DIR: ""
-    PRETRAINED_MODEL_DIR: u""
+    MODEL_SAVE_DIR: "saved/pspnet"
+    PRETRAINED_MODEL_DIR: u"pretrain/pspnet50_bn_cityscapes"
     SNAPSHOT_EPOCH: 1
     SYNC_BATCH_NORM: False
 SOLVER:

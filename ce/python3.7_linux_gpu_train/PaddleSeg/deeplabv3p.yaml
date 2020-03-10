@@ -29,9 +29,9 @@ MODEL:
         ASPP_WITH_SEP_CONV: True
         DECODER_USE_SEP_CONV: True
 TEST:
-    TEST_MODEL: ""
+    TEST_MODEL: "saved/deeplabv3p/final"
 TRAIN:
-    MODEL_SAVE_DIR: ""
+    MODEL_SAVE_DIR: "saved/deeplabv3p"
     PRETRAINED_MODEL_DIR: u"./pretrain/deeplabv3p_xception65_bn_cityscapes"
     SNAPSHOT_EPOCH: 1
     SYNC_BATCH_NORM: False

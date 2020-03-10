@@ -28,9 +28,9 @@ MODEL:
     ICNET:
         DEPTH_MULTIPLIER: 0.5
 TEST:
-    TEST_MODEL: ""
+    TEST_MODEL: "saved/icnet/final"
 TRAIN:
-    MODEL_SAVE_DIR: ""
+    MODEL_SAVE_DIR: "saved/icnet"
     PRETRAINED_MODEL_DIR: u"pretrain/icnet_bn_cityscapes"
     SNAPSHOT_EPOCH: 1
     SYNC_BATCH_NORM: False

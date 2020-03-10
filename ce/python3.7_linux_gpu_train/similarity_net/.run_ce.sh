@@ -13,7 +13,7 @@ TEST_RESULT_PATH=./test_result
 INFER_RESULT_PATH=./infer_result
 TASK_MODE='pointwise'
 CONFIG_PATH=./config/bow_pointwise.json
-INIT_CHECKPOINT=./model_files/simnet_bow_pointwise_pretrained_model/
+INIT_CHECKPOINT=./model_files/bow_pointwise/1000
 
 
 # run_train
@@ -51,3 +51,38 @@ sleep 20
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 train 1> log_4cards
 cat log_4cards | python _ce.py
+
+#eval
+export CUDA_VISIBLE_DEVICES=0
+evaluate() {
+	python run_classifier.py \
+		--task_name ${TASK_NAME} \
+		--use_cuda True \
+		--do_test True \
+		--verbose_result True \
+		--batch_size 128 \
+		--test_data_dir ${TEST_DATA_PATH} \
+		--test_result_path ${TEST_RESULT_PATH} \
+		--config_path ${CONFIG_PATH} \
+		--vocab_path ${VOCAB_PATH} \
+		--task_mode ${TASK_MODE} \
+		--compute_accuracy False \
+		--lamda 0.958 \
+		--init_checkpoint ${INIT_CHECKPOINT}
+}
+
+#infer
+infer() {
+	python run_classifier.py \
+		--task_name ${TASK_NAME} \
+		--use_cuda True \
+		--do_infer True \
+		--batch_size 128 \
+		--infer_data_dir ${INFER_DATA_PATH} \
+		--infer_result_path ${INFER_RESULT_PATH} \
+		--config_path ${CONFIG_PATH} \
+		--vocab_path ${VOCAB_PATH} \
+		--task_mode ${TASK_MODE} \
+		--init_checkpoint ${INIT_CHECKPOINT}
+}
+
