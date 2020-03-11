@@ -9,11 +9,11 @@ from kpi import CostKpi, DurationKpi, AccKpi
 
 #### NOTE kpi.py should shared in models in some way!!!!
 
-MobileNetV1_train_loss_card1_kpi = CostKpi('MobileNetV1_train_loss_card1', 0.05, 0, actived=True, desc='train cost')
-MobileNetV1_eval_loss_card1_kpi = CostKpi('MobileNetV1_eval_loss_card1', 0.05, 0, actived=True, desc='eval cost')
+MobileNetV1_train_loss_card1_kpi = CostKpi('MobileNetV1_train_loss_card1', 0.08, 0, actived=True, desc='train cost')
+MobileNetV1_eval_loss_card1_kpi = CostKpi('MobileNetV1_eval_loss_card1', 0.08, 0, actived=True, desc='eval cost')
 
-MobileNetV2_train_loss_card1_kpi = CostKpi('MobileNetV2_train_loss_card1', 0.05, 0, actived=True, desc='train cost')
-MobileNetV2_eval_loss_card1_kpi = CostKpi('MobileNetV2_eval_loss_card1', 0.05, 0, actived=True, desc='eval cost')
+MobileNetV2_train_loss_card1_kpi = CostKpi('MobileNetV2_train_loss_card1', 0.08, 0, actived=True, desc='train cost')
+MobileNetV2_eval_loss_card1_kpi = CostKpi('MobileNetV2_eval_loss_card1', 0.08, 0, actived=True, desc='eval cost')
 
 tracking_kpis = [ MobileNetV1_train_loss_card1_kpi, MobileNetV1_eval_loss_card1_kpi, MobileNetV2_train_loss_card1_kpi, MobileNetV2_eval_loss_card1_kpi] 
 
