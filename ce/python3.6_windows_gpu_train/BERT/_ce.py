@@ -13,7 +13,7 @@ train_cost_COLA_card1_kpi = CostKpi(
 train_acc_COLA_card1_kpi = AccKpi(
     'train_acc_COLA_card1', 0.02, 0, actived=True)
 train_duration_COLA_card1_kpi = DurationKpi(
-    'train_duration_COLA_card1', 0.02, 0, actived=True)
+    'train_duration_COLA_card1', 0.1, 0, actived=True)
 
 tracking_kpis = [
     train_cost_COLA_card1_kpi,
