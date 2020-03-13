@@ -8,8 +8,8 @@ from kpi import CostKpi
 from kpi import DurationKpi
 from kpi import AccKpi
 
-train_loss_gpu1_kpi = AccKpi('train_loss_gpu1', 0.02, 0, actived=True)
-train_loss_gpu8_kpi = AccKpi('train_loss_gpu8', 0.02, 0, actived=True)
+train_loss_gpu1_kpi = CostKpi('train_loss_gpu1', 0.02, 0, actived=True)
+train_loss_gpu8_kpi = CostKpi('train_loss_gpu8', 0.02, 0, actived=True)
 
 tracking_kpis = [
     train_loss_gpu1_kpi,

@@ -112,7 +112,6 @@ python compress.py \
     --batch_size 256 \
     --pretrained_model ../pretrain/MobileNetV2_pretrained \
     --config_file  "./configs/mobilenet_v2.yaml" >${current_dir}/5_class_quan_v2_run.log 2>&1
-
 cd ${current_dir}
 cat 5_class_quan_v2_run.log|grep Final|awk -F '[' 'END{print$3}' | tr -d "[|]|,"|awk -F ' ' 'END{print "kpis\tclass_quan_v2_test_acc_top1\t"$1}END{print "kpis\tclass_quan_v2_test_acc_top5\t"$2}'| python _ce.py
 # # classification_quan_freeze and infer
@@ -129,52 +128,12 @@ time (python freeze.py \
 	    mv ${log_path}/class_quan_freeze_${quan_model}.log ${log_path}/SUCCESS/class_quan_freeze_${quan_model}.log
 	    echo -e "class_quan_freeze_${quan_model},freeze,SUCCESS" >>${result_path}/result.log
     fi
-cd ${current_dir}/classification
-    model=slim_quan_classification_${quan_model}_infer
-    time (python infer.py \
-        --use_gpu 0 \
-        --model_path ./quantization/output/${quan_model}/float \
-        --model_name model \
-        --params_name weights >${log_path}/${model}.log) >>${log_path}/${model}.log 2>&1
-    if [ $? -ne 0 ];then
-	    mv ${log_path}/${model}.log ${log_path}/FAIL/${model}.log
-	    echo -e "${model},infer,FAIL" >>${result_path}/result.log;
-    else
-	    mv ${log_path}/${model}.log ${log_path}/SUCCESS/${model}.log
-	    echo -e "${model},infer,SUCCESS" >>${result_path}/result.log
-    fi
-cd ${current_dir}/classification
-    model=slim_quan_classification_${quan_model}_freeze_infer
-    time (python infer.py \
-        --use_gpu 0 \
-        --model_path ./quantization/freeze/${quan_model}/float \
-        --model_name model \
-        --params_name weights >${log_path}/${model}.log) >>${log_path}/${model}.log 2>&1
-
-    if [ $? -ne 0 ];then
-	    mv ${log_path}/${model}.log ${log_path}/FAIL/${model}.log
-	    echo -e "${model},freeze_infer,FAIL" >>${result_path}/result.log;
-    else
-	    mv ${log_path}/${model}.log ${log_path}/SUCCESS/${model}.log
-	    echo -e "${model},freeze_infer,SUCCESS" >>${result_path}/result.log
-    fi
-cd ${current_dir}/classification
-    model=slim_quan_classification_${quan_model}_eval
-    time (python eval.py \
-        --use_gpu True \
-        --model_path ./quantization/output/${quan_model}/float \
-        --model_name model \
-        --params_name weights >${log_path}/${model}.log) >>${log_path}/${model}.log 2>&1
-
-    if [ $? -ne 0 ];then
-	    mv ${log_path}/${model}.log ${log_path}/FAIL/${model}.log
-	    echo -e "${model},eval,FAIL" >>${result_path}/result.log;
-    else
-	    mv ${log_path}/${model}.log ${log_path}/SUCCESS/${model}.log
-	    echo -e "${model},eval,SUCCESS" >>${result_path}/result.log
-    fi
-
-
+cd ${current_dir}/classification/quantization/output/mobilenet_v2/float
+mv model __model__.infer
+mv weights __params__
+cd ${current_dir}/classification/quantization/freeze/mobilenet_v2/float
+mv model __model__.infer
+mv weights __params__
 # 6 class_prune_v1
 export FLAGS_eager_delete_tensor_gb=0.0
 export CUDA_VISIBLE_DEVICES=4,5,6,7
@@ -198,33 +157,6 @@ python -u compress.py \
 
 cd ${current_dir}
 cat 6_class_prune_v1_run.log|grep Final|awk -F '[' 'END{print$3}' | tr -d "[|]|,"|awk -F ' ' 'END{print "kpis\tclass_prune_v1_test_acc_top1\t"$1}END{print "kpis\tclass_prune_v1_test_acc_top5\t"$2}'| python _ce.py
-# slim classification_prune eval and infer
-prune_model=mobilenet_v1
-cd ${current_dir}/classification
-    model=slim_prune_classification_${prune_model}_infer
-    time (python infer.py \
-        --use_gpu True \
-        --model_path ./pruning/checkpoints/${prune_model}/0/eval_model/ \
-        --model_name __model__.infer \
-        --params_name __params__ >${log_path}/${model}.log) >>${log_path}/${model}.log 2>&1
-    if [ $? -ne 0 ];then
-	    mv ${log_path}/${model}.log ${log_path}/FAIL/${model}.log
-	    echo -e "${model},infer,FAIL" >>${result_path}/result.log;
-    else
-	    mv ${log_path}/${model}.log ${log_path}/SUCCESS/${model}.log
-	    echo -e "${model},infer,SUCCESS" >>${result_path}/result.log
-    fi
-cd ${current_dir}/classification
-    model=slim_prune_classification_${prune_model}_eval
-    time (python eval.py --use_gpu True --model_path ./pruning/checkpoints/${prune_model}/0/eval_model/ --model_name __model__.infer --params_name __params__ >${log_path}/${model}.log) >>${log_path}/${model}.log 2>&1
-    if [ $? -ne 0 ];then
-	    mv ${log_path}/${model}.log ${log_path}/FAIL/${model}.log
-	    echo -e "${model},eval,FAIL" >>${result_path}/result.log;
-    else
-	    mv ${log_path}/${model}.log ${log_path}/SUCCESS/${model}.log
-	    echo -e "${model},eval,SUCCESS" >>${result_path}/result.log
-    fi
-
 # 7 dist_resnet34
 export FLAGS_eager_delete_tensor_gb=0.0
 export CUDA_VISIBLE_DEVICES=4,5,6,7
@@ -244,33 +176,34 @@ python -u compress.py \
 cd ${current_dir}
 cat 7_class_resnet34_run.log|grep Final|awk -F '[' 'END{print$3}' | tr -d "[|]|,"|awk -F ' ' 'END{print "kpis\tclass_dist_resnet34_test_acc_top1\t"$1}END{print "kpis\tclass_dist_resnet34_test_acc_top5\t"$2}'| python _ce.py
 
-# slim  Classification model resnet34_resnet50_distillation infer
+# infer eval
+model_list=(quan_mobilenet_v2  quan_mobilenet_v2_freeze prune_mobilenet_v1 dist_resnet34_resnet50)
+model_paths=(./quantization/output/mobilenet_v2/float ./quantization/freeze/mobilenet_v2/float ./pruning/checkpoints/mobilenet_v1/0/eval_model ./distillation/checkpoints/0/eval_model)
 cd ${current_dir}/classification
-model=slim_classification_resnet34_resnet50_infer
-time  (python infer.py \
-        --use_gpu True \
-        --model_path ./distillation/checkpoints/0/eval_model/ \
+for i in $(seq 0 3); do
+    echo $i ${model_paths[$i]} ${model_list[$i]}
+    time (python infer.py \
+        --use_gpu 0 \
+        --model_path ${model_paths[$i]} \
         --model_name __model__.infer \
-        --params_name __params__ > ${log_path}/${model}.log) >>${log_path}/${model}.log 2>&1
-if [ $? -ne 0 ];then
-	mv ${log_path}/${model}.log ${log_path}/FAIL/${model}.log
-	echo -e "${model},infer,FAIL" >>${result_path}/result.log;
-else
-	mv ${log_path}/${model}.log ${log_path}/SUCCESS/${model}.log
-	echo -e "${model},infer,SUCCESS" >>${result_path}/result.log
-fi
-# slim_10_3_3  Classification model resnet34_resnet50_distillation eval
-cd ${current_dir}/classification
-model=slim_classification_resnet34_resnet50_eval
-time  (python eval.py \
+        --params_name __params__ >${log_path}/${model_list[$i]}_infer.log) >>${log_path}/${model_list[$i]}_infer.log 2>&1
+    if [ $? -ne 0 ];then
+	    mv ${log_path}/${model_list[$i]}_infer.log ${log_path}/FAIL/${model_list[$i]}_infer.log
+	    echo -e "${model_list[$i]}_infer,infer,FAIL" >>${result_path}/result.log;
+    else
+	    mv ${log_path}/${model_list[$i]}}_infer.log ${log_path}/SUCCESS/${model_list[$i]}_infer.log
+	    echo -e "${model_list[$i]}_infer,infer,SUCCESS" >>${result_path}/result.log
+    fi
+    time (python eval.py \
         --use_gpu True \
-        --model_path ./distillation/checkpoints/0/eval_model/ \
+        --model_path ${model_paths[$i]} \
         --model_name __model__.infer \
-        --params_name __params__ > ${log_path}/${model}.log) >>${log_path}/${model}.log 2>&1
-if [ $? -ne 0 ];then
-	mv ${log_path}/${model}.log ${log_path}/FAIL/${model}.log
-	echo -e "${model},eval,FAIL" >>${result_path}/result.log;
-else
-	mv ${log_path}/${model}.log ${log_path}/SUCCESS/${model}.log
-	echo -e "${model},eval,SUCCESS" >>${result_path}/result.log
-fi
+        --params_name __params__ >${log_path}/${model_list[$i]}_eval.log) >>${log_path}/${model_list[$i]}_eval.log 2>&1
+    if [ $? -ne 0 ];then
+	    mv ${log_path}/${model_list[$i]}_eval.log ${log_path}/FAIL/${model_list[$i]}_eval.log
+	    echo -e "${model_list[$i]}_eval,eval,FAIL" >>${result_path}/result.log;
+    else
+	    mv ${log_path}/${model_list[$i]}_eval.log ${log_path}/SUCCESS/${model_list[$i]}_eval.log
+	    echo -e "${model_list[$i]}_eval,eval,SUCCESS" >>${result_path}/result.log
+    fi
+done
