@@ -10,23 +10,23 @@ from kpi import CostKpi, DurationKpi, AccKpi
 #### NOTE kpi.py should shared in models in some way!!!!
 
 stgan_g_loss_fake_card1_kpi = CostKpi(
-    'stgan_g_loss_fake_card1', 0.02, 0, actived=True, desc='g_loss_fake')
+    'stgan_g_loss_fake_card1', 0.1, 0, actived=True, desc='g_loss_fake')
 stgan_g_loss_rec_card1_kpi = CostKpi(
-    'stgan_g_loss_rec_card1', 0.02, 0, actived=True, desc='g_loss_rec')
+    'stgan_g_loss_rec_card1', 0.1, 0, actived=True, desc='g_loss_rec')
 stgan_g_loss_cls_card1_kpi = CostKpi(
-    'stgan_g_loss_cls_card1', 0.02, 0, actived=True, desc='g_loss_cls')
+    'stgan_g_loss_cls_card1', 0.1, 0, actived=True, desc='g_loss_cls')
 stgan_d_loss_card1_kpi = CostKpi(
-    'stgan_d_loss_card1', 0.02, 0, actived=True, desc='d_loss')
+    'stgan_d_loss_card1', 0.1, 0, actived=True, desc='d_loss')
 stgan_d_loss_real_card1_kpi = CostKpi(
-    'stgan_d_loss_real_card1', 0.02, 0, actived=True, desc='d_loss_real')
+    'stgan_d_loss_real_card1', 0.1, 0, actived=True, desc='d_loss_real')
 stgan_d_loss_fake_card1_kpi = CostKpi(
-    'stgan_d_loss_fake_card1', 0.02, 0, actived=True, desc='d_loss_fake')
+    'stgan_d_loss_fake_card1', 0.1, 0, actived=True, desc='d_loss_fake')
 stgan_d_loss_cls_card1_kpi = CostKpi(
-    'stgan_d_loss_cls_card1', 0.02, 0, actived=True, desc='d_loss_cls')
+    'stgan_d_loss_cls_card1', 0.1, 0, actived=True, desc='d_loss_cls')
 stgan_d_loss_gp_card1_kpi = CostKpi(
-    'stgan_d_loss_gp_card1', 0.02, 0, actived=True, desc='d_loss_gp')
+    'stgan_d_loss_gp_card1', 0.1, 0, actived=True, desc='d_loss_gp')
 stgan_Batch_time_cost_card1_kpi = DurationKpi(
-    'stgan_Batch_time_cost_card1', 0.02, 0, actived=True, desc='Batch_time_cost')
+    'stgan_Batch_time_cost_card1', 0.1, 0, actived=True, desc='Batch_time_cost')
 
 tracking_kpis = [
     stgan_g_loss_fake_card1_kpi, stgan_g_loss_rec_card1_kpi, stgan_g_loss_cls_card1_kpi,

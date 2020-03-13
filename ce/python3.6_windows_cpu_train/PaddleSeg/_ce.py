@@ -26,7 +26,13 @@ hrnet_loss_card1_kpi = CostKpi('hrnet_loss_card1', 0.08, 0, actived=True,
                                desc='train loss in 1 GPU card')
 hrnet_speed_card1_kpi = AccKpi('hrnet_speed_card1', 0.08, 0, actived=True,
                                    desc='train speed in 1 GPU card')
-tracking_kpis = [deeplabv3p_loss_card1_kpi, deeplabv3p_speed_card1_kpi, icnet_loss_card1_kpi, icnet_speed_card1_kpi, unet_loss_card1_kpi, unet_speed_card1_kpi, pspnet_loss_card1_kpi, pspnet_speed_card1_kpi, hrnet_loss_card1_kpi, hrnet_speed_card1_kpi,]
+								   
+fast_scnn_loss_card1_kpi = CostKpi('fast_scnn_loss_card1', 0.08, 0, actived=True,
+                               desc='train loss in 1 GPU card')
+fast_scnn_speed_card1_kpi = AccKpi('fast_scnn_speed_card1', 0.08, 0, actived=True,
+                                   desc='train speed in 1 GPU card')
+tracking_kpis = [deeplabv3p_loss_card1_kpi, deeplabv3p_speed_card1_kpi, icnet_loss_card1_kpi, icnet_speed_card1_kpi, unet_loss_card1_kpi, unet_speed_card1_kpi, 
+pspnet_loss_card1_kpi, pspnet_speed_card1_kpi, hrnet_loss_card1_kpi, hrnet_speed_card1_kpi,fast_scnn_loss_card1_kpi,fast_scnn_speed_card1_kpi]
 
 
 def parse_log(log):

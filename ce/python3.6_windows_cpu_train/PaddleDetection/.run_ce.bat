@@ -2,7 +2,7 @@
 
 set sed="C:\Program Files\Git\usr\bin\sed.exe"
 rem cascade_rcnn
-python tools/train.py -c configs/cascade_rcnn_r50_fpn_1x.yml -o max_iters=1000 use_gpu=false FasterRCNNTrainFeed.shuffle=false CascadeBBoxAssigner.shuffle_before_sample=false FPNRPNHead.rpn_target_assign.use_random=false | python _ce.py
+python tools/train.py -c configs/cascade_rcnn_r50_fpn_1x.yml -o max_iters=200 use_gpu=false FasterRCNNTrainFeed.shuffle=false CascadeBBoxAssigner.shuffle_before_sample=false FPNRPNHead.rpn_target_assign.use_random=false | python _ce.py
 rem eval
 python tools/eval.py -c configs/cascade_rcnn_r50_fpn_1x.yml -o use_gpu=false > %log_path%/cascade_rcnn_E.log 2>&1
 if not %errorlevel% == 0 (
