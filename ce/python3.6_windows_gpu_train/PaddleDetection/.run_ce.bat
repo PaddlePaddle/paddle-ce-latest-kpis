@@ -74,7 +74,7 @@ if not %errorlevel% == 0 (
         move  %log_path%\mask_rcnn_I.log  %log_path%\SUCCESS\mask_rcnn_I.log
         echo   mask_rcnn,infer,SUCCESS  >> %log_path%\result.log
         echo   infering of mask_rcnn successfully!
-
+)
 
 rem yolov3
 %sed% -i s/"batch_size: 8"/"batch_size: 4"/g configs/yolov3_darknet.yml

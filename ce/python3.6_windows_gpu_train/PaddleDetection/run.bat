@@ -1,7 +1,7 @@
 @echo off
-set models_dir=./../../models_repo
+set models_dir=./../../detection_repo
 rem copy models files
-xcopy "%models_dir%/PaddleCV/PaddleDetection/." . /s /e /y /d
+xcopy "%models_dir%/." . /s /e /y /d
 set PYTHONPATH=.;%PYTHONPATH%
 cd dataset
 if exist coco (rd /s /q coco)

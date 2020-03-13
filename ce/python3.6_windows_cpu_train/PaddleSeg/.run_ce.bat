@@ -67,7 +67,7 @@ rem hrnet
 %sed% -i s/"    NUM_EPOCHS: 10"/"    NUM_EPOCHS: 1"/g configs/hrnet_optic.yaml
 python pdseg/train.py --enable_ce --cfg ./configs/hrnet_optic.yaml | grep "epoch"| gawk  -F "[= ]" "{if ($4 >=60) print \"kpis\thrnet_loss_card1\t\"$8\"\nkpis\thrnet_speed_card1\t\"$10}" | python _ce.py
 rem eval
-python pdseg/eval.py --cfg ./configs/hrnet_optic.yaml > %log_path%/unet_E.log 2>&1
+python pdseg/eval.py --cfg ./configs/hrnet_optic.yaml > %log_path%/hrnet_E.log 2>&1
 if not %errorlevel% == 0 (
         move  %log_path%\hrnet_E.log  %log_path%\FAIL\hrnet_E.log
         echo   hrnet,eval,FAIL  >> %log_path%\result.log
@@ -76,5 +76,20 @@ if not %errorlevel% == 0 (
         move  %log_path%\unet_E.log  %log_path%\SUCCESS\hrnet_E.log
         echo   hrnet,eval,SUCCESS  >> %log_path%\result.log
         echo   eval of hrnet successfully!
+)
+
+rem fast_scnn
+%sed% -i s/"    NUM_EPOCHS: 100"/"    NUM_EPOCHS: 1"/g configs/fast_scnn_pet.yaml
+python pdseg/train.py --enable_ce --cfg ./configs/fast_scnn_pet.yaml| grep "epoch"| gawk  -F "[= ]" "END {print \"kpis\tfast_scnn_loss_card1\t\"$8\"\nkpis\tfast_scnn_speed_card1\t\"$10}" | python _ce.py
+rem eval
+python pdseg/eval.py --cfg ./configs/fast_scnn_pet.yaml > %log_path%/fast_scnn_E.log 2>&1
+if not %errorlevel% == 0 (
+        move  %log_path%\fast_scnn_E.log  %log_path%\FAIL\fast_scnn_E.log
+        echo   fast_rcnn,eval,FAIL  >> %log_path%\result.log
+        echo   eval of fast_rcnn failed!
+) else (
+        move  %log_path%\unet_E.log  %log_path%\SUCCESS\fast_rcnn_E.log
+        echo   fast_rcnn,eval,SUCCESS  >> %log_path%\result.log
+        echo   eval of fast_rcnn successfully!
 )
 

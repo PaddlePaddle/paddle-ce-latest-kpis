@@ -1,7 +1,7 @@
 #!/bin/bash
-export models_dir=$PWD/../../models_repo
+export models_dir=$PWD/../../detection_repo
 #copy models files
-cp -r -n ${models_dir}/PaddleCV/gan/. ./
+cp -r -n ${models_dir}/. ./
 
 export PYTHONPATH=.;%PYTHONPATH%
 cd dataset
