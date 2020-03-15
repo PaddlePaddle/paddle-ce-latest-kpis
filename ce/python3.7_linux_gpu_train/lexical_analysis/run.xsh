@@ -7,9 +7,9 @@ cp -r ${models_dir}/PaddleNLP/lexical_analysis/. ./
 cd ..
 if [ -d "models" ];then rm -rf models
 fi
-cp -r ${models_dir}/PaddleNLP/models .
+cp -r ${models_dir}/PaddleNLP/shared_modules/models .
 cd lexical_analysis
-cp -r ${models_dir}/PaddleNLP/preprocess .
+cp -r ${models_dir}/PaddleNLP/shared_modules/preprocess .
 if [ -d "data" ];then rm -rf data
 fi
 ln -s ${dataset_path}/lexical_analysis/data data

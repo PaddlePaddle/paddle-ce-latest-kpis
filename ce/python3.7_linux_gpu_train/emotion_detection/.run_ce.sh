@@ -6,7 +6,7 @@ TASK_NAME='emotion_detection'
 DATA_PATH=./data/
 VOCAB_PATH=./data/vocab.txt
 CKPT_PATH=./save_models/textcnn
-MODEL_PATH=./models/textcnn
+MODEL_PATH=./save_models/textcnn/step_200
 
 # run_train on train.tsv and do_val on dev.tsv
 train() {
@@ -34,3 +34,39 @@ sleep 20
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 train 1> log_4cards
 cat log_4cards| python _ce.py
+
+#eval
+python run_classifier.py \
+        --use_cuda false \
+        --do_val true \
+        --batch_size 128 \
+        --init_checkpoint ${MODEL_PATH} >eval
+if [ $? -ne 0 ];then
+    echo -e "emotion,eval,FAIL"
+else
+    echo -e "emotion,eval,SUCCESS"
+fi
+
+#infer
+python run_classifier.py \
+        --use_cuda false \
+        --do_infer true \
+        --batch_size 32 \
+        --init_checkpoint ${MODEL_PATH} >infer
+if [ $? -ne 0 ];then
+    echo -e "emotion,infer,FAIL"
+else
+    echo -e "emotion,infer,SUCCESS"
+fi
+
+#save_inference_model
+python inference_model.py \
+        --use_cuda false \
+        --do_save_inference_model true \
+        --init_checkpoint  ${MODEL_PATH} \
+        --inference_model_dir ./inference_model >export
+if [ $? -ne 0 ];then
+    echo -e "emotion,export,FAIL"
+else
+    echo -e "emotion,export,SUCCESS"
+fi

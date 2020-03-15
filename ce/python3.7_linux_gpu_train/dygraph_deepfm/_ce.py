@@ -10,7 +10,7 @@ from kpi import AccKpi
 
 # NOTE kpi.py should shared in models in some way!!!!
 test_auc_gpu1_kpi = AccKpi('test_auc_gpu1', 0.01, 0, actived=True, desc='test_auc')
-each_pass_duration_gpu1_kpi = DurationKpi('each_pass_duration_cpu1', 0.08, 0, actived=True)
+each_pass_duration_gpu1_kpi = DurationKpi('each_pass_duration_gpu1', 0.08, 0, actived=True)
 
 tracking_kpis = [test_auc_gpu1_kpi,
                  each_pass_duration_gpu1_kpi]
