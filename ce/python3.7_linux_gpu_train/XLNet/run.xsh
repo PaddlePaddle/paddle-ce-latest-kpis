@@ -2,8 +2,8 @@
 export models_dir=$PWD/../../models_repo
 #copy models files
 rm -rf ${models_dir}/PaddleNLP/pretrain_langauge_models/XLNet/_ce.py
-rm -rf ${models_dir}/PaddleNLP/pretrain_lanngauge_models/XLNet/.run_ce.sh
-cp -r ${models_dir}/PaddleNLP/pretrain_lanngauge_models/XLNet/. ./
+rm -rf ${models_dir}/PaddleNLP/pretrain_langauge_models/XLNet/.run_ce.sh
+cp -r ${models_dir}/PaddleNLP/pretrain_langauge_models/XLNet/. ./
 if [ -d 'data' ];then rm -rf data
 fi
 if [ -d 'xlnet_cased_L-12_H-768_A-12' ];then rm -rf xlnet_cased_L-12_H-768_A-12
