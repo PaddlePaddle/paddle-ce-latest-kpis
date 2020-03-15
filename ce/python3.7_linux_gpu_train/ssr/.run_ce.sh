@@ -18,7 +18,7 @@ cat log_4cards | python _ce.py
 
 #infer
 export CUDA_VISIBLE_DEVICES=0
-python infer.py --test_dir test_data --use_cuda 1 --batch_size 50 --model_dir model_output >infer
+python infer.py --test_dir test_data --use_cuda 1 --batch_size 50 --model_dir model_output --start_index=1 --last_index=1 >infer
 if [ $? -ne 0 ];then
     echo -e "ssr,infer,FAIL"
 else

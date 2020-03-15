@@ -42,7 +42,7 @@ python -u main.py \
         --special_token '<s>' '<e>' '<unk>' \
         --predict_file $DATA_PATH/wmt16/test \
         --batch_size 32 \
-        --init_from_params  trained_params/step_19\
+        --init_from_params  saved_models/step_final\
         --beam_size 5 \
         --max_out_len 255\
         --output_file predict.txt >infer

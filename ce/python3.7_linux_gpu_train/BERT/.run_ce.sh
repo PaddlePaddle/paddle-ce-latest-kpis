@@ -11,8 +11,8 @@ train(){
 python -u run_classifier.py --task_name ${TASK_NAME} \
                    --use_cuda true \
                    --do_train true \
-                   --do_val false \
-                   --do_test false \
+                   --do_val true \
+                   --do_test true \
                    --batch_size 8192 \
                    --in_tokens true \
                    --init_checkpoint pretrain_model/chinese_L-12_H-768_A-12/ \

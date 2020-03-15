@@ -36,3 +36,38 @@ sleep 20
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 train 1> log_4cards
 cat log_4cards | python _ce.py
+
+#eval
+python eval.py \
+        --batch_size 200 \
+        --word_emb_dim 128 \
+        --grnn_hidden_dim 128 \
+        --bigru_num 2 \
+        --use_cuda True \
+        --init_checkpoint ./models/step_10 \
+        --test_data ./data/test.tsv \
+        --word_dict_path ./conf/word.dic \
+        --label_dict_path ./conf/tag.dic \
+        --word_rep_dict_path ./conf/q2b.dic >eval
+if [ $? -ne 0 ];then
+	echo -e "lac,eval,FAIL"
+else
+	echo -e "lac,eval,SUCCESS"
+fi
+#infer
+python predict.py \
+        --batch_size 200 \
+        --word_emb_dim 128 \
+        --grnn_hidden_dim 128 \
+        --bigru_num 2 \
+        --use_cuda True \
+        --init_checkpoint ./models/step_10 \
+        --infer_data ./data/infer.tsv \
+        --word_dict_path ./conf/word.dic \
+        --label_dict_path ./conf/tag.dic \
+        --word_rep_dict_path ./conf/q2b.dic >infer
+if [ $? -ne 0 ];then
+        echo -e "lac,infer,FAIL"
+else
+        echo -e "lac,infer,SUCCESS"
+fi

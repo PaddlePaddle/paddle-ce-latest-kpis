@@ -17,7 +17,7 @@ python train.py \
        --l2_decay=1e-4 
 }
 #DPN
-train_DPN(){
+train_DPN107(){
 python train.py \
        --enable_ce=True \
        --model=DPN107 \
@@ -31,7 +31,7 @@ python train.py \
        --label_smoothing_epsilon=0.1
 }
 #DarkNet
-train_DarkNet(){
+train_DarkNet53(){
 python train.py \
        --enable_ce=True \
        --model=DarkNet53 \
@@ -47,7 +47,7 @@ python train.py \
        --label_smoothing_epsilon=0.1
 }
 #DenseNet121
-train_DenseNet(){
+train_DenseNet121(){
 python train.py \
        --enable_ce=True \
        --model=DenseNet121 \
@@ -71,14 +71,6 @@ python train.py \
        --lr=0.032 \
        --num_epochs=10 \
        --l2_decay=1e-5 \
-       #--use_label_smoothing=True \
-       #--label_smoothing_epsilon=0.1 \
-       #--use_ema=True \
-       #--ema_decay=0.9999 \
-       #--drop_connect_rate=0.1 \
-       #--padding_type="SAME" \
-       #--interpolation=2 \
-      # --use_aa=True
 }
 #GoogLeNet
 train_GoogLeNet(){
@@ -93,7 +85,7 @@ python train.py \
        --l2_decay=1e-4
 }
 #HRNet
-train_HRNet(){
+train_HRNet_W18_C(){
 python train.py \
        --enable_ce=True \
        --model=HRNet_W18_C \
@@ -145,7 +137,7 @@ python train.py \
 	--l2_decay=4e-5
 }
 #Res2Net50_vd_26w_4s
-train_Res2Net(){
+train_Res2Net50_vd_26w_4s(){
 python train.py \
        --enable_ce=True \
        --model=Res2Net50_vd_26w_4s \
@@ -159,7 +151,7 @@ python train.py \
        --label_smoothing_epsilon=0.1
 }
 #ResNeXt101
-train_ResNeXt(){
+train_ResNeXt101_32x4d(){
 python train.py \
         --enable_ce=True \
 	--model=ResNeXt101_32x4d \
@@ -171,7 +163,7 @@ python train.py \
         --l2_decay=1e-4    
 }
 #ResNet
-train_ResNet(){
+train_ResNet152_vd(){
 python train.py \
        --enable_ce=True \
        --model=ResNet152_vd \
@@ -185,7 +177,7 @@ python train.py \
        --label_smoothing_epsilon=0.1
 }
 #SE_ResNeXt50
-train_SE_ResNeXt(){
+train_SE_ResNeXt_vd_32x4d(){
 python train.py \
        --enable_ce=True \
        --model=SE_ResNeXt50_vd_32x4d \
@@ -199,7 +191,7 @@ python train.py \
        --label_smoothing_epsilon=0.1 
 }
 #ShuffleNetV2
-train_ShuffleNet(){
+train_ShuffleNetV2_swish(){
 python train.py \
         --enable_ce=True \
 	--model=ShuffleNetV2_swish \
@@ -211,7 +203,7 @@ python train.py \
 	--l2_decay=4e-5
 }
 #SqueezeNet
-train_SqueezeNet(){
+train_SqueezeNet1_1(){
 python train.py \
         --enable_ce=True \
         --model=SqueezeNet1_1 \
@@ -223,7 +215,7 @@ python train.py \
         --l2_decay=1e-4
 }
 #VGG
-train_VGG(){
+train_VGG19(){
 python train.py \
         --enable_ce=True \
 	--model=VGG19 \
@@ -235,7 +227,7 @@ python train.py \
 	--l2_decay=4e-4
 }
 #Xception
-train_Xception(){
+train_Xception65_deeplab(){
 python train.py \
        --enable_ce=True \
        --model=Xception65_deeplab \
@@ -249,7 +241,7 @@ python train.py \
        --resize_short_size=320
 }
 
-model_list='AlexNet DPN DarkNet DenseNet EfficientNet GoogLeNet HRNet InceptionV4 MobileNetV1 MobileNetV2 Res2Net ResNeXt ResNet SE_ResNeXt ShuffleNet SqueezeNet VGG Xception'
+model_list='AlexNet DPN107 DarkNet53 DenseNet121 EfficientNet GoogLeNet HRNet_W18_C InceptionV4 MobileNetV1 MobileNetV2 Res2Net50_vd_26w_4s ResNeXt101_32x4d ResNet152_vd SE_ResNeXt_vd_32x4d ShuffleNetV2_swish SqueezeNet1_1 VGG19 Xception65_deeplab'
 
 for model in ${model_list}
 do
@@ -258,6 +250,30 @@ export CUDA_VISIBLE_DEVICES=7
 train_${model} > log_${model}_card1 2>&1
 cat log_${model}_card1 | grep "train_cost_card1" | tail -1 | awk '{print "kpis\t""'$model'""_loss_card1\t"$5}' | python _ce.py
 cat log_${model}_card1 | grep "train_speed_card1" | tail -1 | awk '{print "kpis\t""'$model'""_time_card1\t"$5}' | python _ce.py
+
+#eval
+python eval.py \
+       --model=${model} \
+       --pretrained_model=output/${model}/0 \
+       --data_dir=./data/ILSVRC2012/ 
+       --batch_size=32 >eval_${model}
+if [ $? -ne 0 ];then
+	echo -e "${model},eval,FAIL"
+else
+	echo -e "${model},eval,SUCCESS"
+fi
+
+#infer
+python infer.py \
+       --model=${model} \
+       --pretrained_model=output/${model}/0 \
+       --class_map_path=./utils/tools/readable_label.txt \
+       --image_path=data/ILSVRC2012/val/ILSVRC2012_val_00050000.JPEG >infer_${model}
+if [ $? -ne 0 ];then
+        echo -e "${model},infer,FAIL"
+else
+        echo -e "${model},infer,SUCCESS"
+fi
 
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 train_${model} > log_${model}_card8 2>&1
