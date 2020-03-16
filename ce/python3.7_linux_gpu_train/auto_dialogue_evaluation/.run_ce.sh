@@ -36,7 +36,7 @@ python -u main.py \
       --do_predict=true \
       --use_cuda=true \
       --predict_file="ade/data/input/data/unlabel_data/test.ids" \
-      --init_from_params="ade/data/saved_models/matching_pretrained/params" \
+      --init_from_params="ade/data/saved_models/matching_pretrained/params/step_final" \
       --loss_type="CLS" \
       --output_prediction_file="ade/data/output/pretrain_matching_predict" 1>infer
 if [ $? -ne 0 ];then

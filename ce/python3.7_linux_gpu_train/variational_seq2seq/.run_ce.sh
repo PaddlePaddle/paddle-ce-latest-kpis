@@ -25,7 +25,7 @@ python infer.py
         --max_grad_norm 5.0 \
         --dataset_prefix data/${dataset}/${dataset} \
         --use_gpu True \
-        --reload_model ${dataset}_model/epoch_1  >infer
+        --reload_model ${dataset}_model/epoch_0  >infer
 if [ $? -ne 0 ];then
 	echo -e "variational_seq2seq,infer,FAIL"
 else
