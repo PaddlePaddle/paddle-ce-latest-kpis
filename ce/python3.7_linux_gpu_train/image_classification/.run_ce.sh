@@ -255,7 +255,7 @@ cat log_${model}_card1 | grep "train_speed_card1" | tail -1 | awk '{print "kpis\
 python eval.py \
        --model=${model} \
        --pretrained_model=output/${model}/0 \
-       --data_dir=./data/ILSVRC2012/ 
+       --data_dir=./data/ILSVRC2012/ \ 
        --batch_size=32 >eval_${model}
 if [ $? -ne 0 ];then
 	echo -e "${model},eval,FAIL"

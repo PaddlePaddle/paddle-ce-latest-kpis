@@ -5,11 +5,10 @@ rm -rf ${models_dir}/PaddleNLP/lexical_analysis/.run_ce.sh
 rm -rf ${models_dir}/PaddleNLP/lexical_analysis/_ce.py
 cp -r ${models_dir}/PaddleNLP/lexical_analysis/. ./
 cd ..
-if [ -d "models" ];then rm -rf models
+if [ -d "shared_modules" ];then rm -rf shared_modules
 fi
-cp -r ${models_dir}/PaddleNLP/shared_modules/models .
+cp -r ${models_dir}/PaddleNLP/shared_modules .
 cd lexical_analysis
-cp -r ${models_dir}/PaddleNLP/shared_modules/preprocess .
 if [ -d "data" ];then rm -rf data
 fi
 ln -s ${dataset_path}/lexical_analysis/data data
