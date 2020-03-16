@@ -12,7 +12,7 @@ from kpi import CostKpi, DurationKpi, AccKpi
 AlexNet_loss_card1_kpi = CostKpi('AlexNet_loss_card1', 0.02, 0, actived=True, desc='train cost')
 AlexNet_time_card1_kpi = DurationKpi(
     'AlexNet_time_card1',
-    0.02,
+    0.05,
     0,
     actived=True,
     unit_repr='seconds/image',
@@ -25,7 +25,7 @@ AlexNet_time_card8_kpi = DurationKpi(
     actived=True,
     unit_repr='seconds/image',
     desc='train time in 8 GPU card')
-DPN_loss_card1_kpi = CostKpi('DPN_loss_card1', 0.02, 0, actived=True, desc='train cost')
+DPN_loss_card1_kpi = CostKpi('DPN_loss_card1', 0.05, 0, actived=True, desc='train cost')
 DPN_time_card1_kpi = DurationKpi(
     'DPN_time_card1',
     0.02,
@@ -41,7 +41,7 @@ DPN_time_card8_kpi = DurationKpi(
     actived=True,
     unit_repr='seconds/image',
     desc='train time in 8 GPU card')
-DarkNet_loss_card1_kpi = CostKpi('DarkNet_loss_card1', 0.02, 0, actived=True, desc='train cost')
+DarkNet_loss_card1_kpi = CostKpi('DarkNet_loss_card1', 0.05, 0, actived=True, desc='train cost')
 DarkNet_time_card1_kpi = DurationKpi(
     'DarkNet_time_card1',
     0.02,
@@ -52,12 +52,12 @@ DarkNet_time_card1_kpi = DurationKpi(
 DarkNet_loss_card8_kpi = CostKpi('DarkNet_loss_card8', 0.02, 0, actived=True, desc='train cost')
 DarkNet_time_card8_kpi = DurationKpi(
     'DarkNet_time_card8',
-    0.02,
+    0.05,
     0,
     actived=True,
     unit_repr='seconds/image',
     desc='train time in 8 GPU card')
-DenseNet_loss_card1_kpi = CostKpi('DenseNet_loss_card1', 0.02, 0, actived=True, desc='train cost')
+DenseNet_loss_card1_kpi = CostKpi('DenseNet_loss_card1', 0.05, 0, actived=True, desc='train cost')
 DenseNet_time_card1_kpi = DurationKpi(
     'DenseNet_time_card1',
     0.02,
@@ -84,7 +84,7 @@ EfficientNet_time_card1_kpi = DurationKpi(
 EfficientNet_loss_card8_kpi = CostKpi('EfficientNet_loss_card8', 0.02, 0, actived=True, desc='train cost')
 EfficientNet_time_card8_kpi = DurationKpi(
     'EfficientNet_time_card8',
-    0.02,
+    0.1,
     0,
     actived=True,
     unit_repr='seconds/image',
@@ -92,7 +92,7 @@ EfficientNet_time_card8_kpi = DurationKpi(
 GoogLeNet_loss_card1_kpi = CostKpi('GoogLeNet_loss_card1', 0.02, 0, actived=True, desc='train cost')
 GoogLeNet_time_card1_kpi = DurationKpi(
     'GoogLeNet_time_card1',
-    0.02,
+    0.1,
     0,
     actived=True,
     unit_repr='seconds/image',
@@ -124,7 +124,7 @@ HRNet_time_card8_kpi = DurationKpi(
 InceptionV4_loss_card1_kpi = CostKpi('InceptionV4_loss_card1', 0.02, 0, actived=True, desc='train cost')
 InceptionV4_time_card1_kpi = DurationKpi(
     'InceptionV4_time_card1',
-    0.02,
+    0.05,
     0,
     actived=True,
     unit_repr='seconds/image',
@@ -140,7 +140,7 @@ InceptionV4_time_card8_kpi = DurationKpi(
 MobileNetV1_loss_card1_kpi = CostKpi('MobileNetV1_loss_card1', 0.05, 0, actived=True, desc='train cost')
 MobileNetV1_time_card1_kpi = DurationKpi(
     'MobileNetV1_time_card1',
-    0.02,
+    0.1,
     0,
     actived=True,
     unit_repr='seconds/image',
@@ -180,7 +180,7 @@ Res2Net_time_card1_kpi = DurationKpi(
 Res2Net_loss_card8_kpi = CostKpi('Res2Net_loss_card8', 0.02, 0, actived=True, desc='train cost')
 Res2Net_time_card8_kpi = DurationKpi(
     'Res2Net_time_card8',
-    0.02,
+    0.05,
     0,
     actived=True,
     unit_repr='seconds/image',
@@ -204,7 +204,7 @@ ResNeXt_time_card8_kpi = DurationKpi(
 ResNet_loss_card1_kpi = CostKpi('ResNet_loss_card1', 0.02, 0, actived=True, desc='train cost')
 ResNet_time_card1_kpi = DurationKpi(
     'ResNet_time_card1',
-    0.02,
+    0.05,
     0,
     actived=True,
     unit_repr='seconds/image',
@@ -217,7 +217,7 @@ ResNet_time_card8_kpi = DurationKpi(
     actived=True,
     unit_repr='seconds/image',
     desc='train time in 8 GPU card')
-SE_ResNeXt_loss_card1_kpi = CostKpi('SE_ResNeXt_loss_card1', 0.02, 0, actived=True, desc='train cost')
+SE_ResNeXt_loss_card1_kpi = CostKpi('SE_ResNeXt_loss_card1', 0.05, 0, actived=True, desc='train cost')
 SE_ResNeXt_time_card1_kpi = DurationKpi(
     'SE_ResNeXt_time_card1',
     0.02,
@@ -252,7 +252,7 @@ ShuffleNet_time_card8_kpi = DurationKpi(
 SqueezeNet_loss_card1_kpi = CostKpi('SqueezeNet_loss_card1', 0.02, 0, actived=True, desc='train cost')
 SqueezeNet_time_card1_kpi = DurationKpi(
     'SqueezeNet_time_card1',
-    0.02,
+    0.1,
     0,
     actived=True,
     unit_repr='seconds/image',
@@ -268,15 +268,15 @@ SqueezeNet_time_card8_kpi = DurationKpi(
 VGG_loss_card1_kpi = CostKpi('VGG_loss_card1', 0.02, 0, actived=True, desc='train cost')
 VGG_time_card1_kpi = DurationKpi(
     'VGG_time_card1',
-    0.02,
+    0.05,
     0,
     actived=True,
     unit_repr='seconds/image',
     desc='train time in 1 GPU card')
-VGG_loss_card8_kpi = CostKpi('VGG_loss_card8', 0.02, 0, actived=True, desc='train cost')
+VGG_loss_card8_kpi = CostKpi('VGG_loss_card8', 0.05, 0, actived=True, desc='train cost')
 VGG_time_card8_kpi = DurationKpi(
     'VGG_time_card8',
-    0.02,
+    0.1,
     0,
     actived=True,
     unit_repr='seconds/image',
@@ -284,7 +284,7 @@ VGG_time_card8_kpi = DurationKpi(
 Xception_loss_card1_kpi = CostKpi('Xception_loss_card1', 0.02, 0, actived=True, desc='train cost')
 Xception_time_card1_kpi = DurationKpi(
     'Xception_time_card1',
-    0.02,
+    0.1,
     0,
     actived=True,
     unit_repr='seconds/image',
@@ -292,7 +292,7 @@ Xception_time_card1_kpi = DurationKpi(
 Xception_loss_card8_kpi = CostKpi('Xception_loss_card8', 0.02, 0, actived=True, desc='train cost')
 Xception_time_card8_kpi = DurationKpi(
     'Xception_time_card8',
-    0.02,
+    0.05,
     0,
     actived=True,
     unit_repr='seconds/image',

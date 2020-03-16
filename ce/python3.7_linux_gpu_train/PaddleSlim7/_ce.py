@@ -30,9 +30,9 @@ slim_dist_v1_test_acc_top5_kpi = AccKpi(
     'slim_dist_v1_test_acc_top5', 0.06, 0, actived=True, desc='slim_dist_v1 TOP5 ACC')
 
 class_prune_v1_test_acc_top1_kpi = AccKpi(
-    'class_prune_v1_test_acc_top1', 0.04, 0, actived=True, desc='prune_v1 TOP1 ACC')
+    'class_prune_v1_test_acc_top1', 0.05, 0, actived=True, desc='prune_v1 TOP1 ACC')
 class_prune_v1_test_acc_top5_kpi = AccKpi(
-    'class_prune_v1_test_acc_top5', 0.02, 0, actived=True, desc='prune_v1 TOP5 ACC')
+    'class_prune_v1_test_acc_top5', 0.03, 0, actived=True, desc='prune_v1 TOP5 ACC')
 
 class_quan_v2_test_acc_top1_kpi = AccKpi(
     'class_quan_v2_test_acc_top1', 0.01, 0, actived=True, desc='quan_v2 TOP1 ACC')

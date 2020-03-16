@@ -24,7 +24,7 @@ if not !errorlevel! == 0 (
         echo   evaling of %%I successfully!
 )
 rem infer
-python infer.py --model=%%I --pretrained_model=output/%%I/0 --use_gpu false >%log_path%/%%I_I.log 2>&1
+python infer.py --model=%%I --pretrained_model=output/%%I/0 --use_gpu False --data_dir=data/ILSVRC2012/test >%log_path%/%%I_I.log 2>&1
 if not !errorlevel! == 0 (
         move  %log_path%\%%I_I.log  %log_path%\FAIL\%%I_I.log
         echo   %%I,infer,FAIL  >> %log_path%\result.log
@@ -33,5 +33,27 @@ if not !errorlevel! == 0 (
         move  %log_path%\%%I_I.log  %log_path%\SUCCESS\%%I_I.log
         echo   %%I,infer,SUCCESS  >> %log_path%\result.log
         echo   infering of %%I successfully!
+)
+rem save_inference
+python infer.py  --model=%%I --use_gpu False --pretrained_model=output/%%I/0 --save_inference=True >%log_path%/%%I_SI.log 2>&1
+if not !errorlevel! == 0 (
+        move  %log_path%\%%I_SI.log  %log_path%\FAIL\%%I_SI.log
+        echo   %%I,save_inference,FAIL  >> %log_path%\result.log
+        echo  save_inference of %%I failed!
+) else (
+        move  %log_path%\%%I_SI.log  %log_path%\SUCCESS\%%I_SI.log
+        echo   %%I,save_inference,SUCCESS  >> %log_path%\result.log
+        echo   save_inference of %%I successfully!
+)
+rem predict
+python predict.py  --model_file=%%I/model --params_file=%%I/params  --image_path=data/ILSVRC2012/test/ILSVRC2012_val_00000001.jpeg --gpu_id=-1  --gpu_mem=1024 >%log_path%/%%I_P.log 2>&1
+if not !errorlevel! == 0 (
+        move  %log_path%\%%I_P.log  %log_path%\FAIL\%%I_P.log
+        echo   %%I,predict,FAIL  >> %log_path%\result.log
+        echo  predict of %%I failed!
+) else (
+        move  %log_path%\%%I_P.log  %log_path%\SUCCESS\%%I_P.log
+        echo   %%I,predict,SUCCESS  >> %log_path%\result.log
+        echo   predict of %%I successfully!
 )
 )

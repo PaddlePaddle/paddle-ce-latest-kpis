@@ -1,6 +1,6 @@
 #!/bin/bash
 
-model_list='deeplabv3p icnet unet pspnet hrnet'
+model_list='deeplabv3p icnet unet pspnet hrnet fastscnn'
 for model in ${model_list}
 do
 
