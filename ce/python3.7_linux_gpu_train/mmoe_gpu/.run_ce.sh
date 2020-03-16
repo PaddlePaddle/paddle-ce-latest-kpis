@@ -1,20 +1,7 @@
 #!/bin/bash
-
 # gpu1
-export CUDA_VISIBLE_DEVICES=3
-
-time (python mmoe_train.py >mmoe_gpu1_T.log) >>mmoe_gpu1_T.log 2>&1
-if [ $? -ne 0 ];then
-	echo -e "mmoe_gpu1_T,train,FAIL"
-else
-	echo -e "mmoe_gpu1_T,train,SUCCESS"
-fi
+CUDA_VISIBLE_DEVICES=3 python mmoe_train.py --use_gpu True >mmoe_gpu1_T 2>&1
+cat mmoe_gpu1_T |awk -F ':| ' 'END{print "kpis\ttrain_loss_gpu1\t"$4}' |tr -d '[|]|,' | python _ce.py
 # gpu8
-export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
-
-time (python mmoe_train.py >mmoe_gpu8_T.log) >>mmoe_gpu8_T.log 2>&1
-if [ $? -ne 0 ];then
-	echo -e "mmoe_gpu8_T,train,FAIL"
-else
-	echo -e "mmoe_gpu8_T,train,SUCCESS"
-fi
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python mmoe_train.py --use_gpu True >mmoe_gpu8_T 2>&1
+cat mmoe_gpu8_T |awk -F ':| ' 'END{print "kpis\ttrain_loss_gpu8\t"$4}' |tr -d '[|]|,' | python _ce.py
