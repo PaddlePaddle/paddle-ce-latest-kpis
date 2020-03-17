@@ -11,7 +11,7 @@ train()
         --test_data ./data/test.tsv \
         --model_save_dir ./models \
         --validation_steps 2 \
-        --save_steps 5000 \
+        --save_steps 10 \
         --batch_size 100 \
         --epoch 2 \
         --use_cuda true \
@@ -44,7 +44,7 @@ python eval.py \
         --grnn_hidden_dim 128 \
         --bigru_num 2 \
         --use_cuda True \
-        --init_checkpoint ./models/step_5000 \
+        --init_checkpoint ./models/step_10 \
         --test_data ./data/test.tsv \
         --word_dict_path ./conf/word.dic \
         --label_dict_path ./conf/tag.dic \
@@ -61,7 +61,7 @@ python predict.py \
         --grnn_hidden_dim 128 \
         --bigru_num 2 \
         --use_cuda True \
-        --init_checkpoint ./models/step_5000 \
+        --init_checkpoint ./models/step_10 \
         --infer_data ./data/infer.tsv \
         --word_dict_path ./conf/word.dic \
         --label_dict_path ./conf/tag.dic \
