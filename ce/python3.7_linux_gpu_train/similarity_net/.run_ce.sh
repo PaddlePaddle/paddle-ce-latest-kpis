@@ -13,7 +13,7 @@ TEST_RESULT_PATH=./test_result
 INFER_RESULT_PATH=./infer_result
 TASK_MODE='pointwise'
 CONFIG_PATH=./config/bow_pointwise.json
-INIT_CHECKPOINT=./model_files/simnet_bow_pointwise_pretrained_model/
+INIT_CHECKPOINT=./model_files/bow_pointwise/1000
 
 
 # run_train
@@ -24,7 +24,7 @@ train() {
 		--do_train True \
 		--do_valid True \
 		--do_test True \
-		--do_infer False \
+		--do_infer True \
 		--batch_size 128 \
 		--train_data_dir ${TRAIN_DATA_PATH} \
 		--valid_data_dir ${VALID_DATA_PATH} \
@@ -51,3 +51,4 @@ sleep 20
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 train 1> log_4cards
 cat log_4cards | python _ce.py
+

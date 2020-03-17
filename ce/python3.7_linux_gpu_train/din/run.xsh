@@ -7,5 +7,5 @@ cp -r ${models_dir}/PaddleRec/din/. ./
 if [ -d "data" ];then rm -rf data
 fi
 cp -r ${dataset_path}/din/data .
-
+cp -r ${dataset_path}/din/din_amazon .
 ./.run_ce.sh

@@ -26,9 +26,9 @@ MODEL:
     DEFAULT_NORM_TYPE: "bn"
     MODEL_NAME: "unet"
 TEST:
-    TEST_MODEL: ""
+    TEST_MODEL: "saved/unet/final"
 TRAIN:
-    MODEL_SAVE_DIR: ""
+    MODEL_SAVE_DIR: "saved/unet"
     PRETRAINED_MODEL_DIR: u"pretrain/unet_bn_coco"
     SNAPSHOT_EPOCH: 1
     SYNC_BATCH_NORM: False
