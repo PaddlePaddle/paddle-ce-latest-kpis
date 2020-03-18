@@ -26,15 +26,34 @@ ce_run() {
     cat ${seg_log} | python _ce.py
 }
 
+eval(){
+    python eval_seg.py \
+        --model=${model_type} \
+        --weights=checkpoints_${model_type}_seg/0 >eval_${model_type}_seg
+    if [ $? -ne 0 ];then
+        echo -e "${model_type}_seg,eval,FAIL"
+    else
+        echo -e "${model_type}_seg,eval,SUCCESS"
+    fi
+    python eval_cls.py \
+        --model=${model_type} \
+        --weights=checkpoints_${model_type}_cls/0 >eval_${model_type}_cls
+    if [ $? -ne 0 ];then
+        echo -e "${model_type}_cls,eval,FAIL"
+    else
+        echo -e "${model_type}_cls,eval,SUCCESS"
+    fi
+}
+
 cudaid=${pointnet_1:=0} # use 0-th card as default
 export CUDA_VISIBLE_DEVICES=$cudaid
 
 model_type=MSG
 ce_run
-
+eval
 model_type=SSG
 ce_run
-
+eval
 cudaid=${pointnet_4:=0,1,2,3} # use 0-th card as default
 export CUDA_VISIBLE_DEVICES=$cudaid
 
@@ -43,3 +62,4 @@ ce_run
 
 model_type=SSG
 ce_run
+

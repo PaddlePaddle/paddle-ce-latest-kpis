@@ -3,14 +3,14 @@
 import os
 import sys
 sys.path.append(os.environ['ceroot'])
-from kpi import CostKpi
+from kpi import AccKpi
 from kpi import DurationKpi
 
 train_duration_card1 = DurationKpi('train_duration_card1', 0.01, 0, actived=True)
-train_acc_card1 = CostKpi('train_acc_card1', 0.01, 0, actived=True)
+train_acc_card1 = AccKpi('train_acc_card1', 0.03, 0, actived=True)
 
 train_duration_card4 = DurationKpi('train_duration_card4', 0.02, 0, actived=True)
-train_acc_card4 = CostKpi('train_acc_card4', 0.01, 0, actived=True)
+train_acc_card4 = AccKpi('train_acc_card4', 0.01, 0, actived=True)
 
 tracking_kpis = [
         train_duration_card1,

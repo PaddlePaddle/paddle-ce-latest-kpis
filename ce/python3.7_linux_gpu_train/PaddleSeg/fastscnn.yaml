@@ -27,9 +27,9 @@ MODEL:
     MODEL_NAME: "fast_scnn"
     
 TEST:
-    TEST_MODEL: ""
+    TEST_MODEL: "saved/fast_scnn/final"
 TRAIN:
-    MODEL_SAVE_DIR: ""
+    MODEL_SAVE_DIR: "saved/fast_scnn"
     SNAPSHOT_EPOCH: 1
     SYNC_BATCH_NORM: False
 SOLVER:

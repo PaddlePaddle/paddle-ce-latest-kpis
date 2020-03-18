@@ -9,7 +9,7 @@ fi
 cd ..
 if [ -d "models" ];then rm -rf models
 fi
-cp -r ${models_dir}/PaddleNLP/models .
+cp -r ${models_dir}/PaddleNLP/shared_modules/models .
 cd language_model
 ln -s ${dataset_path}/nlp_language_model/data data
 

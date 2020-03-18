@@ -36,7 +36,7 @@ DPN_time_card1_kpi = DurationKpi(
 DPN_loss_card8_kpi = CostKpi('DPN_loss_card8', 0.02, 0, actived=True, desc='train cost')
 DPN_time_card8_kpi = DurationKpi(
     'DPN_time_card8',
-    0.02,
+    0.05,
     0,
     actived=True,
     unit_repr='seconds/image',

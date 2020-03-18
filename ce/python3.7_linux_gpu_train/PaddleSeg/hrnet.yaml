@@ -34,9 +34,9 @@ MODEL:
             NUM_CHANNELS: [18, 36, 72, 144]
         
 TEST:
-    TEST_MODEL: ""
+    TEST_MODEL: "saved/hrnet/final"
 TRAIN:
-    MODEL_SAVE_DIR: ""
+    MODEL_SAVE_DIR: "saved/hrnet"
     PRETRAINED_MODEL_DIR: u"pretrain/hrnet_w18_bn_cityscapes"
     SNAPSHOT_EPOCH: 1
     SYNC_BATCH_NORM: False

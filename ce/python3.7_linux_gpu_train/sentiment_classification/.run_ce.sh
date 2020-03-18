@@ -12,7 +12,7 @@ train() {
         --use_cuda true \
         --do_train true \
         --do_val true \
-        --do_infer false \
+        --do_infer true \
         --batch_size 16 \
         --data_dir ./senta_data/ \
         --vocab_path ./senta_data/word_dict.txt \
@@ -35,3 +35,4 @@ sleep 20
 export CUDA_VISIBLE_DEVICES=0,1,2,3
 train | grep "dev evaluation" | grep "ave loss" | tail -1 | awk '{print "kpis\ttrain_loss_senta_card4\t"$5"\nkpis\ttrain_acc_senta_card4\t"$8"\nkpis\teach_step_duration_senta_card4\t"$11}' | tr -d "," 1> log_4cards
 cat log_4cards | python _ce.py
+

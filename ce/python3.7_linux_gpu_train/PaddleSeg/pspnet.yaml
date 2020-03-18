@@ -10,7 +10,7 @@ AUG:
     MIN_SCALE_FACTOR: 0.5  # for stepscaling
     SCALE_STEP_SIZE: 0.25  # for stepscaling
     MIRROR: False
-BATCH_SIZE: 16
+BATCH_SIZE: 4
 DATASET:
     DATA_DIR: "./dataset/cityscapes/"
     IMAGE_TYPE: "rgb"  # choice rgb or rgba
@@ -29,10 +29,10 @@ MODEL:
         DEPTH_MULTIPLIER: 1
         LAYERS: 50
 TEST:
-    TEST_MODEL: "pretrain/pspnet50_bn_cityscapes"
+    TEST_MODEL: "saved/pspnet/final"
 TRAIN:
-    MODEL_SAVE_DIR: ""
-    PRETRAINED_MODEL_DIR: u""
+    MODEL_SAVE_DIR: "saved/pspnet"
+    PRETRAINED_MODEL_DIR: u"pretrain/pspnet50_bn_cityscapes"
     SNAPSHOT_EPOCH: 1
     SYNC_BATCH_NORM: False
 SOLVER:
