@@ -9,15 +9,15 @@ from kpi import CostKpi, DurationKpi, AccKpi
 
 #### NOTE kpi.py should shared in models in some way!!!!
 
-train_loss_kpi = CostKpi('train_loss', 0.02, 0, actived=True, desc='train cost')
-train_acc1_kpi = AccKpi('train_acc1', 0.02, 0, actived=True, desc='train acc1')
-train_acc5_kpi = AccKpi('train_acc5', 0.02, 0, actived=True, desc='train acc5')
-test_loss_kpi = CostKpi('test_loss', 0.02, 0, actived=True, desc='test cost')
-test_acc1_kpi = AccKpi('test_acc1', 0.02, 0, actived=True, desc='test acc1')
-test_acc5_kpi = AccKpi('test_acc5', 0.02, 0, actived=True, desc='test acc5')
+train_loss_kpi = CostKpi('train_loss', 0.05, 0, actived=True, desc='train cost')
+train_acc1_kpi = AccKpi('train_acc1', 0.05, 0, actived=True, desc='train acc1')
+train_acc5_kpi = AccKpi('train_acc5', 0.05, 0, actived=True, desc='train acc5')
+test_loss_kpi = CostKpi('test_loss', 0.05, 0, actived=True, desc='test cost')
+test_acc1_kpi = AccKpi('test_acc1', 0.05, 0, actived=True, desc='test acc1')
+test_acc5_kpi = AccKpi('test_acc5', 0.05, 0, actived=True, desc='test acc5')
 
 
-tracking_kpis = [train_loss_kpi, train_acc1_kpi, train_acc5_kpi, test_loss_kpi, test_acc1_kpi, test_acc5_kpi] 
+tracking_kpis = [train_loss_kpi, train_acc1_kpi, train_acc5_kpi, test_loss_kpi, test_acc1_kpi, test_acc5_kpi]
 
 def parse_log(log):
     '''
@@ -25,7 +25,7 @@ def parse_log(log):
     The suggestion:
     each line in the log should be key, value, for example:
     "
-    
+
     "
     '''
     for line in log.split('\n'):

@@ -12,7 +12,10 @@ from kpi import CostKpi, DurationKpi, AccKpi
 
 train_acc = AccKpi('train_acc', 0.1, 0, actived=True, desc="train acc")
 train_loss = CostKpi('train_loss', 0.1, 0, actived=True, desc="train loss")
-tracking_kpis = [train_acc, train_loss]
+train_acc_card1 = AccKpi('train_acc_card1', 0.1, 0, actived=True, desc="train acc card1")↩
+train_duration_card1  = DurationKpi('train_duration_card1', 0.1, 0, actived=True, desc="train duration")↩
+
+tracking_kpis = [train_acc, train_loss, train_acc_card1, train_duration_card1]
 
 def parse_log(log):
     '''

@@ -7,7 +7,7 @@ if [ ! -d "data" ];then
 ln -s ${data_path}/similarity_net/data data
 fi
 
-ln -s ${models_dir}/PaddleNLP/models ../shared_modules
+ln -s ${models_dir}/PaddleNLP/shared_modules ../shared_modules
 
 ./.run_ce.sh
 rm -rf ../shared_modules

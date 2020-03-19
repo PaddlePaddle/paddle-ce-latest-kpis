@@ -74,7 +74,7 @@ if not %errorlevel% == 0 (
         echo   hrnet,eval,FAIL  >> %log_path%\result.log
         echo   eval of hrnet failed!
 ) else (
-        move  %log_path%\unet_E.log  %log_path%\SUCCESS\hrnet_E.log
+        move  %log_path%\hrnet_E.log  %log_path%\SUCCESS\hrnet_E.log
         echo   hrnet,eval,SUCCESS  >> %log_path%\result.log
         echo   eval of hrnet successfully!
 )
