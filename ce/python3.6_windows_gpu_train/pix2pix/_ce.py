@@ -10,18 +10,18 @@ from kpi import CostKpi, DurationKpi, AccKpi
 #### NOTE kpi.py should shared in models in some way!!!!
 
 pix2pix_g_loss_gan_card1_kpi = CostKpi(
-    'pix2pix_g_loss_gan_card1', 0.02, 0, actived=True, desc='g_loss_gan')
+    'pix2pix_g_loss_gan_card1', 0.08, 0, actived=True, desc='g_loss_gan')
 pix2pix_g_loss_l1_card1_kpi = CostKpi(
-    'pix2pix_g_loss_l1_card1', 0.02, 0, actived=True, desc='g_loss_l1')
+    'pix2pix_g_loss_l1_card1', 0.08, 0, actived=True, desc='g_loss_l1')
 pix2pix_d_loss_real_card1_kpi = CostKpi(
     'pix2pix_d_loss_real_card1', 0.05, 0, actived=True, desc='d_loss_real')
 pix2pix_d_loss_fake_card1_kpi = CostKpi(
-    'pix2pix_d_loss_fake_card1', 0.02, 0, actived=True, desc='d_loss_fake')
+    'pix2pix_d_loss_fake_card1', 0.08, 0, actived=True, desc='d_loss_fake')
 pix2pix_Batch_time_cost_card1_kpi = DurationKpi(
-    'pix2pix_Batch_time_cost_card1', 0.02, 0, actived=True, desc='Batch_time_cost')
+    'pix2pix_Batch_time_cost_card1', 0.08, 0, actived=True, desc='Batch_time_cost')
 
 tracking_kpis = [
-    pix2pix_g_loss_gan_card1_kpi, pix2pix_g_loss_l1_card1_kpi, pix2pix_d_loss_real_card1_kpi, 
+    pix2pix_g_loss_gan_card1_kpi, pix2pix_g_loss_l1_card1_kpi, pix2pix_d_loss_real_card1_kpi,
     pix2pix_d_loss_fake_card1_kpi, pix2pix_Batch_time_cost_card1_kpi,
 ]
 

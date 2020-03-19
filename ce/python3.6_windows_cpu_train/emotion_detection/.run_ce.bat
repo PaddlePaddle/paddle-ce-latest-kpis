@@ -18,7 +18,7 @@ if not %errorlevel% == 0 (
         echo   eval of emotion_detection successfully!
  )
 rem infer
-python run_classifier.py  --do_infer false --batch_size 32 --init_checkpoint ./save_models/textcnn/step_1510  > %log_path%/emotion_detection_I.log 2>&1
+python run_classifier.py --use_cuda false --do_infer true --batch_size 32 --init_checkpoint ./save_models/textcnn/step_1510  > %log_path%/emotion_detection_I.log 2>&1
 if not %errorlevel% == 0 (
         move  %log_path%\emotion_detection_I.log  %log_path%\FAIL\emotion_detection_I.log
         echo   emotion_detection,infer,FAIL  >> %log_path%\result.log

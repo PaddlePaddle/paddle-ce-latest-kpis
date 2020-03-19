@@ -9,8 +9,8 @@ from kpi import CostKpi, DurationKpi, AccKpi
 
 #### NOTE kpi.py should shared in models in some way!!!!
 
-test_acc = AccKpi('test_acc', 0.01, 0, actived=True, desc="test acc")
-test_cost = CostKpi('test_cost', 0.01, 0, actived=True, desc='test cost')
+test_acc = AccKpi('test_acc', 0.05, 0, actived=True, desc="test acc")
+test_cost = CostKpi('test_cost', 0.05, 0, actived=True, desc='test cost')
 #train_speed_kpi = DurationKpi(
 #    'train_speed',
 #    0.05,
