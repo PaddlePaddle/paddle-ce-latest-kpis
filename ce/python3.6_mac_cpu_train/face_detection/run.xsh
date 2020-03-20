@@ -5,7 +5,7 @@ cp -r -n ${models_dir}/PaddleCV/face_detection/. ./
 
 if [ -d "data" ];then
 rm -rf data
-ln -s  ${data_path}/face_detection\WIDERFACE data
+ln -s  ${data_path}/face_detection/WIDERFACE data
 fi
 
 if [ ! -d "vgg_ilsvrc_16_fc_reduced" ];then
