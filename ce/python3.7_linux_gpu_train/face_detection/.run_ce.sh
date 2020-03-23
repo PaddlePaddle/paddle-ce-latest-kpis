@@ -25,7 +25,7 @@ else
 	echo -e "face_detection,eval,SUCCESS"
 fi
 #infer
-python widerface_eval.py --infer=True --confs_threshold=0.15 --model_dir=output/0/ --image_path=data/WIDER_train/images/1--Handshaking/1_Handshaking_Handshaking_1_107.jpg >infer
+python widerface_eval.py --infer=True --confs_threshold=0.15 --model_dir=output/0/ --image_path=data/WIDER_train/images/1--Handshaking/1_Handshaking_Handshaking_1_102.jpg >infer
 if [ $? -ne 0 ];then
         echo -e "face_detection,infer,FAIL"
 else

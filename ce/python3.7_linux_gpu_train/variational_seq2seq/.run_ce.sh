@@ -18,7 +18,7 @@ export CUDA_VISIBLE_DEVICES=$cudaid
 train 1> log_1card
 cat log_1card | python _ce.py
 
-python infer.py 
+python infer.py \ 
        --vocab_size 10003 \
         --batch_size 32 \
         --init_scale 0.1 \

@@ -70,7 +70,7 @@ python train.py \
        --lr_strategy=exponential_decay_warmup \
        --lr=0.032 \
        --num_epochs=10 \
-       --l2_decay=1e-5 \
+       --l2_decay=1e-5 
 }
 #GoogLeNet
 train_GoogLeNet(){
