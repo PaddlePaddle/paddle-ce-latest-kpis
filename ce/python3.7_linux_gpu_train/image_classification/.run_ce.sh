@@ -70,7 +70,7 @@ python train.py \
        --lr_strategy=exponential_decay_warmup \
        --lr=0.032 \
        --num_epochs=10 \
-       --l2_decay=1e-5 
+       --l2_decay=1e-5  
 }
 #GoogLeNet
 train_GoogLeNet(){
@@ -177,7 +177,7 @@ python train.py \
        --label_smoothing_epsilon=0.1
 }
 #SE_ResNeXt50
-train_SE_ResNeXt_vd_32x4d(){
+train_SE_ResNeXt50_vd_32x4d(){
 python train.py \
        --enable_ce=True \
        --model=SE_ResNeXt50_vd_32x4d \
@@ -241,7 +241,7 @@ python train.py \
        --resize_short_size=320
 }
 
-model_list='AlexNet DPN107 DarkNet53 DenseNet121 EfficientNet GoogLeNet HRNet_W18_C InceptionV4 MobileNetV1 MobileNetV2 Res2Net50_vd_26w_4s ResNeXt101_32x4d ResNet152_vd SE_ResNeXt_vd_32x4d ShuffleNetV2_swish SqueezeNet1_1 VGG19 Xception65_deeplab'
+model_list='AlexNet DPN107 DarkNet53 DenseNet121 EfficientNet GoogLeNet HRNet_W18_C InceptionV4 MobileNetV1 MobileNetV2 Res2Net50_vd_26w_4s ResNeXt101_32x4d ResNet152_vd SE_ResNeXt50_vd_32x4d ShuffleNetV2_swish SqueezeNet1_1 VGG19 Xception65_deeplab'
 
 for model in ${model_list}
 do
@@ -255,7 +255,7 @@ cat log_${model}_card1 | grep "train_speed_card1" | tail -1 | awk '{print "kpis\
 python eval.py \
        --model=${model} \
        --pretrained_model=output/${model}/0 \
-       --data_dir=./data/ILSVRC2012/ \ 
+       --data_dir=./data/ILSVRC2012/ \
        --batch_size=32 >eval_${model}
 if [ $? -ne 0 ];then
 	echo -e "${model},eval,FAIL"
@@ -273,6 +273,17 @@ if [ $? -ne 0 ];then
         echo -e "${model},infer,FAIL"
 else
         echo -e "${model},infer,SUCCESS"
+fi
+
+#export
+python infer.py \
+       --model=${model} \
+       --pretrained_model=output/${model}/0 \
+       --save_inference=True >export_${model}
+if [ $? -ne 0 ];then
+        echo -e "${model},export,FAIL"
+else
+        echo -e "${model},export,SUCCESS"
 fi
 
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
