@@ -27,7 +27,7 @@ if not %errorlevel% == 0 (
         echo   train of transformer_vocoder successfully!
 )
 rem synthesis
-python synthesis.py --max_len=50 --transformer_step=160000 --vocoder_step=70000 --use_gpu=1 --checkpoint_path=./checkpoint --sample_path=./sample  --config_path=configs/synthesis.yaml > %log_path%/transformer_tts_synthesis.log 2>&1
+python synthesis.py --max_len=50 --transformer_step=500 --vocoder_step=500 --use_gpu=1 --checkpoint_path=./checkpoint --sample_path=./sample  --config_path=configs/synthesis.yaml > %log_path%/transformer_tts_synthesis.log 2>&1
 if not %errorlevel% == 0 (
         move  %log_path%\transformer_tts_synthesis.log  %log_path%\FAIL\transformer_tts_synthesis.log
         echo   transformer_tts,synthesis,FAIL  >> %log_path%\result.log

@@ -6,6 +6,10 @@ set FLAGS_fast_eager_deletion_mode=1
 set CUDA_VISIBLE_DEVICES=0
 set sed="C:\Program Files\Git\usr\bin\sed.exe"
 %sed% -i s/"  epochs: 2000"/"  epochs: 1"/g configs/ljspeech.yaml
+%sed% -i s/"  snap_interval: 1000"/"  snap_interval: 816"/g configs/ljspeech.yaml
+%sed% -i s/"  eval_interval: 10000"/"  eval_interval: 816"/g configs/ljspeech.yaml
+%sed% -i s/"  save_interval: 10000"/"  save_interval: 816"/g configs/ljspeech.yaml
+
 python train.py --config=configs/ljspeech.yaml --data=data/LJSpeech-1.1/ --output=experiment --device=0 > %log_path%/deepvoice3_train.log
 if not %errorlevel% == 0 (
         move  %log_path%\deepvoice3_train.log  %log_path%\FAIL\deepvoice3_train.log
