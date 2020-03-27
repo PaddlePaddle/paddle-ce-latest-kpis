@@ -7,7 +7,7 @@ from kpi import CostKpi
 from kpi import DurationKpi
 from kpi import AccKpi
 
-each_step_duration_simnet_card1 = DurationKpi('each_step_duration_simnet_card1', 0.03, 0, actived=True)
+each_step_duration_simnet_card1 = DurationKpi('each_step_duration_simnet_card1', 0.1, 0, actived=True)
 train_loss_simnet_card1 = CostKpi('train_loss_simnet_card1', 0.01, 0, actived=True)
 
 tracking_kpis = [

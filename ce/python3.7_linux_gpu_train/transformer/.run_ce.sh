@@ -18,8 +18,8 @@ train(){
         --epoch 20 \
         --enable_ce True \
         --random_seed 1000 \
-        --save_checkpoint "" \
-        --save_param ""
+        --save_checkpoint "trained_ckpts" \
+        --save_param "trained_params"
 }
 
 cudaid=${transformer:=0} # use 0-th card as default
@@ -33,3 +33,21 @@ export CUDA_VISIBLE_DEVICES=$cudaid
 
 train 1> log_4cards
 cat log_4cards | python _ce.py
+
+export CUDA_VISIBLE_DEVICES=0
+python -u main.py \
+        --do_predict True \
+        --src_vocab_fpath $DATA_PATH/en_10000.dict \
+        --trg_vocab_fpath $DATA_PATH/de_10000.dict \
+        --special_token '<s>' '<e>' '<unk>' \
+        --predict_file $DATA_PATH/wmt16/test \
+        --batch_size 32 \
+        --init_from_params  saved_models/step_final\
+        --beam_size 5 \
+        --max_out_len 255\
+        --output_file predict.txt >infer
+if [ $? -ne 0 ];then
+    echo -e "transformer,infer,FAIL"
+else
+    echo -e "transformer,infer,SUCCESS"
+fi 
