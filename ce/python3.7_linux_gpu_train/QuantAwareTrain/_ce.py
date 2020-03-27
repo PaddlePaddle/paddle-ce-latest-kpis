@@ -23,8 +23,8 @@ QAT_VGG16_test_acc1_kpi = CostKpi('QAT_VGG16_test_acc1', 0.08, 0, actived=True, 
 
 tracking_kpis = [QAT_GoogleNet_test_acc5_kpi, QAT_GoogleNet_test_acc1_kpi,
                  QAT_MobileNet_test_acc5_kpi, QAT_MobileNet_test_acc1_kpi,
-                 QAT_MobileNetV2_test_acc5_kpi, QAT_MobileNetV2_test_acc1_kpi
-                 QAT_ResNet50_test_acc5_kpi, QAT_ResNet50_test_acc1_kpi
+                 QAT_MobileNetV2_test_acc5_kpi, QAT_MobileNetV2_test_acc1_kpi,
+                 QAT_ResNet50_test_acc5_kpi, QAT_ResNet50_test_acc1_kpi,
                  QAT_VGG16_test_acc5_kpi, QAT_VGG16_test_acc1_kpi]
 
 
