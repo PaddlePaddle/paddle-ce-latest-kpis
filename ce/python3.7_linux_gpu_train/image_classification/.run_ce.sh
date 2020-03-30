@@ -268,7 +268,7 @@ python infer.py \
        --model=${model} \
        --pretrained_model=output/${model}/0 \
        --class_map_path=./utils/tools/readable_label.txt \
-       --image_path=data/ILSVRC2012/val/ILSVRC2012_val_00050000.JPEG >infer_${model}
+       --image_path=/ssd2/ce_data/image/data/ILSVRC2012/val/ILSVRC2012_val_00000012.JPEG >infer_${model}
 if [ $? -ne 0 ];then
         echo -e "${model},infer,FAIL"
 else
