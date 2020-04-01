@@ -217,9 +217,9 @@ ResNet152_vd_time_card8_kpi = DurationKpi(
     actived=True,
     unit_repr='seconds/image',
     desc='train time in 8 GPU card')
-SE_ResNeXt_vd_32x4d_loss_card1_kpi = CostKpi('SE_ResNeXt_vd_32x4d_loss_card1', 0.05, 0, actived=True, desc='train cost')
-SE_ResNeXt_vd_32x4d_time_card1_kpi = DurationKpi(
-    'SE_ResNeXt_vd_32x4d_time_card1',
+SE_ResNeXt50_vd_32x4d_loss_card1_kpi = CostKpi('SE_ResNeXt50_vd_32x4d_loss_card1', 0.05, 0, actived=True, desc='train cost')
+SE_ResNeXt50_vd_32x4d_time_card1_kpi = DurationKpi(
+    'SE_ResNeXt50_vd_32x4d_time_card1',
     0.02,
     0,
     actived=True,
