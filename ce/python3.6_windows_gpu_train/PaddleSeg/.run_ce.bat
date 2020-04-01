@@ -89,7 +89,7 @@ if not %errorlevel% == 0 (
         echo   fast_rcnn,eval,FAIL  >> %log_path%\result.log
         echo   eval of fast_rcnn failed!
 ) else (
-        move  %log_path%\unet_E.log  %log_path%\SUCCESS\fast_rcnn_E.log
+        move  %log_path%\fast_rcnn_E.log  %log_path%\SUCCESS\fast_rcnn_E.log
         echo   fast_rcnn,eval,SUCCESS  >> %log_path%\result.log
         echo   eval of fast_rcnn successfully!
 )

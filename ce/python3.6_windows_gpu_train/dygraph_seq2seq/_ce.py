@@ -5,15 +5,14 @@ import sys
 sys.path.append(os.environ['ceroot'])
 from kpi import CostKpi
 from kpi import DurationKpi
-from kpi import AccKpi
 
-each_epoch_duration_frame1_card1 = DurationKpi("each_epoch_duration_frame1_card1", 0.1, 0, actived=True)
-train_cost_frame1_card1 = CostKpi("train_cost_frame1_card1", 0.1, 0, actived=True)
+train_duration_card1 = DurationKpi('train_duration_card1', 0.03, 0, actived=True)
+train_ppl_card1 = CostKpi('train_ppl_card1', 0.05, 0, actived=True)
 
 
 tracking_kpis = [
-    each_epoch_duration_frame1_card1,
-    train_cost_frame1_card1,
+        train_duration_card1,
+        train_ppl_card1,
 ]
 
 
