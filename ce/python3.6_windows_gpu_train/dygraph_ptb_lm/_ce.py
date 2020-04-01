@@ -9,16 +9,11 @@ from kpi import CostKpi, DurationKpi, AccKpi
 
 #### NOTE kpi.py should shared in models in some way!!!!
 
-train_ppl = AccKpi('train_ppl', 3, 0, actived=True, desc="train ppl")
-test_ppl = AccKpi('test_ppl', 3, 0, actived=True, desc='test ppl')
-#train_speed_kpi = DurationKpi(
-#    'train_speed',
-#    0.05,
-#    0,
-#    actived=True,
-#    unit_repr='seconds/image',
-#    desc='train speed in one GPU card')
-tracking_kpis = [train_ppl, test_ppl]
+train_ppl_card1 = AccKpi('train_ppl_card1', 0.05, 0, actived=True, desc="train ppl")
+train_duration_card1 = DurationKpi('train_duration_card1', 0.05, 0, actived=True, desc="train duration")
+
+
+tracking_kpis = [train_ppl_card1, train_duration_card1]
 
 def parse_log(log):
     '''

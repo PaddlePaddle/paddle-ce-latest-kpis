@@ -10,7 +10,7 @@ set sed="C:\Program Files\Git\usr\bin\sed.exe"
 %sed% -i s/"  eval_interval: 10000"/"  eval_interval: 816"/g configs/ljspeech.yaml
 %sed% -i s/"  save_interval: 10000"/"  save_interval: 816"/g configs/ljspeech.yaml
 
-python train.py --config=configs/ljspeech.yaml --data=data/LJSpeech-1.1/ --output=experiment --device=0 > %log_path%/deepvoice3_train.log
+python train.py --config=configs/ljspeech.yaml --data=data/LJSpeech-1.1/ --device=0 experiment > %log_path%/deepvoice3_train.log
 if not %errorlevel% == 0 (
         move  %log_path%\deepvoice3_train.log  %log_path%\FAIL\deepvoice3_train.log
         echo   deepvoice3,train,FAIL  >> %log_path%\result.log
@@ -20,7 +20,7 @@ if not %errorlevel% == 0 (
         echo   deepvoice3,train,SUCCESS  >> %log_path%\result.log
         echo   train of deepvoice3 successfully!
 )
-python synthesis.py --config=configs/ljspeech.yaml --device=0 experiment/checkpoints/model_step_005000000 sentences.txt generated > %log_path%/deepvoice3_synthesis.log
+python synthesis.py --config=configs/ljspeech.yaml --device=0 --checkpoint=experiment/checkpoints/model_step_005000000 sentences.txt experiment > %log_path%/deepvoice3_synthesis.log
 if not %errorlevel% == 0 (
         move  %log_path%\deepvoice3_synthesis.log  %log_path%\FAIL\deepvoice3_synthesis.log
         echo   deepvoice3,synthesis,FAIL  >> %log_path%\result.log
