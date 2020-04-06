@@ -44,7 +44,7 @@ else
 fi
 if [[ ${model} == yolov3_r50vd_dcn_obj365_pretrained_coco ]];then
     config_dir=configs/dcn
-elif [[ ${model} == blazeface ]];then
+elif [[ ${model} == blazeface_nas ]];then
     config_dir=configs/face_detection
 else
     config_dir=configs
