@@ -37,7 +37,7 @@ export_model(){
 model_list='cascade_rcnn_r50_fpn_1x faster_rcnn_r50_fpn_1x mask_rcnn_r50_fpn_1x mask_rcnn_r101_vd_fpn_1x retinanet_r50_fpn_1x yolov3_r50vd_dcn_obj365_pretrained_coco yolov3_darknet yolov3_r34_voc blazeface_nas'
 for model in ${model_list}
 do
-if [[ ${model} == yolov3_r50vd_dcn_obj365_pretrained_coco || ${model} == yolov3_darknet || ${model} == yolov3_r34_voc ]];then
+if [[ ${model} == yolov3_r50vd_dcn_obj365_pretrained_coco || ${model} == yolov3_darknet || ${model} == yolov3_r34_voc || ${model} == blazeface_nas ]];then
     max_iters=200
 else
     max_iters=1000
