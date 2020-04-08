@@ -11,7 +11,7 @@ train_model(){
 }
 eval_model(){
     export CUDA_VISIBLE_DEVICES=0
-    python tools/eval.py -c ${config_dir}/${model}.yml -o weights=https://paddlemodels.bj.bcebos.com/object_detection/${model}.tar >${model}_eval_log 2>&1
+    python tools/${eval_method}.py -c ${config_dir}/${model}.yml -o weights=https://paddlemodels.bj.bcebos.com/object_detection/${model}.tar >${model}_eval_log 2>&1
     if [ $? -ne 0 ];then
         echo -e "${model},eval,FAIL"
     else
@@ -44,10 +44,13 @@ else
 fi
 if [[ ${model} == yolov3_r50vd_dcn_obj365_pretrained_coco ]];then
     config_dir=configs/dcn
+    eval_method=eval
 elif [[ ${model} == blazeface_nas ]];then
     config_dir=configs/face_detection
+    eval_method=face_eval
 else
     config_dir=configs
+    eval_method=eval
 fi
 train_model
 eval_model
