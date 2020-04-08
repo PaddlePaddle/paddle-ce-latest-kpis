@@ -5,7 +5,7 @@ export FLAGS_eager_delete_tensor_gb=1.0
 
 export CUDA_VISIBLE_DEVICES=0
 
-pretrain_model_path="ade/data/saved_models/matching_pretrained"
+pretrain_model_path="data/saved_models/matching_pretrained"
 if [ ! -d ${pretrain_model_path} ]
 then
      mkdir ${pretrain_model_path}
@@ -16,9 +16,9 @@ python -u main.py \
       --use_cuda=true \
       --loss_type="CLS" \
       --max_seq_len=50 \
-      --save_model_path="ade/data/saved_models/matching_pretrained" \
+      --save_model_path="data/saved_models/matching_pretrained" \
       --save_param="params" \
-      --training_file="ade/data/input/data/unlabel_data/train.ids" \
+      --training_file="data/input/data/unlabel_data/train.ids" \
       --epoch=3 \
       --print_step=1 \
       --save_step=400 \
@@ -35,10 +35,10 @@ cat log_card1 | python _ce.py
 python -u main.py \
       --do_predict=true \
       --use_cuda=true \
-      --predict_file="ade/data/input/data/unlabel_data/test.ids" \
-      --init_from_params="ade/data/saved_models/matching_pretrained/params/step_final" \
+      --predict_file="data/input/data/unlabel_data/test.ids" \
+      --init_from_params="data/saved_models/matching_pretrained/params/step_final" \
       --loss_type="CLS" \
-      --output_prediction_file="ade/data/output/pretrain_matching_predict" 1>infer
+      --output_prediction_file="data/output/pretrain_matching_predict" 1>infer
 if [ $? -ne 0 ];then
     echo -e "auto_dialogue_evaluation,infer,FAIL"
 else
@@ -48,8 +48,8 @@ fi
 python -u main.py \
       --do_eval=true \
       --use_cuda=true \
-      --evaluation_file="ade/data/input/data/unlabel_data/test.ids" \
-      --output_prediction_file="ade/data/output/pretrain_matching_predict" \
+      --evaluation_file="data/input/data/unlabel_data/test.ids" \
+      --output_prediction_file="data/output/pretrain_matching_predict" \
       --loss_type="CLS" 1>eval
 if [ $? -ne 0 ];then
     echo -e "auto_dialogue_evaluation,eval,FAIL"
