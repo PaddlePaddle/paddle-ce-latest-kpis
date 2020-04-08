@@ -13,7 +13,7 @@ train_cost_xnli_card1_kpi = CostKpi(
 train_acc_xnli_card1_kpi = AccKpi(
     'train_acc_xnli_card1', 0.002, 0, actived=True)
 train_duration_xnli_card1_kpi = DurationKpi(
-    'train_duration_xnli_card1', 0.01, 0, actived=True)
+    'train_duration_xnli_card1', 0.03, 0, actived=True)
 train_cost_xnli_card4_kpi = CostKpi(
     'train_cost_xnli_card4', 0.002, 0, actived=True)
 train_acc_xnli_card4_kpi = AccKpi('train_acc_xnli_card4', 0.02, 0, actived=True)
