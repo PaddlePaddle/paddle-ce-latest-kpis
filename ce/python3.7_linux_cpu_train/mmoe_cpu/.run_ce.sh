@@ -1,4 +1,10 @@
 #!/bin/bash
+
 # cpu
-python mmoe_train.py >mmoe_cpu_T 2>&1
-cat mmoe_cpu_T |awk -F ':| ' 'END{print "kpis\ttrain_loss_cpu\t"$4}' |tr -d '[|]|,' | python _ce.py
+
+time (python mmoe_train.py >mmoe_cpu_T.log) >>mmoe_cpu_T.log 2>&1
+if [ $? -ne 0 ];then
+	echo -e "mmoe_cpu_T,train,FAIL"
+else
+	echo -e "mmoe_cpu_T,train,SUCCESS"
+fi

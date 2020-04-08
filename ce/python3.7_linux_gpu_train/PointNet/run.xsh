@@ -1,7 +1,7 @@
 #!/bin/bash
 export models_dir=$PWD/../../models_repo
 #copy models files
-cp -r ${models_dir}/PaddleCV/Paddle3D/PointNet++/. ./
+cp -r ${models_dir}/PaddleCV/3d_vision/PointNet++/. ./
 if [ -d "dataset" ];then rm -rf dataset
 fi
 ln -s ${dataset_path}/Paddle3D/PointNet++/dataset dataset
