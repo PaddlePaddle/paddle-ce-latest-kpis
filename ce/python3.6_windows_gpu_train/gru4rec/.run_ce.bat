@@ -27,7 +27,7 @@ if not %errorlevel% == 0 (
 )
 python infer.py --test_dir test_data/ --model_dir output/ --start_index 1 --last_index 1 --use_cuda 1 > %log_path%/gru4rec_I.log 2>&1
 if not %errorlevel% == 0 (
-        move  %log_path%/gru4rec_I.log  %log_path%\FAIL\gru4rec_I.log
+        move  %log_path%\gru4rec_I.log  %log_path%\FAIL\gru4rec_I.log
         echo  gru4rec,infer,FAIL  >> %log_path%\result.log
         echo  infer of gru4rec failed!
 ) else (
