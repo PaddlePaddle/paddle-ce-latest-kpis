@@ -3,10 +3,10 @@
 rm -rf *_factor.txt
 export current_dir=$PWD
 #  for lite models path
-if [ ! -d "/ssd2/guomengmeng01/slim/models_from_train" ];then
-	mkdir /ssd2/guomengmeng01/slim/models_from_train
+if [ ! -d "/ssd2/models_from_train" ];then
+	mkdir /ssd2/models_from_train
 fi
-export models_from_train=/ssd2/guomengmeng01/slim/models_from_train
+export models_from_train=/ssd2/models_from_train
 
 #set result dir___________________________________
 if [ ! -d "result" ];then
