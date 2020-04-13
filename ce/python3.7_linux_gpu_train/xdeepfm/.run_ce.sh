@@ -16,7 +16,7 @@ python local_train.py --enable_ce --model_output_dir models --num_epoch 1 >xdeep
 cat xdeepfm_T_gpu2.log|grep data: |awk -F "[" 'END{print "kpis\ttest_auc_gpu2\t"$2}' |tr -d ']' | python _ce.py
 
 #infer
-python infer.py --model_output_dir models --test_epoch 0 >test.log
+python infer.py --model_output_dir models --test_epoch 1 >test.log
 if [ $? -ne 0 ];then
     echo -e "xdeepfm,infer,FAIL"
 else
