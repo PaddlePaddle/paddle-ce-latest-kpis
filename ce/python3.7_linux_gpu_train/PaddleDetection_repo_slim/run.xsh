@@ -1,6 +1,9 @@
 #!/bin/bash
 export detection_dir=$PWD/../../detection_repo
-pip install paddleslim
+export slim_dir=$PWD/../../slim_repo
+cd ${slim_dir}
+python setup.py install
+cd -
 #copy PaddleDetection files
 cp -r ${detection_dir}/. ./
 
