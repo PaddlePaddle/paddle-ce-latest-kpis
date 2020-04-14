@@ -11,7 +11,7 @@ from kpi import AccKpi
 dist_yolov3_v1_bestap_1card_kpi = AccKpi('dist_yolov3_v1_bestap_1card', 0.2, 0, actived=True)
 dist_yolov3_v1_bestap_8card_kpi = AccKpi('dist_yolov3_v1_bestap_8card', 0.08, 0, actived=True)
 
-quan_yolov3_v1_bestap_1card_kpi = AccKpi('quan_yolov3_v1_bestap_1card', 0.01, 0, actived=True)
+quan_yolov3_v1_bestap_1card_kpi = AccKpi('quan_yolov3_v1_bestap_1card', 0.02, 0, actived=True)
 quan_yolov3_v1_bestap_8card_kpi = AccKpi('quan_yolov3_v1_bestap_8card', 0.01, 0, actived=True)
 quan_yolov3_r34_bestap_1card_kpi = AccKpi('quan_yolov3_r34_bestap_1card', 0.05, 0, actived=True)
 quan_yolov3_r34_bestap_8card_kpi = AccKpi('quan_yolov3_r34_bestap_8card', 0.03, 0, actived=True)
