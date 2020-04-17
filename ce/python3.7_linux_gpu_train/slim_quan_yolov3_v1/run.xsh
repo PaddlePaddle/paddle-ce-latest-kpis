@@ -1,7 +1,7 @@
 #!/bin/bash
-export detection_dir=$PWD/../../detection_repo
+export models_dir=$PWD/../../models_repo
 #copy models files
-cp -r ${detection_dir}/. ./
+cp -r ${models_dir}/PaddleCV/PaddleDetection/. ./
 if [ -d "dataset" ];then rm -rf dataset
 fi
 ln -s ${dataset_path}/yolov3/dataset dataset
