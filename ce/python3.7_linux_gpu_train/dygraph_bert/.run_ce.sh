@@ -65,7 +65,7 @@ train_single 1> log_1card
 cat log_1card | python _ce.py
 sleep 20
 
-cudaid=4,5,6,7 # use 0-th card as default
+cudaid=0,1,2,3 # use 0-th card as default
 export CUDA_VISIBLE_DEVICES=$cudaid
 train_multi ${cudaid} 1> log_4cards
 cat ./cls_log/workerlog.0 | python _ce.py
