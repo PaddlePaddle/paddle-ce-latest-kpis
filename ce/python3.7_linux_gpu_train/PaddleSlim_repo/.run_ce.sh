@@ -3,10 +3,10 @@
 rm -rf *_factor.txt
 export current_dir=$PWD
 #  for lite models path
-if [ ! -d "/ssd2/guomengmeng01/slim/models_from_train" ];then
-	mkdir /ssd2/guomengmeng01/slim/models_from_train
+if [ ! -d "/ssd2/models_from_train" ];then
+	mkdir /ssd2/models_from_train
 fi
-export models_from_train=/ssd2/guomengmeng01/slim/models_from_train
+export models_from_train=/ssd2/models_from_train
 
 #set result dir___________________________________
 if [ ! -d "result" ];then
@@ -29,10 +29,10 @@ log_path=${current_dir}"/ce_logs"
 print_info(){
 if [ $1 -ne 0 ];then
     mv ${log_path}/$2 ${log_path}/FAIL/$2
-	echo -e "$2,train,FAIL" >>${result_path}/result.log;
+	echo -e "$2,FAIL" >>${result_path}/result.log;
 else
     mv ${log_path}/$2 ${log_path}/SUCCESS/$2
-	echo -e "$2,train,SUCCESS" >>${result_path}/result.log
+	echo -e "$2,SUCCESS" >>${result_path}/result.log
 fi
 }
 #————————————————————————————————————————————————
@@ -156,6 +156,11 @@ cp ./models/infer_models/0/* ./slim_prune_MobileNetv1/
 cp -r ./slim_prune_MobileNetv1 ${models_from_train}/
 cd ${current_dir}
 cat prune_v1_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_v1_acc_top1_gpu8\t"$8"\nkpis\tprune_v1_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
+# 3.2 prune eval
+cd ${current_dir}/demo/prune
+model=slim_prune_eval
+python eval.py --model "MobileNet" --data "imagenet" --model_path "./models/0"  >${log_path}/${model} 2>&1
+print_info $? ${model}
 
 
 #4 nas

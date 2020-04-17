@@ -7,7 +7,7 @@ from kpi import CostKpi
 from kpi import DurationKpi
 
 train_duration_card1 = DurationKpi('train_duration_card1', 0.1, 0, actived=True)
-train_acc_card1 = CostKpi('train_acc_card1', 0.01, 0, actived=True)
+train_acc_card1 = CostKpi('train_acc_card1', 0.05, 0, actived=True)
 
 
 tracking_kpis = [

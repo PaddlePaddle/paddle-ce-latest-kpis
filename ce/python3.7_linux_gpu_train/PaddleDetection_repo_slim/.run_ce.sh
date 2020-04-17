@@ -3,16 +3,16 @@
 rm -rf *_factor.txt
 export current_dir=$PWD
 #  for lite models path
-if [ ! -d "/ssd2/guomengmeng01/slim/models_from_train" ];then
-	mkdir /ssd2/guomengmeng01/slim/models_from_train
+if [ ! -d "/ssd2/models_from_train" ];then
+	mkdir /ssd2/models_from_train
 fi
-export models_from_train=/ssd2/guomengmeng01/slim/models_from_train
+export models_from_train=/ssd2/models_from_train
 print_info()
 {
 if [ $1 -ne 0 ];then
-	echo -e "$2,train,FAIL"
+	echo -e "$2,FAIL"
 else
-	echo -e "$2,train,SUCCESS"
+	echo -e "$2,SUCCESS"
 fi
 }
 export PYTHONPATH=`pwd`:$PYTHONPATH
