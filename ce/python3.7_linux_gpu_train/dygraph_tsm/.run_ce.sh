@@ -11,7 +11,7 @@ cat log_1card | grep "End" | tail "-1" | tr ',' ' ' | awk '{print "kpis\tloss_ca
 cat log_1card | grep "End" | tail "-1" | tr ',' ' '| awk '{print "kpis\tacc1_card1\t"$8}' | python _ce.py
 
 export CUDA_VISIBLE_DEVICES=0,1,2,3
-sed -i "s/num_gpus: 1/num_gpus: 8/g" ./tsm.yaml
+sed -i "s/num_gpus: 1/num_gpus: 4/g" ./tsm.yaml
 python train.py --config=./tsm.yaml --use_gpu=True --epoch=1 >log_8card 2>&1
 cat log_8card | grep "End" | tail "-1" | tr ',' ' ' | awk '{print "kpis\tloss_card8\t"$6}' | python _ce.py
 

@@ -246,7 +246,7 @@ model_list='AlexNet DPN107 DarkNet53 DenseNet121 EfficientNet GoogLeNet HRNet_W1
 for model in ${model_list}
 do
 
-export CUDA_VISIBLE_DEVICES=7
+export CUDA_VISIBLE_DEVICES=0
 train_${model} > log_${model}_card1 2>&1
 cat log_${model}_card1 | grep "train_cost_card1" | tail -1 | awk '{print "kpis\t""'$model'""_loss_card1\t"$5}' | python _ce.py
 cat log_${model}_card1 | grep "train_speed_card1" | tail -1 | awk '{print "kpis\t""'$model'""_time_card1\t"$5}' | python _ce.py
