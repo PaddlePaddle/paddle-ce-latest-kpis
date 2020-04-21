@@ -86,32 +86,33 @@ cat seg_quan_Deeplabv3_v2_1card |grep image=500 |awk -F ' |=' 'END{print "kpis\t
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 seg_quan_Deeplabv3_v2 1>seg_quan_Deeplabv3_v2_8card 2>&1
 cat seg_quan_Deeplabv3_v2_8card |grep image=500 |awk -F ' |=' 'END{print "kpis\tseg_quan_Dv3_v2_acc_8card\t"$4"\tkpis\tseg_quan_Dv3_v2_IoU_8card\t"$6}' | python _ce.py
 
-# 2.2  seg quan export  RD代码未合入
-#model=seg_quan_Dv3_v2_export
-#python -u ./slim/quantization/export_model.py \
-#--not_quant_pattern last_conv  \
-#--cfg configs/deeplabv3p_mobilenetv2_cityscapes.yaml  \
-#TEST.TEST_MODEL "./snapshots/mobilenetv2_quant/best_model" \
-#MODEL.DEEPLAB.ENCODER_WITH_ASPP False \
-#MODEL.DEEPLAB.ENABLE_DECODER False \
-#TRAIN.SYNC_BATCH_NORM False \
-#SLIM.PREPROCESS True >${model} 2>&1
-#print_info $? ${model}
+# 2.2  seg quan export
+model=seg_quan_Dv3_v2_export
+python -u ./slim/quantization/export_model.py \
+--not_quant_pattern last_conv  \
+--cfg configs/deeplabv3p_mobilenetv2_cityscapes.yaml  \
+TEST.TEST_MODEL "./snapshots/mobilenetv2_quant/best_model" \
+MODEL.DEEPLAB.ENCODER_WITH_ASPP False \
+MODEL.DEEPLAB.ENABLE_DECODER False \
+TRAIN.SYNC_BATCH_NORM False \
+SLIM.PREPROCESS True >${model} 2>&1
+print_info $? ${model}
 
 # 2.3 quan infer
 # infer environment
-#model=seg_quan_Dv3_v2_infer
-#python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
-#--input_dir=./test_img --use_pr=False >${model}.log 2>&1
-#print_info $? ${model}
-# 转存
-#mv freeze_model quan_Dv3_v2_freeze_model
-#cp -r quan_Dv3_v2_freeze_model  ${models_from_train}/
-
+model=seg_quan_Dv3_v2_infer
+python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
+--input_dir=./test_img --use_pr=False >${model} 2>&1
+print_info $? ${model}
+# for lite
+mv freeze_model quan_Dv3_v2_freeze_model
+if [ $? -ne 0 ];then
+    cp -r quan_Dv3_v2_freeze_model  ${models_from_train}/
+fi
 # 2.4 quan_eval
 model=seg_quan_Dv3_v2_eval_quant
 CUDA_VISIBLE_DEVICES=7 python -u ./slim/quantization/eval_quant.py \
---cfg configs/deeplabv3p_mobilenetv2_cityscapes.yaml  \
+--cfg configs/deeplabv3p_mobilenetv2_cityscapes.yaml \
 --use_gpu --not_quant_pattern last_conv --convert \
 TEST.TEST_MODEL "./snapshots/mobilenetv2_quant/best_model" \
 MODEL.DEEPLAB.ENCODER_WITH_ASPP False \
@@ -147,7 +148,7 @@ CUDA_VISIBLE_DEVICES=7 python -u ./slim/prune/eval_prune.py \
 TEST.TEST_MODEL ./snapshots/cityscape_fast_scnn/final >${model} 2>&1
 print_info $? ${model}
 
-# 3.3 prune infer  暂无,RD export还未添加
+# 3.3 prune infer
 
-# 4 nas 无指标未添加
+# 4 nas  no kpis
 
