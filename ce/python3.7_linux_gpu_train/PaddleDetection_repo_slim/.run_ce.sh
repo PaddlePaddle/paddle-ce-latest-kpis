@@ -52,11 +52,12 @@ print_info $? ${model}
 if [ -d "output" ];then
 	mv  output dist_output
 fi
-# 将save的模型转存供lite使用
+# for lite
 mkdir dete_dist_yolov3_v1
 cp dist_output/yolov3_mobilenet_v1_voc/infer/* dete_dist_yolov3_v1/
-cp -r dete_dist_yolov3_v1 ${models_from_train}/
-
+if [ $? -ne 0 ];then
+    cp -r dete_dist_yolov3_v1 ${models_from_train}/
+fi
 # 2.1 quan train  35min
 dete_quan_yolov3_v1()
 {
@@ -75,7 +76,7 @@ cat dete_quan_yolov3_v1_8card|grep Best | awk -F ' ' 'END{print "kpis\tquan_yolo
 
 cp ./configs/dcn/yolov3_r50vd_dcn_obj365_pretrained_coco.yml ./configs/
 cp ./configs/dcn/yolov3_enhance_reader.yml ./configs/
-# 需要修改路径保证下面eval正常循环
+# change path for eval
 sed -i "s/yolov3_r50vd_dcn_db_obj365_pretrained_coco/yolov3_r50vd_dcn_obj365_pretrained_coco/g" ./configs/yolov3_r50vd_dcn_obj365_pretrained_coco.yml
 dete_quan_yolov3()
 {
@@ -124,12 +125,14 @@ for i in $(seq 0 2); do
 print_info $? ${model}_${quan_models[$i]}
 mkdir dete_quan_export_float/dete_${quan_models[$i]}
 cp ./quan_export/dete_${quan_models[$i]}/float/* ./dete_quan_export_float/dete_${quan_models[$i]}/
+# for lite
+if [ $? -ne 0 ];then
+    cp ./dete_quan_export_float/dete_${quan_models[$i]} ${models_from_train}/
+fi
 done
-# export_model后的结果转存
-cp -r dete_quan_export_float/* ${models_from_train}/
-# yolov3_r50vd lite 暂不支持
+# yolov3_r50vd  dete_yolov3_r34 lite not support
 rm -rf ${models_from_train}/dete_yolov3_r50vd_dcn_obj365_pretrained_coco
-
+rm -rf ${models_from_train}/dete_yolov3_r34
 if [ -d "output" ];then
 	mv  output quan_output
 fi
@@ -182,11 +185,13 @@ for i in $(seq 0 2); do
     --pruned_params "yolo_block.0.0.0.conv.weights,yolo_block.0.0.1.conv.weights,yolo_block.0.1.0.conv.weights" \
     --pruned_ratios="0.2,0.3,0.4" >${model}_${prune_models[$i]} 2>&1
 print_info $? ${model}_${prune_models[$i]} 2>&1
-# 转存，这里export的结果还在原output中
+# for lite
 mkdir slim_dete_${prune_models[$i]}
 cp output/${prune_models[$i]}/__model__ ./slim_dete_${prune_models[$i]}/
 cp output/${prune_models[$i]}/__params__ ./slim_dete_${prune_models[$i]}/
-cp -r slim_dete_${prune_models[$i]} ${models_from_train}/
+if [ $? -ne 0 ];then
+    cp -r slim_dete_${prune_models[$i]} ${models_from_train}/
+fi
 done
 
 # 3.4 prune infer
@@ -203,4 +208,9 @@ done
 if [ -d "output" ];then
 	mv  output prune_output
 fi
+
+# tar models_from_train for lite
+cd $(dirname "${models_from_train}")
+pwd
+tar -czf models_from_train.tar.gz models_from_train
 

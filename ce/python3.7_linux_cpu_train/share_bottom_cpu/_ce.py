@@ -8,18 +8,18 @@ from kpi import CostKpi
 from kpi import DurationKpi
 from kpi import AccKpi
 
-gpu1_epoch_time_kpi = DurationKpi('gpu1_epoch_time', 0.04, 0, actived=True)
-gpu1_mean_mmoe_test_auc_income_kpi = AccKpi('gpu1_mean_mmoe_test_auc_income', 0.02, 0, actived=True)
-gpu1_mean_mmoe_test_auc_marital_kpi = AccKpi('gpu1_mean_mmoe_test_auc_marital', 0.02, 0, actived=True)
-gpu1_max_mmoe_test_auc_income_kpi = AccKpi('gpu1_max_mmoe_test_auc_income', 0.02, 0, actived=True)
-gpu1_max_mmoe_test_auc_marital_kpi = AccKpi('gpu1_max_mmoe_test_auc_marital', 0.02, 0, actived=True)
+share_bottom_cpu_epoch_time_kpi = DurationKpi('share_bottom_cpu_epoch_time', 0.06, 0, actived=True)
+share_bottom_cpu_mean_sb_test_auc_income_kpi = AccKpi('share_bottom_cpu_mean_sb_test_auc_income', 0.06, 0, actived=True)
+share_bottom_cpu_mean_sb_test_auc_marital_kpi = AccKpi('share_bottom_cpu_mean_sb_test_auc_marital', 0.02, 0, actived=True)
+share_bottom_cpu_max_sb_test_auc_income_kpi = AccKpi('share_bottom_cpu_max_sb_test_auc_income', 0.02, 0, actived=True)
+share_bottom_cpu_max_sb_test_auc_marital_kpi = AccKpi('share_bottom_cpu_max_sb_test_auc_marital', 0.02, 0, actived=True)
 
 tracking_kpis = [
-    gpu1_epoch_time_kpi,
-    gpu1_mean_mmoe_test_auc_income_kpi,
-    gpu1_mean_mmoe_test_auc_marital_kpi,
-    gpu1_max_mmoe_test_auc_income_kpi,
-    gpu1_max_mmoe_test_auc_marital_kpi
+    share_bottom_cpu_epoch_time_kpi,
+    share_bottom_cpu_mean_sb_test_auc_income_kpi,
+    share_bottom_cpu_mean_sb_test_auc_marital_kpi,
+    share_bottom_cpu_max_sb_test_auc_income_kpi,
+    share_bottom_cpu_max_sb_test_auc_marital_kpi
 ]
 
 
