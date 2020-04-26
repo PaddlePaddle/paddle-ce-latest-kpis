@@ -286,7 +286,7 @@ else
         echo -e "${model},export,SUCCESS"
 fi
 
-export CUDA_VISIBLE_DEVICES=0,1,2,3
+export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 train_${model} > log_${model}_card8 2>&1
 cat log_${model}_card8 | grep "train_cost_card8" | tail -1 | awk '{print "kpis\t""'$model'""_loss_card8\t"$5}' | python _ce.py
 cat log_${model}_card8 | grep "train_speed_card8" | tail -1 | awk '{print "kpis\t""'$model'""_time_card8\t"$5}' | python _ce.py
