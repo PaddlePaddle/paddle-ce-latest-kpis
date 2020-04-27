@@ -265,7 +265,7 @@ SqueezeNet1_1_time_card8_kpi = DurationKpi(
     actived=True,
     unit_repr='seconds/image',
     desc='train time in 8 GPU card')
-VGG19_loss_card1_kpi = CostKpi('VGG19_loss_card1', 0.02, 0, actived=True, desc='train cost')
+VGG19_loss_card1_kpi = CostKpi('VGG19_loss_card1', 0.03, 0, actived=True, desc='train cost')
 VGG19_time_card1_kpi = DurationKpi(
     'VGG19_time_card1',
     0.05,
