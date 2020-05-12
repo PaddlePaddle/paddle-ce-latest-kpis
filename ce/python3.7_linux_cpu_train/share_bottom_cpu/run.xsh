@@ -1,7 +1,7 @@
 #!/bin/bash
 export models_dir=$PWD/../../models_repo
 #copy models files
-cp -r ${models_dir}/PaddleRec/multi-task/Share_bottom/* ./
+cp -r ${models_dir}/PaddleRec/multi-task/share_bottom/* ./
 ln -s ${dataset_path}/mmoe/train_data train_data
 ln -s ${dataset_path}/mmoe/test_data test_data
 # train
