@@ -12,10 +12,4 @@ if [ $? -ne 0 ];then
 else
     echo -e "ocr,eval,SUCCESS"
 fi
-#infer
-python infer.py --model_path="ocr_ctc/ocr_ctc_params" >infer
-if [ $? -ne 0 ];then
-    echo -e "ocr,infer,FAIL"
-else
-    echo -e "ocr,infer,SUCCESS"
-fi
+
