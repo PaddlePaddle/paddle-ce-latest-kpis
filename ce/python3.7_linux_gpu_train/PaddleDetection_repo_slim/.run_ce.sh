@@ -7,14 +7,32 @@ if [ ! -d "/ssd2/models_from_train" ];then
 	mkdir /ssd2/models_from_train
 fi
 export models_from_train=/ssd2/models_from_train
+
 print_info()
 {
 if [ $1 -ne 0 ];then
-	echo -e "$2,FAIL"
+	echo -e "----$2,FAIL----"
 else
-	echo -e "$2,SUCCESS"
+	echo -e "----$2,SUCCESS----"
 fi
 }
+#copy_for_lite ${model_name} ${models_from_train}
+copy_for_lite(){
+if [ -d $2/$1 ]; then
+    rm -rf $2/$1
+fi
+if [ "$(ls -A $1)" ];then
+   tar -czf $1.tar.gz $1
+   cp $1.tar.gz $2/
+   echo "-----$1 copy for lite SUCCESS-----"
+else
+   echo "-----$1 is empty-----"
+fi
+}
+cudaid1=${card1:=2} # use 0-th card as default
+cudaid8=${card8:=0,1,2,3,4,5,6,7} # use 0-th card as default
+cudaid2=${card8:=2,3} # use 0-th card as default
+#######################################################
 export PYTHONPATH=`pwd`:$PYTHONPATH
 # 1 distillation
 # 1card max_iters=8000  2h
@@ -31,13 +49,13 @@ dete_dist_yolov3_v1()
     --save_inference true \
     -o max_iters=$1 --teacher_pretrained https://paddlemodels.bj.bcebos.com/object_detection/yolov3_r34_voc.tar
 }
-CUDA_VISIBLE_DEVICES=0 dete_dist_yolov3_v1 8000 >dete_dist_yolov3_v1_1card 2>&1
-cat dete_dist_yolov3_v1_1card|grep Best | awk -F ' ' 'END{print "kpis\tdist_yolov3_v1_bestap_1card\t"$7}'|tr -d ',' | python _ce.py
-CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 dete_dist_yolov3_v1 2000 >dete_dist_yolov3_v1_8card 2>&1
-cat dete_dist_yolov3_v1_8card|grep Best | awk -F ' ' 'END{print "kpis\tdist_yolov3_v1_bestap_8card\t"$7}'|tr -d ',' | python _ce.py
+CUDA_VISIBLE_DEVICES=${cudaid1} dete_dist_yolov3_v1 8000 >dete_dist_yolov3_v1_1card 2>&1
+cat dete_dist_yolov3_v1_1card|grep Best | awk -F ' ' 'END{print "kpis\tdete_dist_yolov3_v1_bestap_1card\t"$7}'|tr -d ',' | python _ce.py
+CUDA_VISIBLE_DEVICES=${cudaid8} dete_dist_yolov3_v1 2000 >dete_dist_yolov3_v1_8card 2>&1
+cat dete_dist_yolov3_v1_8card|grep Best | awk -F ' ' 'END{print "kpis\tdete_dist_yolov3_v1_bestap_8card\t"$7}'|tr -d ',' | python _ce.py
 
 # 1.2 infer
-model=dist_yolov3_mobilenet_v1_voc_infer
+model=dete_dist_yolov3_mobilenet_v1_voc_infer
 CUDA_VISIBLE_DEVICES=0,1,2,3 python -u tools/infer.py \
 -c configs/yolov3_mobilenet_v1_voc.yml \
 --infer_img=demo/000000570688.jpg \
@@ -45,17 +63,17 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python -u tools/infer.py \
 --draw_threshold=0.5 >${model} 2>&1
 print_info $? ${model}
 #1.3 eval
-model=dist_yolov3_mobilenet_v1_voc_eval
+model=dete_dist_yolov3_mobilenet_v1_voc_eval
 python -u tools/eval.py -c configs/yolov3_mobilenet_v1_voc.yml >${model} 2>&1
 print_info $? ${model}
 
 if [ -d "output" ];then
 	mv  output dist_output
 fi
-# 将save的模型转存供lite使用
-mkdir dete_dist_yolov3_v1
-cp dist_output/yolov3_mobilenet_v1_voc/infer/* dete_dist_yolov3_v1/
-cp -r dete_dist_yolov3_v1 ${models_from_train}/
+# for lite
+mkdir dete_dist_yolov3_v1_uncombined
+cp dist_output/yolov3_mobilenet_v1_voc/infer/* dete_dist_yolov3_v1_uncombined/
+copy_for_lite dete_dist_yolov3_v1_uncombined ${models_from_train}
 
 # 2.1 quan train  35min
 dete_quan_yolov3_v1()
@@ -68,14 +86,14 @@ dete_quan_yolov3_v1()
     LearningRate.schedulers='[!PiecewiseDecay {gamma: 0.1, milestones: [40000]}]' \
     pretrain_weights=https://paddlemodels.bj.bcebos.com/object_detection/yolov3_mobilenet_v1.tar
 }
-CUDA_VISIBLE_DEVICES=0 dete_quan_yolov3_v1 > dete_quan_yolov3_v1_1card 2>&1
-cat dete_quan_yolov3_v1_1card|grep Best | awk -F ' ' 'END{print "kpis\tquan_yolov3_v1_bestap_1card\t"$7}'|tr -d ',' | python _ce.py
-CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 dete_quan_yolov3_v1 > dete_quan_yolov3_v1_8card 2>&1
-cat dete_quan_yolov3_v1_8card|grep Best | awk -F ' ' 'END{print "kpis\tquan_yolov3_v1_bestap_8card\t"$7}'|tr -d ',' | python _ce.py
+CUDA_VISIBLE_DEVICES=${cudaid1} dete_quan_yolov3_v1 > dete_quan_yolov3_v1_1card 2>&1
+cat dete_quan_yolov3_v1_1card|grep Best | awk -F ' ' 'END{print "kpis\tdete_quan_yolov3_v1_bestap_1card\t"$7}'|tr -d ',' | python _ce.py
+CUDA_VISIBLE_DEVICES=${cudaid8} dete_quan_yolov3_v1 > dete_quan_yolov3_v1_8card 2>&1
+cat dete_quan_yolov3_v1_8card|grep Best | awk -F ' ' 'END{print "kpis\tdete_quan_yolov3_v1_bestap_8card\t"$7}'|tr -d ',' | python _ce.py
 
 cp ./configs/dcn/yolov3_r50vd_dcn_obj365_pretrained_coco.yml ./configs/
 cp ./configs/dcn/yolov3_enhance_reader.yml ./configs/
-# 需要修改路径保证下面eval正常循环
+# change path for eval
 sed -i "s/yolov3_r50vd_dcn_db_obj365_pretrained_coco/yolov3_r50vd_dcn_obj365_pretrained_coco/g" ./configs/yolov3_r50vd_dcn_obj365_pretrained_coco.yml
 dete_quan_yolov3()
 {
@@ -89,16 +107,16 @@ dete_quan_yolov3()
 }
 quan_models=(yolov3_r34 yolov3_r50vd_dcn_obj365_pretrained_coco)
 for i in $(seq 0 1); do
-    CUDA_VISIBLE_DEVICES=0 dete_quan_yolov3 ${quan_models[$i]} > dete_quan_${quan_models[$i]}_1card 2>&1
-    cat dete_quan_${quan_models[$i]}_1card|grep Best | awk -F ' ' 'END{print "kpis\tquan_""'${quan_models[$i]}_bestap_1card'""\t"$7}'|tr -d ',' | python _ce.py
-    CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 dete_quan_yolov3 ${quan_models[$i]} > dete_quan_${quan_models[$i]}_8card 2>&1
-    cat dete_quan_${quan_models[$i]}_8card|grep Best | awk -F ' ' 'END{print "kpis\tquan_""'${quan_models[$i]}_bestap_8card'""\t"$7}'|tr -d ',' | python _ce.py
+    CUDA_VISIBLE_DEVICES=${cudaid1} dete_quan_yolov3 ${quan_models[$i]} > dete_quan_${quan_models[$i]}_1card 2>&1
+    cat dete_quan_${quan_models[$i]}_1card|grep Best | awk -F ' ' 'END{print "kpis\tdete_quan_""'${quan_models[$i]}_bestap_1card'""\t"$7}'|tr -d ',' | python _ce.py
+    CUDA_VISIBLE_DEVICES=${cudaid8} dete_quan_yolov3 ${quan_models[$i]} > dete_quan_${quan_models[$i]}_8card 2>&1
+    cat dete_quan_${quan_models[$i]}_8card|grep Best | awk -F ' ' 'END{print "kpis\tdete_quan_""'${quan_models[$i]}_bestap_8card'""\t"$7}'|tr -d ',' | python _ce.py
 done
 # 2.2 eval
 quan_models=(yolov3_mobilenet_v1 yolov3_r34 yolov3_r50vd_dcn_obj365_pretrained_coco)
 model=dete_quan_eval
 for i in $(seq 0 2); do
-CUDA_VISIBLE_DEVICES=0 python slim/quantization/eval.py \
+CUDA_VISIBLE_DEVICES=${cudaid1} python slim/quantization/eval.py \
     --not_quant_pattern yolo_output  \
     -c ./configs/${quan_models[$i]}.yml >${model}_${quan_models[$i]} 2>&1
 print_info $? ${model}_${quan_models[$i]}
@@ -106,7 +124,7 @@ done
 # 2.3 infer
 model=dete_quan_infer
 for i in $(seq 0 2); do
-    CUDA_VISIBLE_DEVICES=0  python slim/quantization/infer.py \
+    CUDA_VISIBLE_DEVICES=${cudaid1} python slim/quantization/infer.py \
     --not_quant_pattern yolo_output \
     -c ./configs/${quan_models[$i]}.yml \
     --infer_dir ./demo  >${model}_${quan_models[$i]} 2>&1
@@ -115,27 +133,20 @@ done
 
 # 2.4 export
 model=dete_quan_export
-mkdir dete_quan_export_float
 for i in $(seq 0 2); do
-    CUDA_VISIBLE_DEVICES=0 python slim/quantization/export_model.py \
+    CUDA_VISIBLE_DEVICES=${cudaid1} python slim/quantization/export_model.py \
     --not_quant_pattern yolo_output  \
     -c ./configs/${quan_models[$i]}.yml \
-    --output_dir ./quan_export/dete_${quan_models[$i]} >${model}_${quan_models[$i]} 2>&1
+    --output_dir ./quan_export/dete_quan_${quan_models[$i]} >${model}_${quan_models[$i]} 2>&1
 print_info $? ${model}_${quan_models[$i]}
-mkdir dete_quan_export_float/dete_${quan_models[$i]}
-cp ./quan_export/dete_${quan_models[$i]}/float/* ./dete_quan_export_float/dete_${quan_models[$i]}/
+mkdir dete_quan_${quan_models[$i]}_combined
+cp ./quan_export/dete_quan_${quan_models[$i]}/float/* ./dete_quan_${quan_models[$i]}_combined/
+# for lite
+copy_for_lite dete_quan_${quan_models[$i]}_combined ${models_from_train}
 done
-# export_model后的结果转存
-cp -r dete_quan_export_float/* ${models_from_train}/
-# yolov3_r50vd lite 暂不支持
-rm -rf ${models_from_train}/dete_yolov3_r50vd_dcn_obj365_pretrained_coco
 
-if [ -d "output" ];then
-	mv  output quan_output
-fi
-
-# 3 prune
-# 3.1 prune train
+## 3 prune
+## 3.1 prune train
 cp ./configs/dcn/yolov3_r50vd_dcn.yml ./configs/
 sed -i $"s?_READER_: '../yolov3_reader.yml'?_READER_: './yolov3_reader.yml'?g" ./configs/yolov3_r50vd_dcn.yml
 prune_models=(yolov3_mobilenet_v1 yolov3_mobilenet_v1_voc yolov3_r50vd_dcn)
@@ -158,11 +169,11 @@ dete_prune_yolov3_iter8000()
     -o max_iters=8000 pretrain_weights=https://paddlemodels.bj.bcebos.com/object_detection/$1.tar
 }
 for i in $(seq 0 2); do
-    CUDA_VISIBLE_DEVICES=0 dete_prune_yolov3_iter8000  ${prune_models[$i]} > dete_prune_${prune_models[$i]}_1card 2>&1
-    cat dete_prune_${prune_models[$i]}_1card|grep Best | awk -F ' ' 'END{print "kpis\tprune_""'${prune_models[$i]}_bestap_1card'""\t"$7}'|tr -d ',' | python _ce.py
+    CUDA_VISIBLE_DEVICES=${cudaid1} dete_prune_yolov3_iter8000  ${prune_models[$i]} > dete_prune_${prune_models[$i]}_1card 2>&1
+    cat dete_prune_${prune_models[$i]}_1card|grep Best | awk -F ' ' 'END{print "kpis\tdete_prune_""'${prune_models[$i]}_bestap_1card'""\t"$7}'|tr -d ',' | python _ce.py
     sleep 20
-    CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 dete_prune_yolov3_iter2000 ${prune_models[$i]} > dete_prune_${prune_models[$i]}_8card 2>&1
-    cat dete_prune_${prune_models[$i]}_8card|grep Best | awk -F ' ' 'END{print "kpis\tprune_""'${prune_models[$i]}_bestap_8card'""\t"$7}'|tr -d ',' | python _ce.py
+    CUDA_VISIBLE_DEVICES=${cudaid8} dete_prune_yolov3_iter2000 ${prune_models[$i]} > dete_prune_${prune_models[$i]}_8card 2>&1
+    cat dete_prune_${prune_models[$i]}_8card|grep Best | awk -F ' ' 'END{print "kpis\tdete_prune_""'${prune_models[$i]}_bestap_8card'""\t"$7}'|tr -d ',' | python _ce.py
 done
 
 # 3.2 prune eval
@@ -182,17 +193,17 @@ for i in $(seq 0 2); do
     --pruned_params "yolo_block.0.0.0.conv.weights,yolo_block.0.0.1.conv.weights,yolo_block.0.1.0.conv.weights" \
     --pruned_ratios="0.2,0.3,0.4" >${model}_${prune_models[$i]} 2>&1
 print_info $? ${model}_${prune_models[$i]} 2>&1
-# 转存，这里export的结果还在原output中
-mkdir slim_dete_${prune_models[$i]}
-cp output/${prune_models[$i]}/__model__ ./slim_dete_${prune_models[$i]}/
-cp output/${prune_models[$i]}/__params__ ./slim_dete_${prune_models[$i]}/
-cp -r slim_dete_${prune_models[$i]} ${models_from_train}/
+# for lite
+mkdir dete_prune_${prune_models[$i]}_combined
+cp output/${prune_models[$i]}/__model__ ./dete_prune_${prune_models[$i]}_combined/
+cp output/${prune_models[$i]}/__params__ ./dete_prune_${prune_models[$i]}_combined/
+copy_for_lite dete_prune_${prune_models[$i]}_combined ${models_from_train}
 done
 
 # 3.4 prune infer
 model=dete_prune_infer
 for i in $(seq 0 2); do
-    CUDA_VISIBLE_DEVICES=0  python -u tools/infer.py \
+    CUDA_VISIBLE_DEVICES=${cudaid1}  python -u tools/infer.py \
     -c configs/${prune_models[$i]}.yml \
     --infer_img=demo/000000570688.jpg \
     --output_dir=infer_output/ \
@@ -203,4 +214,19 @@ done
 if [ -d "output" ];then
 	mv  output prune_output
 fi
+
+# delete some models for a moment
+delete_models=(dete_quan_yolov3_r34_combined dete_quan_yolov3_r50vd_dcn_obj365_pretrained_coco_combined)
+for model_name in ${delete_models};do
+    rm -rf ${models_from_train}/${model_name}.tar.gz
+done
+# tar models_from_train for lite
+cd $(dirname ${models_from_train})
+pwd
+if [ "$(ls -A $PWD)" ];then
+   tar -czf models_from_train.tar.gz models_from_train
+else
+   echo "models_from_train tar fail"
+fi
+
 

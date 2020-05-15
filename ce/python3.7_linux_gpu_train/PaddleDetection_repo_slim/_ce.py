@@ -8,42 +8,44 @@ from kpi import CostKpi
 from kpi import DurationKpi
 from kpi import AccKpi
 
-dist_yolov3_v1_bestap_1card_kpi = AccKpi('dist_yolov3_v1_bestap_1card', 0.2, 0, actived=True)
-dist_yolov3_v1_bestap_8card_kpi = AccKpi('dist_yolov3_v1_bestap_8card', 0.08, 0, actived=True)
+dete_dist_yolov3_v1_bestap_1card_kpi = AccKpi('dete_dist_yolov3_v1_bestap_1card', 0.2, 0, actived=True)
+dete_dist_yolov3_v1_bestap_8card_kpi = AccKpi('dete_dist_yolov3_v1_bestap_8card', 0.08, 0, actived=True)
 
-quan_yolov3_v1_bestap_1card_kpi = AccKpi('quan_yolov3_v1_bestap_1card', 0.02, 0, actived=True)
-quan_yolov3_v1_bestap_8card_kpi = AccKpi('quan_yolov3_v1_bestap_8card', 0.01, 0, actived=True)
-quan_yolov3_r34_bestap_1card_kpi = AccKpi('quan_yolov3_r34_bestap_1card', 0.05, 0, actived=True)
-quan_yolov3_r34_bestap_8card_kpi = AccKpi('quan_yolov3_r34_bestap_8card', 0.03, 0, actived=True)
-quan_yolov3_r50vd_dcn_obj365_pretrained_coco_bestap_1card_kpi = AccKpi(
-    'quan_yolov3_r50vd_dcn_obj365_pretrained_coco_bestap_1card', 0.06, 0, actived=True)
-quan_yolov3_r50vd_dcn_obj365_pretrained_coco_bestap_8card_kpi = AccKpi(
-    'quan_yolov3_r50vd_dcn_obj365_pretrained_coco_bestap_8card', 0.02, 0, actived=True)
+dete_quan_yolov3_v1_bestap_1card_kpi = AccKpi('dete_quan_yolov3_v1_bestap_1card', 0.02, 0, actived=True)
+dete_quan_yolov3_v1_bestap_8card_kpi = AccKpi('dete_quan_yolov3_v1_bestap_8card', 0.01, 0, actived=True)
+dete_quan_yolov3_r34_bestap_1card_kpi = AccKpi('dete_quan_yolov3_r34_bestap_1card', 0.05, 0, actived=True)
+dete_quan_yolov3_r34_bestap_8card_kpi = AccKpi('dete_quan_yolov3_r34_bestap_8card', 0.03, 0, actived=True)
+dete_quan_yolov3_r50vd_dcn_obj365_pretrained_coco_bestap_1card_kpi = AccKpi(
+    'dete_quan_yolov3_r50vd_dcn_obj365_pretrained_coco_bestap_1card', 0.06, 0, actived=True)
+dete_quan_yolov3_r50vd_dcn_obj365_pretrained_coco_bestap_8card_kpi = AccKpi(
+    'dete_quan_yolov3_r50vd_dcn_obj365_pretrained_coco_bestap_8card', 0.02, 0, actived=True)
 
-prune_yolov3_mobilenet_v1_bestap_1card_kpi = AccKpi('prune_yolov3_mobilenet_v1_bestap_1card', 0.09, 0, actived=True)
-prune_yolov3_mobilenet_v1_bestap_8card_kpi = AccKpi('prune_yolov3_mobilenet_v1_bestap_8card', 0.03, 0, actived=True)
-prune_yolov3_mobilenet_v1_voc_bestap_1card_kpi = AccKpi('prune_yolov3_mobilenet_v1_voc_bestap_1card', 0.04, 0,
-                                                        actived=True)
-prune_yolov3_mobilenet_v1_voc_bestap_8card_kpi = AccKpi('prune_yolov3_mobilenet_v1_voc_bestap_8card', 0.03, 0,
-                                                        actived=True)
-prune_yolov3_r50vd_dcn_bestap_1card_kpi = AccKpi('prune_yolov3_r50vd_dcn_bestap_1card', 0.08, 0, actived=True)
-prune_yolov3_r50vd_dcn_bestap_8card_kpi = AccKpi('prune_yolov3_r50vd_dcn_bestap_8card', 0.04, 0, actived=True)
+dete_prune_yolov3_mobilenet_v1_bestap_1card_kpi = AccKpi('dete_prune_yolov3_mobilenet_v1_bestap_1card', 0.09, 0,
+                                                         actived=True)
+dete_prune_yolov3_mobilenet_v1_bestap_8card_kpi = AccKpi('dete_prune_yolov3_mobilenet_v1_bestap_8card', 0.03, 0,
+                                                         actived=True)
+dete_prune_yolov3_mobilenet_v1_voc_bestap_1card_kpi = AccKpi('dete_prune_yolov3_mobilenet_v1_voc_bestap_1card', 0.04, 0,
+                                                             actived=True)
+dete_prune_yolov3_mobilenet_v1_voc_bestap_8card_kpi = AccKpi('dete_prune_yolov3_mobilenet_v1_voc_bestap_8card', 0.03, 0,
+                                                             actived=True)
+dete_prune_yolov3_r50vd_dcn_bestap_1card_kpi = AccKpi('dete_prune_yolov3_r50vd_dcn_bestap_1card', 0.08, 0, actived=True)
+dete_prune_yolov3_r50vd_dcn_bestap_8card_kpi = AccKpi('dete_prune_yolov3_r50vd_dcn_bestap_8card', 0.04, 0, actived=True)
 
 tracking_kpis = [
-    dist_yolov3_v1_bestap_1card_kpi,
-    dist_yolov3_v1_bestap_8card_kpi,
-    quan_yolov3_v1_bestap_1card_kpi,
-    quan_yolov3_v1_bestap_8card_kpi,
-    quan_yolov3_r34_bestap_1card_kpi,
-    quan_yolov3_r34_bestap_8card_kpi,
-    quan_yolov3_r50vd_dcn_obj365_pretrained_coco_bestap_1card_kpi,
-    quan_yolov3_r50vd_dcn_obj365_pretrained_coco_bestap_8card_kpi,
-    prune_yolov3_mobilenet_v1_bestap_1card_kpi,
-    prune_yolov3_mobilenet_v1_bestap_8card_kpi,
-    prune_yolov3_mobilenet_v1_voc_bestap_1card_kpi,
-    prune_yolov3_mobilenet_v1_voc_bestap_8card_kpi,
-    prune_yolov3_r50vd_dcn_bestap_1card_kpi,
-    prune_yolov3_r50vd_dcn_bestap_8card_kpi
+    dete_dist_yolov3_v1_bestap_1card_kpi,
+    dete_dist_yolov3_v1_bestap_8card_kpi,
+    dete_quan_yolov3_v1_bestap_1card_kpi,
+    dete_quan_yolov3_v1_bestap_8card_kpi,
+    dete_quan_yolov3_r34_bestap_1card_kpi,
+    dete_quan_yolov3_r34_bestap_8card_kpi,
+    dete_quan_yolov3_r50vd_dcn_obj365_pretrained_coco_bestap_1card_kpi,
+    dete_quan_yolov3_r50vd_dcn_obj365_pretrained_coco_bestap_8card_kpi,
+    dete_prune_yolov3_mobilenet_v1_bestap_1card_kpi,
+    dete_prune_yolov3_mobilenet_v1_bestap_8card_kpi,
+    dete_prune_yolov3_mobilenet_v1_voc_bestap_1card_kpi,
+    dete_prune_yolov3_mobilenet_v1_voc_bestap_8card_kpi,
+    dete_prune_yolov3_r50vd_dcn_bestap_1card_kpi,
+    dete_prune_yolov3_r50vd_dcn_bestap_8card_kpi
 ]
 
 

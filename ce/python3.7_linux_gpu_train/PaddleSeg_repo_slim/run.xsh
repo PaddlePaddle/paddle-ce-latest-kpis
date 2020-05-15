@@ -3,6 +3,7 @@ export seg_dir=$PWD/../../seg_repo
 export slim_dir=$PWD/../../slim_repo
 
 cd ${slim_dir}
+pip install -r requirements.txt
 python setup.py install
 cd -
 #copy PaddleSeg files

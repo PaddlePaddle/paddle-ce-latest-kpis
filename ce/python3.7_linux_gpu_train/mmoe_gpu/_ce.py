@@ -8,12 +8,18 @@ from kpi import CostKpi
 from kpi import DurationKpi
 from kpi import AccKpi
 
-train_loss_gpu1_kpi = CostKpi('train_loss_gpu1', 0.02, 0, actived=True)
-train_loss_gpu8_kpi = CostKpi('train_loss_gpu8', 0.02, 0, actived=True)
+gpu1_epoch_time_kpi = DurationKpi('gpu1_epoch_time', 0.04, 0, actived=True)
+gpu1_mean_mmoe_test_auc_income_kpi = AccKpi('gpu1_mean_mmoe_test_auc_income', 0.02, 0, actived=True)
+gpu1_mean_mmoe_test_auc_marital_kpi = AccKpi('gpu1_mean_mmoe_test_auc_marital', 0.02, 0, actived=True)
+gpu1_max_mmoe_test_auc_income_kpi = AccKpi('gpu1_max_mmoe_test_auc_income', 0.02, 0, actived=True)
+gpu1_max_mmoe_test_auc_marital_kpi = AccKpi('gpu1_max_mmoe_test_auc_marital', 0.02, 0, actived=True)
 
 tracking_kpis = [
-    train_loss_gpu1_kpi,
-    train_loss_gpu8_kpi
+    gpu1_epoch_time_kpi,
+    gpu1_mean_mmoe_test_auc_income_kpi,
+    gpu1_mean_mmoe_test_auc_marital_kpi,
+    gpu1_max_mmoe_test_auc_income_kpi,
+    gpu1_max_mmoe_test_auc_marital_kpi
 ]
 
 

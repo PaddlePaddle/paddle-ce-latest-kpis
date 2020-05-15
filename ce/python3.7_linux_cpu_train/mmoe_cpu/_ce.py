@@ -8,9 +8,18 @@ from kpi import CostKpi
 from kpi import DurationKpi
 from kpi import AccKpi
 
-train_loss_cpu_kpi = CostKpi('train_loss_cpu', 0.02, 0, actived=True)
+cpu_epoch_time_kpi = DurationKpi('cpu_epoch_time', 0.2, 0, actived=True)
+cpu_mean_mmoe_test_auc_income_kpi = AccKpi('cpu_mean_mmoe_test_auc_income', 0.02, 0, actived=True)
+cpu_mean_mmoe_test_auc_marital_kpi = AccKpi('cpu_mean_mmoe_test_auc_marital', 0.02, 0, actived=True)
+cpu_max_mmoe_test_auc_income_kpi = AccKpi('cpu_max_mmoe_test_auc_income', 0.02, 0, actived=True)
+cpu_max_mmoe_test_auc_marital_kpi = AccKpi('cpu_max_mmoe_test_auc_marital', 0.02, 0, actived=True)
+
 tracking_kpis = [
-    train_loss_cpu_kpi,
+    cpu_epoch_time_kpi,
+    cpu_mean_mmoe_test_auc_income_kpi,
+    cpu_mean_mmoe_test_auc_marital_kpi,
+    cpu_max_mmoe_test_auc_income_kpi,
+    cpu_max_mmoe_test_auc_marital_kpi
 ]
 
 
