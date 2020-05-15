@@ -4,7 +4,7 @@ export PYTHONPATH=`pwd`:$PYTHONPATH
 #train/eval/infer/export
 train_model(){
     export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
-    python -u tools/train.py -c ${config_dir}/${model}.yml --enable_ce=True -o max_iters=${max_iters} TrainReader.shuffle=false --eval >${model}_log 2>&1
+    python -u tools/train.py -c ${config_dir}/${model}.yml --enable_ce=True -o max_iters=${max_iters} TrainReader.shuffle=false --snapshot_iter=100 --eval >${model}_log 2>&1
     sed -i "s/'loss'/'${model}_loss'/g" ${model}_log
     sed -i "s/time/${model}_time /g" ${model}_log
     cat ${model}_log | grep "loss" | tail -1 | tr "," " " | tr "'" " "| python _ce.py
