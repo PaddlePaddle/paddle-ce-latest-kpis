@@ -4,14 +4,31 @@ export PYTHONPATH=`pwd`:$PYTHONPATH
 #train/eval/infer/export
 train_model(){
     export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
-    python -u tools/train.py -c ${config_dir}/${model}.yml --enable_ce=True -o max_iters=${max_iters} TrainReader.shuffle=false --snapshot_iter=100 --eval >${model}_log 2>&1
+    python -u tools/train.py \
+              -c ${config_dir}/${model}.yml \
+              --enable_ce=True \
+              -o max_iters=${max_iters} \
+              TrainReader.shuffle=false  >${model}_log 2>&1
     sed -i "s/'loss'/'${model}_loss'/g" ${model}_log
     sed -i "s/time/${model}_time /g" ${model}_log
     cat ${model}_log | grep "loss" | tail -1 | tr "," " " | tr "'" " "| python _ce.py
 }
+train_with_eval(){
+    export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+    python -u tools/train.py \
+              -c ${config_dir}/${model}.yml \
+              -o max_iters=20 snapshot_iter=20 --eval >${model}_train_with_eval_log 2>&1
+    if [ $? -ne 0 ];then
+        echo -e "${model},train_with_eval,FAIL"
+    else
+        echo -e "${model},train_with_eval,SUCCESS"
+    fi
+}
 eval_model(){
     export CUDA_VISIBLE_DEVICES=0
-    python tools/${eval_method}.py -c ${config_dir}/${model}.yml -o weights=https://paddlemodels.bj.bcebos.com/object_detection/${model}.tar >${model}_eval_log 2>&1
+    python tools/${eval_method}.py \
+           -c ${config_dir}/${model}.yml \
+           -o weights=https://paddlemodels.bj.bcebos.com/object_detection/${model}.tar >${model}_eval_log 2>&1
     if [ $? -ne 0 ];then
         echo -e "${model},eval,FAIL"
     else
@@ -19,7 +36,11 @@ eval_model(){
     fi
 }
 infer_model(){
-    python tools/infer.py -c ${config_dir}/${model}.yml --infer_img=demo/000000570688.jpg --output_dir=${model} -o weights=https://paddlemodels.bj.bcebos.com/object_detection/${model}.tar >${model}_infer_log 2>&1
+    python tools/infer.py \
+           -c ${config_dir}/${model}.yml \
+           --infer_img=demo/000000570688.jpg \
+           --output_dir=${model} \
+           -o weights=https://paddlemodels.bj.bcebos.com/object_detection/${model}.tar >${model}_infer_log 2>&1
     if [ $? -ne 0 ];then
         echo -e "${model},infer,FAIL"
     else
@@ -53,8 +74,8 @@ else
     eval_method=eval
 fi
 train_model
+train_with_eval
 eval_model
 infer_model
 export_model
 done
-
