@@ -96,7 +96,7 @@ TRAIN.SYNC_BATCH_NORM False \
 SOLVER.LR 0.0001 \
 TRAIN.SNAPSHOT_EPOCH 1 \
 SOLVER.NUM_EPOCHS 1 \
-BATCH_SIZE 16
+BATCH_SIZE 8
 }
 CUDA_VISIBLE_DEVICES=${cudaid1} seg_quan_Deeplabv3_v2 1>seg_quan_Deeplabv3_v2_1card 2>&1
 cat seg_quan_Deeplabv3_v2_1card |grep image=500 |awk -F ' |=' 'END{print "kpis\tseg_quan_Dv3_v2_acc_1card\t"$4"\tkpis\tseg_quan_Dv3_v2_IoU_1card\t"$6}' | python _ce.py

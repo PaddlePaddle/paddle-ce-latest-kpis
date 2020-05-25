@@ -7,4 +7,9 @@ python setup.py install
 if [ -d "demo/data" ];then rm -rf demo/data
 fi
 ln -s ${dataset_path}/slim/data demo/data
+if [ -d "demo/pretrain" ];then
+   rm -rf demo/pretrain
+fi
+ln -s ${dataset_path}/slim/slim_pretrain demo/pretrain
+
 ./.run_ce.sh
