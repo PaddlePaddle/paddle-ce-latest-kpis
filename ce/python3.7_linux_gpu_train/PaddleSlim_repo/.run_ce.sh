@@ -52,12 +52,6 @@ cudaid8=${card8:=0,1,2,3,4,5,6,7} # use 0-th card as default
 cudaid2=${card2:=2,3} # use 0-th card as default
 
 #————————————————————————————————————————————————
-cd ${current_dir}
-if [ -d "demo/pretrain" ];then
-   rm -rf demo/pretrain
-fi
-ln -s ${dataset_path}/slim/slim_repo_pretrain demo/pretrain
-
 # 1 distillation
 cd ${current_dir}/demo/distillation
 dist_student=(MobileNet ResNet50 MobileNetV2_x0_25)
