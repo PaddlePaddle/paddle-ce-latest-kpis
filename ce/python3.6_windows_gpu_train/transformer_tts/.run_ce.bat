@@ -5,7 +5,17 @@ set FLAGS_fast_eager_deletion_mode=1
 
 set CUDA_VISIBLE_DEVICES=0
 rem train transformer
-python train_transformer.py --use_gpu=1 --use_data_parallel=0 --data_path=data/LJSpeech-1.1 --config_path=configs/train_transformer.yaml --batch_size 16 --epoch 1 > %log_path%/transformer_tts_train.log 2>&1
+if exist experiment (rd /s /q experiment)
+if exist vocoder (rd /s /q vocoder)
+
+set sed="C:\Program Files\Git\usr\bin\sed.exe"
+%sed% -i s/"  max_epochs: 10000"/"  max_epochs: 1"/g configs/ljspeech.yaml
+%sed% -i s/"  image_interval: 2000"/"  image_interval: 800"/g configs/ljspeech.yaml
+%sed% -i s/"  checkpoint_interval: 1000"/"  checkpoint_interval: 800"/g configs/ljspeech.yaml
+%sed% -i s/"  batch_size: 32"/"  batch_size: 16"/g configs/ljspeech.yaml
+
+rem train transformer
+python train_transformer.py --use_gpu=1 --data=data/LJSpeech-1.1/ --output=./experiment --config=configs/ljspeech.yaml  > %log_path%/transformer_tts_train.log 2>&1
 if not %errorlevel% == 0 (
         move  %log_path%\transformer_tts_train.log  %log_path%\FAIL\transformer_tts_train.log
         echo   transformer_tts,train,FAIL  >> %log_path%\result.log
@@ -16,7 +26,7 @@ if not %errorlevel% == 0 (
         echo   train of transformer_tts successfully!
 )
 rem train vocoder
-python train_vocoder.py --use_gpu=1 --use_data_parallel=0 --data_path=data/LJSpeech-1.1 --config_path=configs/train_transformer.yaml --epochs=1 --batch_size 16 > %log_path%/transformer_vocoder_train.log 2>&1
+python train_vocoder.py --use_gpu=1 --data=data/LJSpeech-1.1/ --output=./vocoder --config=configs/ljspeech.yaml > %log_path%/transformer_vocoder_train.log 2>&1
 if not %errorlevel% == 0 (
         move  %log_path%\transformer_vocoder_train.log  %log_path%\FAIL\transformer_vocoder_train.log
         echo   transformer_vocoder,train,FAIL  >> %log_path%\result.log
@@ -27,7 +37,7 @@ if not %errorlevel% == 0 (
         echo   train of transformer_vocoder successfully!
 )
 rem synthesis
-python synthesis.py --max_len=50 --transformer_step=500 --vocoder_step=500 --use_gpu=1 --checkpoint_path=./checkpoint --sample_path=./sample  --config_path=configs/synthesis.yaml > %log_path%/transformer_tts_synthesis.log 2>&1
+python synthesis.py --max_len=300  --use_gpu=1 --output=./synthesis --config=configs/ljspeech.yaml --checkpoint_transformer=./experiment/checkpoints/step-800 --checkpoint_vocoder=./vocoder/checkpoints/step-800 > %log_path%/transformer_tts_synthesis.log 2>&1
 if not %errorlevel% == 0 (
         move  %log_path%\transformer_tts_synthesis.log  %log_path%\FAIL\transformer_tts_synthesis.log
         echo   transformer_tts,synthesis,FAIL  >> %log_path%\result.log
