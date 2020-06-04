@@ -182,10 +182,10 @@ print_info $? ${model}
 model=quant_post_eval2
 CUDA_VISIBLE_DEVICES=${cudaid1} python eval.py --model_path ./quant_model_train/MobileNet >${log_path}/${model} 2>&1
 print_info $? ${model}
-#for lite uncombined
-mkdir slim_quan_MobileNet_post_2_uncombined
-cp ./quant_model_train/MobileNet/* ./slim_quan_MobileNet_post_2_uncombined/
-copy_for_lite slim_quan_MobileNet_post_2_uncombined ${models_from_train}
+#for lite combined
+mkdir slim_quan_MobileNet_post_2_combined
+cp ./quant_model_train/MobileNet/* ./slim_quan_MobileNet_post_2_combined/
+copy_for_lite slim_quan_MobileNet_post_2_combined ${models_from_train}
 
 
 # 3 prune ResNet50
