@@ -188,4 +188,11 @@ model=seg_nas_train_8card
 CUDA_VISIBLE_DEVICES=${cudaid8} nas_train 23333 > ${model} 2>&1
 print_info $? ${model}
 
-
+# tar models_from_train for lite
+cd $(dirname ${models_from_train})
+pwd
+if [ "$(ls -A $PWD)" ];then
+   tar -czf models_from_train.tar.gz models_from_train
+else
+   echo "models_from_train tar fail"
+fi

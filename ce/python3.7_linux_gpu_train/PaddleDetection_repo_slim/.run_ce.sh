@@ -3,9 +3,10 @@
 rm -rf *_factor.txt
 export current_dir=$PWD
 #  for lite models path
-if [ ! -d "/ssd2/models_from_train" ];then
-	mkdir /ssd2/models_from_train
+if [ -d "/ssd2/models_from_train" ];then
+	rm -rf /ssd2/models_from_train
 fi
+mkdir /ssd2/models_from_train
 export models_from_train=/ssd2/models_from_train
 
 print_info()
@@ -220,13 +221,6 @@ delete_models=(dete_quan_yolov3_r34_combined dete_quan_yolov3_r50vd_dcn_obj365_p
 for model_name in ${delete_models};do
     rm -rf ${models_from_train}/${model_name}.tar.gz
 done
-# tar models_from_train for lite
-cd $(dirname ${models_from_train})
-pwd
-if [ "$(ls -A $PWD)" ];then
-   tar -czf models_from_train.tar.gz models_from_train
-else
-   echo "models_from_train tar fail"
-fi
+
 
 
