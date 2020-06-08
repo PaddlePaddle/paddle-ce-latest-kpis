@@ -190,7 +190,7 @@ python infer.py \
 model_list='CGAN DCGAN CycleGAN SPADE AttGAN StarGAN STGAN Pix2pix'
 for model in ${model_list}
 do
-export CUDA_VISIBLE_DEVICES=7
+export CUDA_VISIBLE_DEVICES=0
 train_${model} > log_${model} 2>&1
 if [[ ${model} == CGAN || ${model} == DCGAN ]];then
 cat log_${model} | grep "loss" | tail -1 | awk '{print "kpis\t""'$model'""_dloss\t"$8"\nkpis\t""'$model'""_gloss\t"$10"\nkpis\t""'$model'""_time\t"$12}' | python _ce.py
@@ -211,7 +211,7 @@ done
 #infer
 for model in ${model_list}
 do
-export CUDA_VISIBLE_DEVICES=7
+export CUDA_VISIBLE_DEVICES=0
 infer_${model} >infer_${model} 2>&1
 if [ $? -ne 0 ];then
     echo -e "${model},infer,FAIL"
