@@ -9,12 +9,11 @@ fi
 mkdir /ssd2/models_from_train
 export models_from_train=/ssd2/models_from_train
 
-print_info()
-{
+print_info(){
 if [ $1 -ne 0 ];then
-	echo -e "----$2,FAIL----"
+    echo -e "\033[31m $2_FAIL \033[0m"
 else
-	echo -e "----$2,SUCCESS----"
+    echo -e "\033[32m $2_SUCCESS \033[0m"
 fi
 }
 #copy_for_lite ${model_name} ${models_from_train}
@@ -25,9 +24,9 @@ fi
 if [ "$(ls -A $1)" ];then
    tar -czf $1.tar.gz $1
    cp $1.tar.gz $2/
-   echo "-----$1 copy for lite SUCCESS-----"
+   echo "\033[32m -----$1 copy for lite SUCCESS----- \033[0m"
 else
-   echo "-----$1 is empty-----"
+   echo "\033[31m -----$1 is empty----- \033[0m"
 fi
 }
 cudaid1=${card1:=2} # use 0-th card as default

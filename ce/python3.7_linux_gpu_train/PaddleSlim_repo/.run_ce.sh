@@ -6,16 +6,6 @@ if [ ! -d "/ssd2/models_from_train" ];then
 	mkdir /ssd2/models_from_train
 fi
 export models_from_train=/ssd2/models_from_train
-
-#set result dir___________________________________
-if [ ! -d "result" ];then
-	mkdir result
-fi
-result_path=${current_dir}"/result"
-cd ${result_path}
-if [ -d "result.log" ];then
-	rm -rf result.log
-fi
 #set log dir
 cd ${current_dir}
 if [ -d "ce_logs" ];then
@@ -27,11 +17,11 @@ mkdir FAIL
 log_path=${current_dir}"/ce_logs"
 print_info(){
 if [ $1 -ne 0 ];then
-    mv ${log_path}/$2 ${log_path}/FAIL/$2
-	echo -e "-----$2,FAIL-----" >>${result_path}/result.log;
+    mv ${log_path}/$2 ${log_path}/$2_FAIL
+    echo -e "\033[31m ${log_path}/$2_FAIL \033[0m"
 else
-    mv ${log_path}/$2 ${log_path}/SUCCESS/$2
-	echo -e "-----$2,SUCCESS-----" >>${result_path}/result.log
+    mv ${log_path}/$2 ${log_path}/$2_SUCCESS
+    echo -e "\033[32m ${log_path}/$2_SUCCESS \033[0m"
 fi
 }
 #copy_for_lite ${model_name} ${models_from_train}
@@ -42,14 +32,14 @@ fi
 if [ "$(ls -A $1)" ];then
    tar -czf $1.tar.gz $1
    cp $1.tar.gz $2/
-   echo "-----$1 copy for lite SUCCESS-----"
+   echo "\033[32m -----$1 copy for lite SUCCESS----- \033[0m"
 else
-   echo "-----$1 is empty-----"
+   echo "\033[31m -----$1 is empty----- \033[0m"
 fi
 }
 cudaid1=${card1:=2} # use 0-th card as default
 cudaid8=${card8:=0,1,2,3,4,5,6,7} # use 0-th card as default
-cudaid2=${card2:=2,3} # use 0-th card as default
+cudaid4=${card4:=0,1,2,3} # use 0-th card as default
 
 #————————————————————————————————————————————————
 # 1 distillation
@@ -180,15 +170,105 @@ CUDA_VISIBLE_DEVICES=${cudaid1} python eval.py --model_path ./inference_model/Mo
 print_info $? ${model}
 # after quan eval
 model=quant_post_eval2
-CUDA_VISIBLE_DEVICES=${cudaid1} python eval.py --model_path ./quant_model_train/MobileNet >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} python eval.py --model_path ./quant_model_train/MobileNet --model_name __model__ --params_name __params__ >${log_path}/${model} 2>&1
 print_info $? ${model}
 #for lite combined
 mkdir slim_quan_MobileNet_post_2_combined
 cp ./quant_model_train/MobileNet/* ./slim_quan_MobileNet_post_2_combined/
 copy_for_lite slim_quan_MobileNet_post_2_combined ${models_from_train}
 
+#3.1 prune MobileNetV1
+cd ${current_dir}/demo/prune
+CUDA_VISIBLE_DEVICES=${cudaid1} python train.py --model "MobileNet" --pruned_ratio 0.31 --data "imagenet" --pretrained_model ../pretrain/MobileNetV1_pretrained/ --num_epochs 1 --save_inference True >${current_dir}/prune_v1_T_1card 2>&1
+cd ${current_dir}
+cat prune_v1_T_1card |grep Final |awk -F ' ' 'END{print "kpis\tprune_v1_acc_top1_gpu1\t"$8"\nkpis\tprune_v1_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
+cd ${current_dir}/demo/prune
+CUDA_VISIBLE_DEVICES=${cudaid8} python train.py --model "MobileNet" --pruned_ratio 0.31 --data "imagenet" --pretrained_model ./MobileNetV1_pretrained/ --num_epochs 1  --save_inference True >${current_dir}/prune_v1_T_8card 2>&1
+# for lite uncombined
+mkdir slim_prune_MobileNetv1_uncombined
+cp ./models/infer_models/0/* ./slim_prune_MobileNetv1_uncombined/
+copy_for_lite slim_prune_MobileNetv1_uncombined ${models_from_train}
+cd ${current_dir}
+cat prune_v1_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_v1_acc_top1_gpu8\t"$8"\nkpis\tprune_v1_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
+# 3.2 prune eval
+cd ${current_dir}/demo/prune
+model=slim_prune_eval
+python eval.py --model "MobileNet" --data "imagenet" --model_path "./models/0"  >${log_path}/${model} 2>&1
+print_info $? ${model}
+if [ -d "models" ];then
+    mv  models MobileNet_models
+fi
 
-# 3 prune ResNet50
+#3.2 prune_fpgm
+cd ${current_dir}/demo/prune
+slim_prune_fpgm_v1 (){
+python train.py \
+    --model="MobileNet" \
+    --pretrained_model="../pretrain/MobileNetV1_pretrained" \
+    --data="imagenet" \
+    --pruned_ratio=0.3125 \
+    --lr=0.1 \
+    --num_epochs=1 \
+    --test_period=1 \
+    --step_epochs 30 60 90\
+    --l2_decay=3e-5 \
+    --lr_strategy="piecewise_decay" \
+    --criterion="geometry_median" \
+    --model_path="./fpgm_mobilenetv1_models" \
+    --save_inference True
+}
+CUDA_VISIBLE_DEVICES=${cudaid1} slim_prune_fpgm_v1 >${current_dir}/slim_prune_fpgm_v1_f50_T_1card 2>&1
+cd ${current_dir}
+cat slim_prune_fpgm_v1_f50_T_1card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v1_f50_acc_top1_gpu1\t"$8"\nkpis\tprune_fpgm_v1_f50_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
+cd ${current_dir}/demo/prune
+CUDA_VISIBLE_DEVICES=${cudaid8} slim_prune_fpgm_v1 >${current_dir}/slim_prune_fpgm_v1_f50_T_8card 2>&1
+# for lite uncombined
+mkdir slim_prune_fpgm_v1_f50_uncombined
+cp ./fpgm_mobilenetv1_models/infer_models/0/* ./slim_prune_fpgm_v1_f50_uncombined/
+copy_for_lite slim_prune_fpgm_v1_f50_uncombined ${models_from_train}
+cd ${current_dir}
+cat slim_prune_fpgm_v1_f50_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v1_f50_acc_top1_gpu8\t"$8"\nkpis\tprune_fpgm_v1_f50_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
+# 3.2.2 prune eval
+cd ${current_dir}/demo/prune
+model=slim_prune_fpgm_v1_eval
+python eval.py --model "MobileNet" --data "imagenet" --model_path "./fpgm_mobilenetv1_models/0"  >${log_path}/${model} 2>&1
+print_info $? ${model}
+
+cd ${current_dir}/demo/prune
+slim_prune_fpgm_resnet34(){
+python train.py \
+    --model="ResNet34" \
+    --pretrained_model="../pretrain/ResNet34_pretrained" \
+    --data="imagenet" \
+    --pruned_ratio=0.3125 \
+    --lr=0.001 \
+    --num_epochs=1 \
+    --test_period=1 \
+    --step_epochs 30 60 \
+    --l2_decay=1e-4 \
+    --lr_strategy="piecewise_decay" \
+    --criterion="geometry_median" \
+    --model_path="./fpgm_resnet34_models" \
+    --save_inference True
+}
+CUDA_VISIBLE_DEVICES=${cudaid1} slim_prune_fpgm_resnet34 >${current_dir}/slim_prune_fpgm_resnet34_f50_T_1card 2>&1
+cd ${current_dir}
+cat slim_prune_fpgm_resnet34_f50_T_1card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_resnet34_f50_acc_top1_gpu1\t"$8"\nkpis\tprune_fpgm_resnet34_f50_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
+cd ${current_dir}/demo/prune
+CUDA_VISIBLE_DEVICES=${cudaid8} slim_prune_fpgm_v1 >${current_dir}/slim_prune_fpgm_resnet34_f50_T_8card 2>&1
+# for lite uncombined
+mkdir slim_prune_fpgm_resnet34_f50_uncombined
+cp ./fpgm_resnet34_models/infer_models/0/* ./slim_prune_fpgm_resnet34_f50_uncombined/
+copy_for_lite slim_prune_fpgm_resnet34_f50_uncombined ${models_from_train}
+cd ${current_dir}
+cat slim_prune_fpgm_resnet34_f50_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_resnet34_f50_acc_top1_gpu8\t"$8"\nkpis\tprune_fpgm_resnet34_f50_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
+# 3.2.2 prune eval
+cd ${current_dir}/demo/prune
+model=slim_prune_fpgm_resnet34_eval
+python eval.py --model "ResNet34" --data "imagenet" --model_path "./fpgm_resnet34_models/0"  >${log_path}/${model} 2>&1
+print_info $? ${model}
+
+# 3.3 prune ResNet50
 cd ${current_dir}/demo/prune
 prune_models=(ResNet50)
 train_prune(){
@@ -223,27 +303,6 @@ for i in $(seq 0 0); do
 	    mv  models ${prune_models[$i]}_models
     fi
 done
-#prune MobileNetV1
-cd ${current_dir}/demo/prune
-CUDA_VISIBLE_DEVICES=${cudaid1} python train.py --model "MobileNet" --pruned_ratio 0.31 --data "imagenet" --pretrained_model ../pretrain/MobileNetV1_pretrained/ --num_epochs 1 --save_inference True >${current_dir}/prune_v1_T_1card 2>&1
-cd ${current_dir}
-cat prune_v1_T_1card |grep Final |awk -F ' ' 'END{print "kpis\tprune_v1_acc_top1_gpu1\t"$8"\nkpis\tprune_v1_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
-cd ${current_dir}/demo/prune
-CUDA_VISIBLE_DEVICES=${cudaid8} python train.py --model "MobileNet" --pruned_ratio 0.31 --data "imagenet" --pretrained_model ./MobileNetV1_pretrained/ --num_epochs 1  --save_inference True >${current_dir}/prune_v1_T_8card 2>&1
-# for lite uncombined
-mkdir slim_prune_MobileNetv1_uncombined
-cp ./models/infer_models/0/* ./slim_prune_MobileNetv1_uncombined/
-copy_for_lite slim_prune_MobileNetv1_uncombined ${models_from_train}
-cd ${current_dir}
-cat prune_v1_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_v1_acc_top1_gpu8\t"$8"\nkpis\tprune_v1_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
-# 3.2 prune eval
-cd ${current_dir}/demo/prune
-model=slim_prune_eval
-python eval.py --model "MobileNet" --data "imagenet" --model_path "./models/0"  >${log_path}/${model} 2>&1
-print_info $? ${model}
-if [ -d "models" ];then
-    mv  models MobileNet_models
-fi
 #4 nas
 # 4.1 sa_nas_mobilenetv2
 cd ${current_dir}/demo/nas
@@ -270,58 +329,64 @@ model=rl_nas_v2_T_8card
 CUDA_VISIBLE_DEVICES=${cudaid8} python rl_nas_mobilenetv2.py --search_steps 1 --port 8886 >${log_path}/${model} 2>&1
 print_info $? ${model}
 
+# 4.4 parl_nas
+model=parl_nas_v2_T_1card
+CUDA_VISIBLE_DEVICES=${cudaid1} python parl_nas_mobilenetv2.py --search_steps 1 --port 8887 >${log_path}/${model} 2>&1
+print_info $? ${model}
+model=parl_nas_v2_T_8card
+CUDA_VISIBLE_DEVICES=${cudaid8} python parl_nas_mobilenetv2.py --search_steps 1 --port 8889 >${log_path}/${model} 2>&1
+print_info $? ${model}
+
 # 5 darts
 # search 1card # DARTS一阶近似搜索方法
 cd ${current_dir}/demo/darts
 model=darts1_search_1card
-CUDA_VISIBLE_DEVICES=${cudaid1} python search.py --epochs 2 --use_multiprocess False >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} python search.py --epochs 1 --use_multiprocess False >${log_path}/${model} 2>&1
 print_info $? ${model}
 model=darts1_search_8card
-CUDA_VISIBLE_DEVICES=${cudaid8} python search.py --epochs 2 --use_multiprocess False >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid8} python search.py --epochs 1 --use_multiprocess False >${log_path}/${model} 2>&1
 print_info $? ${model}
 # # DARTS 二阶近似搜索方法
 model=darts2_search_1card
-CUDA_VISIBLE_DEVICES=${cudaid1} python search.py --epochs 2 --unrolled=True --use_multiprocess False >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} python search.py --epochs 1 --unrolled=True --use_multiprocess False >${log_path}/${model} 2>&1
 print_info $? ${model}
 model=darts2_search_8card
-CUDA_VISIBLE_DEVICES=${cudaid8} python search.py --epochs 2 --unrolled=True --use_multiprocess False >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid8} python search.py --epochs 1 --unrolled=True --use_multiprocess False >${log_path}/${model} 2>&1
 print_info $? ${model}
 # PC-DARTS
 model=pcdarts_search_1card
-CUDA_VISIBLE_DEVICES=${cudaid1} python search.py --epochs 2 --method='PC-DARTS' --use_multiprocess False --batch_size=256 --learning_rate=0.1 --arch_learning_rate=6e-4 --epochs_no_archopt=15 >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} python search.py --epochs 1 --method='PC-DARTS' --use_multiprocess False --batch_size=256 --learning_rate=0.1 --arch_learning_rate=6e-4 --epochs_no_archopt=15 >${log_path}/${model} 2>&1
 print_info $? ${model}
 model=pcdarts_search_8card
-CUDA_VISIBLE_DEVICES=${cudaid8} python search.py --epochs 2 --method='PC-DARTS' --use_multiprocess False --batch_size=256 --learning_rate=0.1 --arch_learning_rate=6e-4 --epochs_no_archopt=15 >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid8} python search.py --epochs 1 --method='PC-DARTS' --use_multiprocess False --batch_size=256 --learning_rate=0.1 --arch_learning_rate=6e-4 --epochs_no_archopt=15 >${log_path}/${model} 2>&1
 print_info $? ${model}
 # 分布式 search
 model=darts1_search_distributed
-python -m paddle.distributed.launch --selected_gpus=${cudaid8} --log_dir ./mylog_search  search.py --use_data_parallel 1 --epochs 2 --use_multiprocess False >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch --selected_gpus=0,1,2,3 --log_dir ./mylog_search  search.py --use_data_parallel 1 --epochs 1 --use_multiprocess False >${log_path}/${model} 2>&1
 print_info $? ${model}
 model=darts2_search_distributed
-python -m paddle.distributed.launch --selected_gpus=${cudaid8} --log_dir ./mylog_search  search.py --use_data_parallel 1 --epochs 2 --unrolled=True --use_multiprocess False >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch --selected_gpus=0,1,2,3 --log_dir ./mylog_search  search.py --use_data_parallel 1 --epochs 1 --unrolled=True --use_multiprocess False >${log_path}/${model} 2>&1
 print_info $? ${model}
 model=pcdarts_search_distributed
-python -m paddle.distributed.launch --selected_gpus=${cudaid8} --log_dir ./mylog_search  search.py --use_data_parallel 1 --epochs 2 --use_multiprocess False --epochs 2 --method='PC-DARTS' --use_multiprocess False --batch_size=256 --learning_rate=0.1 --arch_learning_rate=6e-4 --epochs_no_archopt=15 >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch --selected_gpus=0,1,2,3 --log_dir ./mylog_search  search.py --use_data_parallel 1 --epochs 1 --use_multiprocess False --epochs 1 --method='PC-DARTS' --use_multiprocess False --batch_size=256 --learning_rate=0.1 --arch_learning_rate=6e-4 --epochs_no_archopt=15 >${log_path}/${model} 2>&1
 print_info $? ${model}
 #train
 model=pcdarts_train_1card
-CUDA_VISIBLE_DEVICES=${cudaid1} python train.py --arch='PC_DARTS' --epochs 2 --use_multiprocess False >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} python train.py --arch='PC_DARTS' --epochs 1 --use_multiprocess False >${log_path}/${model} 2>&1
 print_info $? ${model}
 model=pcdarts_train_imagenet_8card
-CUDA_VISIBLE_DEVICES=${cudaid8} python train_imagenet.py --arch='PC_DARTS' --epochs 2 --use_multiprocess False --data_dir ../data/ILSVRC2012 >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid8} python train_imagenet.py --arch='PC_DARTS' --epochs 1 --use_multiprocess False --data_dir ../data/ILSVRC2012 >${log_path}/${model} 2>&1
 print_info $? ${model}
 # 分布式 train
 model=dartsv2_train_distributed
-python -m paddle.distributed.launch --selected_gpus=3,4,5,6  --log_dir ./mylog_train train.py --use_data_parallel 1 --arch='DARTS_V2' >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch --selected_gpus=0,1,2,3 --log_dir ./mylog_train train.py --use_data_parallel 1 --arch='DARTS_V2' >${log_path}/${model} 2>&1
 print_info $? ${model}
 model=dartsv2_train_imagenet_distributed
-python -m paddle.distributed.launch --selected_gpus=3,4,5,6  --log_dir ./mylog_train_imagenet train_imagenet.py --use_data_parallel 1 --arch='DARTS_V2' --data_dir ../data/ILSVRC2012 >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch --selected_gpus=0,1,2,3 --log_dir ./mylog_train_imagenet train_imagenet.py --use_data_parallel 1 --arch='DARTS_V2' --data_dir ../data/ILSVRC2012 >${log_path}/${model} 2>&1
 print_info $? ${model}
 # 可视化
+yum -y install graphviz
 model=slim_darts_visualize_pcdarts
 python visualize.py PC_DARTS > ${log_path}/${model} 2>&1
 print_info $? ${model}
-
-
-cat ${result_path}/result.log
 

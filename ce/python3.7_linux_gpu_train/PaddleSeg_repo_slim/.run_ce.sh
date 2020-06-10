@@ -8,12 +8,11 @@ if [ ! -d "/ssd2/models_from_train" ];then
 fi
 export models_from_train=/ssd2/models_from_train
 
-print_info()
-{
+print_info(){
 if [ $1 -ne 0 ];then
-	echo -e "----$2,FAIL----"
+    echo -e "\033[31m $2_FAIL \033[0m"
 else
-	echo -e "----$2,SUCCESS----"
+    echo -e "\033[32m $2_SUCCESS \033[0m"
 fi
 }
 #copy_for_lite ${model_name} ${models_from_train}
@@ -24,14 +23,14 @@ fi
 if [ "$(ls -A $1)" ];then
    tar -czf $1.tar.gz $1
    cp $1.tar.gz $2/
-   echo "-----$1 copy for lite SUCCESS-----"
+   echo "\033[32m -----$1 copy for lite SUCCESS----- \033[0m"
 else
-   echo "-----$1 is empty-----"
+   echo "\033[31m -----$1 is empty----- \033[0m"
 fi
 }
 cudaid1=${card1:=2} # use 0-th card as default
 cudaid8=${card8:=0,1,2,3,4,5,6,7} # use 0-th card as default
-cudaid2=${card8:=2,3} # use 0-th card as default
+cudaid2=${card2:=2,3} # use 0-th card as default
 ####################################################
 export PYTHONPATH=$PYTHONPATH:./pdseg
 # 1 distillation
@@ -57,7 +56,7 @@ cat seg_dist_Dv3_xception_mobilenet_8card |grep image=500 |awk -F ' |=' 'END{pri
 
 # 1.2  dist export
 model=dist_Dv3_xception_mobilenet_export
-cudaid1=${card1:=2} python pdseg/export_model.py --cfg ./slim/distillation/cityscape.yaml \
+CUDA_VISIBLE_DEVICES=${cudaid1} python pdseg/export_model.py --cfg ./slim/distillation/cityscape.yaml \
 TEST.TEST_MODEL ./snapshots/cityscape_mbv2_kd_e100_1/final >${model} 2>&1
 print_info $? ${model}
 #infer
@@ -105,8 +104,7 @@ cat seg_quan_Deeplabv3_v2_8card |grep image=500 |awk -F ' |=' 'END{print "kpis\t
 
 # 2.2  seg quan export
 model=seg_quan_Dv3_v2_export
-CUDA_VISIBLE_DEVICES=${cudaid1}
-python -u ./slim/quantization/export_model.py \
+CUDA_VISIBLE_DEVICES=${cudaid1} python -u ./slim/quantization/export_model.py \
 --not_quant_pattern last_conv  \
 --cfg configs/deeplabv3p_mobilenetv2_cityscapes.yaml  \
 TEST.TEST_MODEL "./snapshots/mobilenetv2_quant/best_model" \
@@ -119,7 +117,7 @@ print_info $? ${model}
 # 2.3 quan infer
 # infer environment
 model=seg_quan_Dv3_v2_infer
-python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
+CUDA_VISIBLE_DEVICES=${cudaid1} python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
 --input_dir=./test_img --use_pr=False >${model} 2>&1
 print_info $? ${model}
 # for lite
@@ -190,9 +188,10 @@ print_info $? ${model}
 
 # tar models_from_train for lite
 cd $(dirname ${models_from_train})
-pwd
-if [ "$(ls -A $PWD)" ];then
+echo $PWD
+if [ "$(ls -A ${models_from_train})" ];then
    tar -czf models_from_train.tar.gz models_from_train
+   echo "\033[32m -----models_from_train tar SUCCESS----- \033[0m"
 else
-   echo "models_from_train tar fail"
+   echo "\033[31m -----models_from_train is empty----- \033[0m"
 fi
