@@ -9,12 +9,11 @@ fi
 mkdir /ssd2/models_from_train
 export models_from_train=/ssd2/models_from_train
 
-print_info()
-{
+print_info(){
 if [ $1 -ne 0 ];then
-	echo -e "----$2,FAIL----"
+    echo -e "\033[31m $2_FAIL \033[0m"
 else
-	echo -e "----$2,SUCCESS----"
+    echo -e "\033[32m $2_SUCCESS \033[0m"
 fi
 }
 #copy_for_lite ${model_name} ${models_from_train}
@@ -25,14 +24,14 @@ fi
 if [ "$(ls -A $1)" ];then
    tar -czf $1.tar.gz $1
    cp $1.tar.gz $2/
-   echo "-----$1 copy for lite SUCCESS-----"
+   echo "\033[32m -----$1 copy for lite SUCCESS----- \033[0m"
 else
-   echo "-----$1 is empty-----"
+   echo "\033[31m -----$1 is empty----- \033[0m"
 fi
 }
 cudaid1=${card1:=2} # use 0-th card as default
 cudaid8=${card8:=0,1,2,3,4,5,6,7} # use 0-th card as default
-cudaid2=${card8:=2,3} # use 0-th card as default
+cudaid2=${card2:=2,3} # use 0-th card as default
 #######################################################
 export PYTHONPATH=`pwd`:$PYTHONPATH
 # 1 distillation
@@ -184,7 +183,7 @@ for i in $(seq 0 2); do
     -c configs/${prune_models[$i]}.yml \
     --pruned_params "yolo_block.0.0.0.conv.weights,yolo_block.0.0.1.conv.weights,yolo_block.0.1.0.conv.weights" \
     --pruned_ratios="0.2,0.3,0.4" >${model}_${prune_models[$i]} 2>&1
-print_info $? ${model}_${prune_models[$i]} 2>&1
+print_info $? ${model}_${prune_models[$i]}
 done
 #3.3 prune export
 model=dete_prune_export
@@ -193,7 +192,7 @@ for i in $(seq 0 2); do
     -c configs/${prune_models[$i]}.yml \
     --pruned_params "yolo_block.0.0.0.conv.weights,yolo_block.0.0.1.conv.weights,yolo_block.0.1.0.conv.weights" \
     --pruned_ratios="0.2,0.3,0.4" >${model}_${prune_models[$i]} 2>&1
-print_info $? ${model}_${prune_models[$i]} 2>&1
+print_info $? ${model}_${prune_models[$i]}
 # for lite
 mkdir dete_prune_${prune_models[$i]}_combined
 cp output/${prune_models[$i]}/__model__ ./dete_prune_${prune_models[$i]}_combined/
@@ -221,6 +220,3 @@ delete_models=(dete_quan_yolov3_r34_combined dete_quan_yolov3_r50vd_dcn_obj365_p
 for model_name in ${delete_models};do
     rm -rf ${models_from_train}/${model_name}.tar.gz
 done
-
-
-

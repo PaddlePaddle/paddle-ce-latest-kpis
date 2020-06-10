@@ -4,6 +4,7 @@ export slim_dir=$PWD/../../slim_repo
 cp -r ${slim_dir}/. ./
 pip install -r requirements.txt
 python setup.py install
+pip install parl
 if [ -d "demo/data" ];then rm -rf demo/data
 fi
 ln -s ${dataset_path}/slim/data demo/data
