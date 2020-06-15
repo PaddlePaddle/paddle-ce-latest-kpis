@@ -47,7 +47,8 @@ python -m paddle.distributed.launch ./slim/distillation/train_distill.py \
 --cfg ./slim/distillation/cityscape.yaml \
 --teacher_cfg ./slim/distillation/cityscape_teacher.yaml \
 --use_gpu \
---do_eval
+--do_eval \
+ATCH_SIZE 7
 }
 CUDA_VISIBLE_DEVICES=${cudaid1} seg_dist_Dv3_xception_mobilenet 1>seg_dist_Dv3_xception_mobilenet_1card 2>&1
 cat seg_dist_Dv3_xception_mobilenet_1card |grep image=500 |awk -F ' |=' 'END{print "kpis\tseg_dist_Dv3_xception_mobilenet_acc_1card\t"$4"\tkpis\tseg_dist_Dv3_xception_mobilenet_IoU_1card\t"$6}' | python _ce.py
@@ -95,7 +96,7 @@ TRAIN.SYNC_BATCH_NORM False \
 SOLVER.LR 0.0001 \
 TRAIN.SNAPSHOT_EPOCH 1 \
 SOLVER.NUM_EPOCHS 1 \
-BATCH_SIZE 8
+BATCH_SIZE 7
 }
 CUDA_VISIBLE_DEVICES=${cudaid1} seg_quan_Deeplabv3_v2 1>seg_quan_Deeplabv3_v2_1card 2>&1
 cat seg_quan_Deeplabv3_v2_1card |grep image=500 |awk -F ' |=' 'END{print "kpis\tseg_quan_Dv3_v2_acc_1card\t"$4"\tkpis\tseg_quan_Dv3_v2_IoU_1card\t"$6}' | python _ce.py
@@ -133,7 +134,7 @@ TEST.TEST_MODEL "./snapshots/mobilenetv2_quant/best_model" \
 MODEL.DEEPLAB.ENCODER_WITH_ASPP False \
 MODEL.DEEPLAB.ENABLE_DECODER False \
 TRAIN.SYNC_BATCH_NORM False \
-BATCH_SIZE 16 >${model} 2>&1
+BATCH_SIZE 7 >${model} 2>&1
 print_info $? ${model}
 
 # 3 prune
@@ -144,7 +145,7 @@ python -u ./slim/prune/train_prune.py \
 --cfg configs/cityscape_fast_scnn.yaml \
 --use_gpu \
 --do_eval \
-BATCH_SIZE 16 \
+BATCH_SIZE 7 \
 SLIM.PRUNE_PARAMS 'learning_to_downsample/weights,learning_to_downsample/dsconv1/pointwise/weights,learning_to_downsample/dsconv2/pointwise/weights' \
 SLIM.PRUNE_RATIOS '[0.1,0.1,0.1]' \
 TRAIN.SNAPSHOT_EPOCH 1 \
@@ -177,7 +178,8 @@ SLIM.NAS_SEARCH_STEPS 2 \
 SLIM.NAS_START_EVAL_EPOCH -1 \
 SLIM.NAS_IS_SERVER True \
 SLIM.NAS_SPACE_NAME "MobileNetV2SpaceSeg" \
-SOLVER.NUM_EPOCHS 1
+SOLVER.NUM_EPOCHS 1 \
+BATCH_SIZE 7
 }
 model=seg_nas_train_1card
 CUDA_VISIBLE_DEVICES=${cudaid1} nas_train 23332 > ${model} 2>&1

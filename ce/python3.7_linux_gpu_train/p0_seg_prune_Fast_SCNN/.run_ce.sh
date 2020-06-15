@@ -42,7 +42,7 @@ python -u ./slim/prune/train_prune.py \
 --cfg configs/cityscape_fast_scnn.yaml \
 --use_gpu \
 --do_eval \
-BATCH_SIZE 16 \
+BATCH_SIZE 7 \
 SLIM.PRUNE_PARAMS 'learning_to_downsample/weights,learning_to_downsample/dsconv1/pointwise/weights,learning_to_downsample/dsconv2/pointwise/weights' \
 SLIM.PRUNE_RATIOS '[0.1,0.1,0.1]' \
 TRAIN.SNAPSHOT_EPOCH 1 \
