@@ -48,7 +48,7 @@ python -m paddle.distributed.launch ./slim/distillation/train_distill.py \
 --teacher_cfg ./slim/distillation/cityscape_teacher.yaml \
 --use_gpu \
 --do_eval \
-ATCH_SIZE 7
+BATCH_SIZE 7
 }
 CUDA_VISIBLE_DEVICES=${cudaid1} seg_dist_Dv3_xception_mobilenet 1>seg_dist_Dv3_xception_mobilenet_1card 2>&1
 cat seg_dist_Dv3_xception_mobilenet_1card |grep image=500 |awk -F ' |=' 'END{print "kpis\tseg_dist_Dv3_xception_mobilenet_acc_1card\t"$4"\tkpis\tseg_dist_Dv3_xception_mobilenet_IoU_1card\t"$6}' | python _ce.py
