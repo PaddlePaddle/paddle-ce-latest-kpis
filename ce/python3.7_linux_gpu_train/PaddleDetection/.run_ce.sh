@@ -74,7 +74,9 @@ else
     eval_method=eval
 fi
 train_model
-train_with_eval
+if [[ ${model} != blazeface_nas ]];then
+    train_with_eval
+fi
 eval_model
 infer_model
 export_model
