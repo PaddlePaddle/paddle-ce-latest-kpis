@@ -4,7 +4,7 @@ rem train
 python -u train.py --use_cuda 1 --epoch_num 1 --enable_ce | python _ce.py 
 rem infer
 python infer.py --last_index 1 --use_cuda 1 >%log_path%/gnn_I.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
     move %log_path%\gnn_I.log %log_path%\FAIL\gnn_I.log
     echo  gnn,infer,FAIL >> %log_path%\result.log
     echo  infer of gnn failed!

@@ -9,7 +9,7 @@ python run_classifier.py --use_cuda true --do_train true --do_val true --epoch 1
 
 rem eval
 python run_classifier.py --use_cuda true --do_val true --batch_size 128  --init_checkpoint ./save_models/textcnn/step_1510 > %log_path%/emotion_detection_E.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\emotion_detection_E.log  %log_path%\FAIL\emotion_detection_E.log
         echo   emotion_detection,eval,FAIL  >> %log_path%\result.log
         echo   eval of emotion_detection failed!
@@ -20,7 +20,7 @@ if not %errorlevel% == 0 (
  )
 rem infer
 python run_classifier.py --use_cuda true --do_infer true --batch_size 32 --init_checkpoint ./save_models/textcnn/step_1510  > %log_path%/emotion_detection_I.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\emotion_detection_I.log  %log_path%\FAIL\emotion_detection_I.log
         echo   emotion_detection,infer,FAIL  >> %log_path%\result.log
         echo   infer of emotion_detection failed!
@@ -31,7 +31,7 @@ if not %errorlevel% == 0 (
  )
 rem save_inference_model
 python inference_model.py --use_cuda true --do_save_inference_model true --init_checkpoint ./save_models/textcnn/step_1510 --inference_model_dir ./inference_model > %log_path%/emotion_detection_save_infer.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\emotion_detection_save_infer.log  %log_path%\FAIL\emotion_detection_save_infer.log
         echo   emotion_detection,save_infer,FAIL  >> %log_path%\result.log
         echo   save_infer of emotion_detection failed!

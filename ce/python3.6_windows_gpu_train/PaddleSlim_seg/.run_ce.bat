@@ -22,7 +22,7 @@ rem prune
 python -u ./slim/prune/train_prune.py --log_steps 10 --cfg configs/cityscape_fast_scnn.yaml --use_gpu SLIM.PRUNE_PARAMS 'learning_to_downsample/weights,learning_to_downsample/dsconv1/pointwise/weights,learning_to_downsample/dsconv2/pointwise/weights' SLIM.PRUNE_RATIOS [0.1,0.1,0.1] > seg_prune.log 2>&1
 type seg_prune.log| grep epoch|awk -F "[ =]" "END{print \"kpis\tprune_train_loss\t\"$8}"|python _ce.py
 python -u ./slim/prune/eval_prune.py --cfg configs/cityscape_fast_scnn.yaml --use_gpu TEST.TEST_MODEL snapshots/cityscape_fast_scnn/final > %log_path%/seg_prune_E.log 2>&1 
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\seg_prune_E.log  %log_path%\FAIL\seg_prune_E.log
         echo   seg_prune,eval,FAIL  >> %log_path%\result.log
         echo   eval of seg_prune failed!
@@ -38,7 +38,7 @@ python -u ./slim/quantization/train_quant.py --log_steps 10 --not_quant_pattern 
 type  seg_quant.log|grep epoch|awk -F "[= ]" "END{print \"kpis\tquant_train_loss\t\"$8}"|python _ce.py
 type  seg_quant.log|grep "EVAL"|grep step|awk -F "[= ]"  "END{print \"kpis\tquant_eval_loss\t\"$4}"|python _ce.py
 python -u ./slim/quantization/eval_quant.py  --cfg configs/deeplabv3p_mobilenetv2_cityscapes.yaml  --use_gpu --not_quant_pattern last_conv  --convert TEST.TEST_MODEL "./snapshots/mobilenetv2_quant/best_model" MODEL.DEEPLAB.ENCODER_WITH_ASPP False MODEL.DEEPLAB.ENABLE_DECODER False TRAIN.SYNC_BATCH_NORM False BATCH_SIZE 8 > %log_path%/seg_quant_E.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\seg_quant_E.log  %log_path%\FAIL\seg_quant_E.log
         echo   seg_quant,eval,FAIL  >> %log_path%\result.log
         echo   eval of seg_quant failed!

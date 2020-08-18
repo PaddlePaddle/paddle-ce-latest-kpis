@@ -15,7 +15,7 @@ set sed="C:\Program Files\Git\usr\bin\sed.exe"
 if exist experiment (rd /s /q experiment)
 if not exist wavenet (mklink /j wavenet %data_path%\Parakeet\wavenet)
 python train.py --config=./configs/clarinet_ljspeech.yaml --data=data/LJSpeech-1.1/ --device=0  --wavenet="./wavenet/step-2" experiment > %log_path%/clarinet_train.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\clarinet_train.log  %log_path%\FAIL\clarinet_train.log
         echo   clarinet,train,FAIL  >> %log_path%\result.log
         echo   train of clarinet failed!
@@ -25,7 +25,7 @@ if not %errorlevel% == 0 (
         echo   train of clarinet successfully!
 )
 python synthesis.py --config=./configs/clarinet_ljspeech.yaml --data=data/LJSpeech-1.1/ --device=0  --checkpoint="experiment/checkpoints/step-6" experiment > %log_path%/clarinet_synthesis.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\clarinet_synthesis.log  %log_path%\FAIL\clarinet_synthesis.log
         echo   clarinet,synthesis,FAIL  >> %log_path%\result.log
         echo   synthesis of clarinet failed!

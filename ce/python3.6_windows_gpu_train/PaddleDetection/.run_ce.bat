@@ -7,7 +7,7 @@ rem cascase_rcnn
 python tools/train.py -c configs/cascade_rcnn_r50_fpn_1x.yml -o max_iters=200 FasterRCNNTrainFeed.shuffle=false CascadeBBoxAssigner.shuffle_before_sample=false FPNRPNHead.rpn_target_assign.use_random=false | python _ce.py
 rem eval
 python tools/eval.py -c configs/cascade_rcnn_r50_fpn_1x.yml -o use_gpu=True > %log_path%/cascade_rcnn_E.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\cascade_rcnn_E.log  %log_path%\FAIL\cascade_rcnn_E.log
         echo   cascade_rcnn,eval,FAIL  >> %log_path%\result.log
         echo   evaling of cascade_rcnn failed!
@@ -17,7 +17,7 @@ if not %errorlevel% == 0 (
         echo   evaling of cascade_rcnn successfully!
 )
 python tools/infer.py -c configs/cascade_rcnn_r50_fpn_1x.yml --infer_img=demo/000000570688.jpg -o use_gpu=True > %log_path%/cascade_rcnn_I.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\cascade_rcnn_I.log  %log_path%\FAIL\cascade_rcnn_I.log
         echo   cascade_rcnn,infer,FAIL  >> %log_path%\result.log
         echo   infering of cascade_rcnn failed!
@@ -31,7 +31,7 @@ rem faster_rcnn
 python tools/train.py -c configs/faster_rcnn_r50_fpn_1x.yml -o max_iters=200 base_lr=0.02 FasterRCNNTrainFeed.shuffle=false | python _ce.py
 rem eval
 python tools/eval.py -c configs/faster_rcnn_r50_fpn_1x.yml -o use_gpu=True > %log_path%/faster_rcnn_E.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\faster_rcnn_E.log  %log_path%\FAIL\faster_rcnn_E.log
         echo   faster_rcnn,eval,FAIL  >> %log_path%\result.log
         echo   evaling of faster_rcnn failed!
@@ -41,7 +41,7 @@ if not %errorlevel% == 0 (
         echo   evaling of faster_rcnn successfully!
 )
 python tools/infer.py -c configs/faster_rcnn_r50_fpn_1x.yml --infer_img=demo/000000570688.jpg -o use_gpu=True > %log_path%/faster_rcnn_I.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\faster_rcnn_I.log  %log_path%\FAIL\faster_rcnn_I.log
         echo   faster_rcnn,infer,FAIL  >> %log_path%\result.log
         echo   infering of faster_rcnn failed!
@@ -56,7 +56,7 @@ rem mask_rcnn
 python tools/train.py -c configs/mask_rcnn_r50_fpn_1x.yml -o max_iters=200 MaskRCNNTrainFeed.shuffle=false BBoxAssigner.shuffle_before_sample=false FPNRPNHead.rpn_target_assign.use_random=false | python _ce.py
 rem eval
 python tools/eval.py -c configs/mask_rcnn_r50_fpn_1x.yml -o use_gpu=True > %log_path%/mask_rcnn_E.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\mask_rcnn_E.log  %log_path%\FAIL\mask_rcnn_E.log
         echo   mask_rcnn,eval,FAIL  >> %log_path%\result.log
         echo   evaling of mask_rcnn failed!
@@ -66,7 +66,7 @@ if not %errorlevel% == 0 (
         echo   evaling of mask_rcnn successfully!
 )
 python tools/infer.py -c configs/mask_rcnn_r50_fpn_1x.yml --infer_img=demo/000000570688.jpg -o use_gpu=True > %log_path%/mask_rcnn_I.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\mask_rcnn_I.log  %log_path%\FAIL\mask_rcnn_I.log
         echo   mask_rcnn,infer,FAIL  >> %log_path%\result.log
         echo   infering of mask_rcnn failed!
@@ -81,7 +81,7 @@ rem yolov3
 python tools/train.py -c configs/yolov3_darknet.yml -o max_iters=200 YoloTrainFeed.shuffle=false YoloTrainFeed.use_process=false | python _ce.py
 rem eval
 python tools/eval.py -c configs/yolov3_darknet.yml -o use_gpu=True > %log_path%/yolov3_darknet_E.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\yolov3_darknet_E.log  %log_path%\FAIL\yolov3_darknet_E.log
         echo   yolov3_darknet,eval,FAIL  >> %log_path%\result.log
         echo   evaling of yolov3_darknet failed!
@@ -91,7 +91,7 @@ if not %errorlevel% == 0 (
         echo   evaling of yolov3_darknet successfully!
 )
 python tools/infer.py -c configs/yolov3_darknet.yml --infer_img=demo/000000570688.jpg -o use_gpu=True > %log_path%/yolov3_darknet_I.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\yolov3_darknet_I.log  %log_path%\FAIL\yolov3_darknet_I.log
         echo   yolov3_darknet,infer,FAIL  >> %log_path%\result.log
         echo   infering of yolov3_darknet failed!

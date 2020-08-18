@@ -10,7 +10,7 @@ type  hapi_transformer.log|grep "step 91/91"|gawk -F "[:-]" "END{print \"kpis\te
 
 rem predict
 python -u predict.py  --src_vocab_fpath data/wmt16_ende_data_bpe_clean/vocab_all.bpe.32000   --trg_vocab_fpath data/wmt16_ende_data_bpe_clean/vocab_all.bpe.32000  --predict_file data/wmt16_ende_data_bpe_clean/newstest2016.tok.bpe.32000.en-de  --batch_size 32 --init_from_params trained_models/0  --beam_size 5 --max_out_len 255 --output_file predict.txt > %log_path%\hapi_tranformer_I.log 
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\hapi_tranformer_I.log  %log_path%\FAIL\hapi_tranformer_I.log
         echo   hapi_tranformer,infer,FAIL  >> %log_path%\result.log
         echo  infering of hapi_tranformer failed!

@@ -8,7 +8,7 @@ set PATH=C:\Program Files (x86)\GnuWin32\bin;%PATH%
 python pdseg/train.py --use_gpu --enable_ce --cfg ./configs/deeplabv3p_xception65_optic.yaml | grep "epoch"| gawk  -F "[= ]" "{if ($4 >=130) print \"kpis\tdeeplabv3p_loss_card1\t\"$8\"\nkpis\tdeeplabv3p_speed_card1\t\"$10}" | python _ce.py
 rem eval
 python pdseg/eval.py --use_gpu --cfg ./configs/deeplabv3p_xception65_optic.yaml > %log_path%/deeplabv3p_xception65_E.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\deeplabv3p_xception65_E.log  %log_path%\FAIL\deeplabv3p_xception65_E.log
         echo   deeplabv3p_xception65,eval,FAIL  >> %log_path%\result.log
         echo   eval of deeplabv3p_xception65 failed!
@@ -23,7 +23,7 @@ rem icnet
 python pdseg/train.py --use_gpu --enable_ce --cfg ./configs/icnet_optic.yaml | grep "epoch"| gawk  -F "[= ]" "{if ($4 >=60) print \"kpis\ticnet_loss_card1\t\"$8\"\nkpis\ticnet_speed_card1\t\"$10}" | python _ce.py
 rem eval
 python pdseg/eval.py --use_gpu --cfg ./configs/icnet_optic.yaml > %log_path%/icnet_E.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\icnet_E.log  %log_path%\FAIL\icnet_E.log
         echo   icnet,eval,FAIL  >> %log_path%\result.log
         echo   eval of icnet failed!
@@ -39,7 +39,7 @@ rem unet
 python pdseg/train.py --use_gpu --enable_ce --cfg ./configs/unet_optic.yaml | grep "epoch"| gawk  -F "[= ]" "{if ($4 >=60) print \"kpis\tunet_loss_card1\t\"$8\"\nkpis\tunet_speed_card1\t\"$10}" | python _ce.py
 rem eval
 python pdseg/eval.py --use_gpu --cfg ./configs/unet_optic.yaml > %log_path%/unet_E.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\unet_E.log  %log_path%\FAIL\unet_E.log
         echo   unet,eval,FAIL  >> %log_path%\result.log
         echo   eval of unet failed!
@@ -54,7 +54,7 @@ rem pspnet
 python pdseg/train.py --use_gpu --enable_ce --cfg ./configs/pspnet_optic.yaml | grep "epoch"| gawk  -F "[= ]" "{if ($4 >=60) print \"kpis\tpspnet_loss_card1\t\"$8\"\nkpis\tpspnet_speed_card1\t\"$10}" | python _ce.py
 rem eval
 python pdseg/eval.py --use_gpu --cfg ./configs/unet_optic.yaml > %log_path%/pspnet_E.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\pspnet_E.log  %log_path%\FAIL\pspnet_E.log
         echo   pspnet,eval,FAIL  >> %log_path%\result.log
         echo   eval of pspnet failed!
@@ -69,7 +69,7 @@ rem hrnet
 python pdseg/train.py --use_gpu --enable_ce --cfg ./configs/hrnet_optic.yaml | grep "epoch"| gawk  -F "[= ]" "{if ($4 >=60) print \"kpis\thrnet_loss_card1\t\"$8\"\nkpis\thrnet_speed_card1\t\"$10}" | python _ce.py
 rem eval
 python pdseg/eval.py --use_gpu --cfg ./configs/hrnet_optic.yaml > %log_path%/hrnet_E.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\hrnet_E.log  %log_path%\FAIL\hrnet_E.log
         echo   hrnet,eval,FAIL  >> %log_path%\result.log
         echo   eval of hrnet failed!
@@ -84,7 +84,7 @@ rem fast_scnn
 python pdseg/train.py --use_gpu --enable_ce --cfg ./configs/fast_scnn_pet.yaml| grep "epoch"| gawk  -F "[= ]" "END {print \"kpis\tfast_scnn_loss_card1\t\"$8\"\nkpis\tfast_scnn_speed_card1\t\"$10}" | python _ce.py
 rem eval
 python pdseg/eval.py --use_gpu --cfg ./configs/fast_scnn_pet.yaml > %log_path%/fast_scnn_E.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\fast_scnn_E.log  %log_path%\FAIL\fast_scnn_E.log
         echo   fast_rcnn,eval,FAIL  >> %log_path%\result.log
         echo   eval of fast_rcnn failed!

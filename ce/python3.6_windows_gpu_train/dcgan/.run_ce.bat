@@ -10,7 +10,7 @@ rem train
 python train.py  --model_net DCGAN --output output_dcgan --dataset mnist --shuffle False --batch_size 16 --epoch 1 --enable_ce --use_gpu True --print_freq 1 | python _ce.py
 rem infer
 python infer.py --model_net DCGAN --init_model=output_dcgan/checkpoints/0/ --use_gpu true > %log_path%/dcgan_I.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\dcgan_I.log  %log_path%\FAIL\dcgan_I.log
         echo   dcgan,infer,FAIL  >> %log_path%\result.log
         echo  infer of dcgan failed!

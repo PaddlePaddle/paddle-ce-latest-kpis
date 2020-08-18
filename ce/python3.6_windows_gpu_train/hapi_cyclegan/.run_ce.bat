@@ -10,7 +10,7 @@ type hapi_cyclegan_dygraph.log  |gawk -F "[|:] " "END{print \"kpis\ttrain_DB_los
 
 rem eval
 python test.py --init_model=dygraph/0 >%log_path%/hapi_cyclegan_dygraph_E.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\hapi_cyclegan_dygraph_E.log  %log_path%\FAIL\hapi_cyclegan_dygraph_E.log
         echo   hapi_cyclegan_dygraph,eval,FAIL  >> %log_path%\result.log
         echo  evaling of hapi_cyclegan_dygraph failed!
@@ -22,7 +22,7 @@ if not %errorlevel% == 0 (
 
 rem infer
 python infer.py --init_model=dygraph/0 --input=./image/testA/123_A.jpg --input_style=A >%log_path%/hapi_cyclegan_dygraph_I.log 2>&1
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\hapi_cyclegan_dygraph_I.log  %log_path%\FAIL\hapi_cyclegan_dygraph_I.log
         echo   hapi_cyclegan_dygraph,infer,FAIL  >> %log_path%\result.log
         echo  infering of hapi_cyclegan_dygraph failed!

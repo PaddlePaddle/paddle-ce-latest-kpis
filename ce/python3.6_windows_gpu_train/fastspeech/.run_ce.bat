@@ -13,7 +13,7 @@ rd /s /q alignments
 mklink /j alignments %data_path%\Parakeet\fastspeech\alignments
 if exist experiment (rd /s /q experiment)
 python -u train.py --use_gpu=1 --data=data/LJSpeech-1.1 --alignments_path=./alignments/alignments.txt --output=./experiment --config=configs/ljspeech.yaml > %log_path%/fastspeech_train.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\fastspeech_train.log  %log_path%\FAIL\fastspeech_train.log
         echo   fastspeech,train,FAIL  >> %log_path%\result.log
         echo   train of fastspeech failed!
@@ -26,7 +26,7 @@ if not exist clarinet (mklink /j clarinet %data_path%\Parakeet\clarinet)
 if not exist fastspeech (mklink /j fastspeech %data_path%\Parakeet\fastspeech)
 
 python synthesis.py --use_gpu=1 --alpha=1.0 --checkpoint=./fastspeech/step-130000 --config=configs/ljspeech.yaml --config_clarine=./clarinet/config.yaml --checkpoint_clarinet=./clarinet/step-500000  --output=./synthesis > %log_path%/fastspeech_synthesis.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\fastspeech_synthesis.log  %log_path%\FAIL\fastspeech_synthesis.log
         echo   fastspeech,synthesis,FAIL  >> %log_path%\result.log
         echo   synthesis of fastspeech failed!
