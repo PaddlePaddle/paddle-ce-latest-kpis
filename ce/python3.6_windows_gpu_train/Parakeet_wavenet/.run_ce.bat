@@ -16,7 +16,7 @@ set sed="C:\Program Files\Git\usr\bin\sed.exe"
 if exist experiment (rd /s /q experiment)
 
 python train.py --config=./configs/wavenet_single_gaussian.yaml --data=data/LJSpeech-1.1/  --device=0 experiment > %log_path%/wavenet_train.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\wavenet_train.log  %log_path%\FAIL\wavenet_train.log
         echo   wavenet,train,FAIL  >> %log_path%\result.log
         echo   train of wavenet failed!
@@ -26,7 +26,7 @@ if not %errorlevel% == 0 (
         echo   train of wavenet successfully!
 )
 python synthesis.py --config=./configs/wavenet_single_gaussian.yaml  --data=data/LJSpeech-1.1/ --device=0 --checkpoint="experiment/checkpoints/step-6" experiment > %log_path%/wavenet_synthesis.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\wavenet_synthesis.log  %log_path%\FAIL\wavenet_synthesis.log
         echo   wavenet,synthesis,FAIL  >> %log_path%\result.log
         echo   synthesis of wavenet failed!

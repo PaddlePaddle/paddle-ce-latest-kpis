@@ -31,7 +31,7 @@ mklink /j data %data_path%\word2vec
 set OPENBLAS_NUM_THREADS=1 
 set CPU_NUM=1
 python train.py --train_data_dir data/convert_text8 --dict_path data/test_build_dict --num_passes 1 --batch_size 100 --model_output_dir v1_cpu5_b100_lr1dir --base_lr 1.0 --print_batch 1000 --with_speed --is_sparse > %log_path%/slim_clssification_quant_embed_train.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\slim_clssification_quant_embed_train.log  %log_path%\FAIL\slim_clssification_quant_embed_train.log
         echo   slim_clssification_quant_embed,train,FAIL  >> %log_path%\result.log
         echo   train of slim_clssification_quant_embed failed!
@@ -41,7 +41,7 @@ if not %errorlevel% == 0 (
         echo   train of slim_clssification_quant_embed successfully!
  )
 python infer.py --infer_epoch --test_dir data/test_mid_dir --dict_path data/test_build_dict_word_to_id_ --batch_size 20000 --model_dir v1_cpu5_b100_lr1dir/  --start_index 0 --last_index 0 > %log_path%/slim_clssification_quant_embed_before_infer.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\slim_clssification_quant_embed_before_infer.log  %log_path%\FAIL\slim_clssification_quant_embed_before_infer.log
         echo   slim_clssification_quant_embed_before,infer,FAIL  >> %log_path%\result.log
         echo   infer of slim_clssification_quant_embed_before failed!
@@ -51,7 +51,7 @@ if not %errorlevel% == 0 (
         echo   infer of slim_clssification_quant_embed_before successfully!
  )
 python infer.py --infer_epoch --test_dir data/test_mid_dir --dict_path data/test_build_dict_word_to_id_ --batch_size 20000 --model_dir v1_cpu5_b100_lr1dir/  --start_index 0 --last_index 0 --emb_quant True > %log_path%/slim_clssification_quant_embed_after_infer.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\slim_clssification_quant_embed_after_infer.log  %log_path%\FAIL\slim_clssification_quant_embed_after_infer.log
         echo   slim_clssification_quant_embed_after,infer,FAIL  >> %log_path%\result.log
         echo   infer of slim_clssification_quant_embed_after failed!
@@ -71,7 +71,7 @@ mklink /j MobileNetV1_pretrained %data_path%\PaddleSlim\pretrained\MobileNetV1_p
 cd ..
 )
 python export_model.py --model "MobileNet" --pretrained_model ./pretrain/MobileNetV1_pretrained --data imagenet > %log_path%/slim_clssificaiton_quant_post_export_model.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\slim_clssificaiton_quant_post_export_model.log  %log_path%\FAIL\slim_clssificaiton_quant_post_export_model.log
         echo   slim_clssificaiton_quant_post,export_model,FAIL  >> %log_path%\result.log
         echo   export_model of slim_clssificaiton_quant_post failed!
@@ -84,7 +84,7 @@ set FLAGS_fast_eager_deletion_mode=1
 set FLAGS_eager_delete_tensor_gb=0.0
 set FLAGS_fraction_of_gpu_memory_to_use=0.98
 python quant_post.py --model_path ./inference_model/MobileNet --save_path ./quant_model_train/MobileNet --model_filename model --params_filename weights >  %log_path%/slim_clssificaiton_quant_post_train.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\slim_clssificaiton_quant_post_train.log  %log_path%\FAIL\slim_clssificaiton_quant_post_train.log
         echo   slim_clssificaiton_quant_post,train,FAIL  >> %log_path%\result.log
         echo   train of slim_clssificaiton_quant_post failed!
@@ -94,7 +94,7 @@ if not %errorlevel% == 0 (
         echo   train of slim_clssificaiton_quant_post successfully!
  )
 python eval.py --model_path ./inference_model/MobileNet --model_name model --params_name weights > %log_path%/slim_clssificaiton_quant_post_eval.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\slim_clssificaiton_quant_post_eval.log  %log_path%\FAIL\slim_clssificaiton_quant_post_eval.log
         echo   slim_clssificaiton_quant_post,eval,FAIL  >> %log_path%\result.log
         echo   eval of slim_clssificaiton_quant_post failed!
@@ -104,7 +104,7 @@ if not %errorlevel% == 0 (
         echo   eval of slim_clssificaiton_quant_post successfully!
  )
 python eval.py --model_path ./quant_model_train/MobileNet > %log_path%/slim_clssificaiton_quant_post_quant_eval.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\slim_clssificaiton_quant_post_quant_eval.log  %log_path%\FAIL\slim_clssificaiton_quant_post_quant_eval.log
         echo   slim_clssificaiton_quant_post,quant_eval,FAIL  >> %log_path%\result.log
         echo   quant_eval of slim_clssificaiton_quant_post failed!
@@ -125,7 +125,7 @@ cd ..
 train.py --model "MobileNet" --pruned_ratio 0.31 --data "imagenet" --pretrained_model ./pretrain/MobileNetV1_pretrained/ --num_epochs 1 --batch_size 64 > prune.log.log
 type prune.log|grep "loss"|awk -F "[;:]" "END{print \"kpis\tprune_loss\t\"$5}" | python _ce.py
 python eval.py  --model "MobileNet"  --data "imagenet" --model_path "./models/0" > %log_path%/slim_clssification_prune_eval.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\slim_clssification_prune_eval.log  %log_path%\FAIL\slim_clssification_prune_eval.log
         echo   slim_clssification_prune,eval,FAIL  >> %log_path%\result.log
         echo   eval of slim_clssification_prune failed!

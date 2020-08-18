@@ -11,7 +11,7 @@ python train.py --config=./bmn.yaml --device gpu --epoch=1 -d > hapi_bmn_dygraph
 type hapi_bmn_dygraph.log|grep "step 1182/1182"|gawk -F "[:-]" "{print \"kpis\ttrain_loss\t\"$3}"| python _ce.py
 rem eval
 python eval.py --weights=checkpoint/0 > %log_path%/hapi_bmn_E.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\hapi_bmn_E.log  %log_path%\FAIL\hapi_bmn_E.log
         echo   hapi_bmn,eval,FAIL  >> %log_path%\result.log
         echo  evaling of hapi_bmn failed!
@@ -22,7 +22,7 @@ if not %errorlevel% == 0 (
 )
 rem infer
 python predict.py --weights=checkpoint/0 --filelist=infer.list > %log_path%/hapi_bmn_I.log
-if not %errorlevel% == 0 (
+if %errorlevel% GTR 0 (
         move  %log_path%\hapi_bmn_I.log  %log_path%\FAIL\hapi_bmn_I.log
         echo   hapi_bmn,infer,FAIL  >> %log_path%\result.log
         echo  infering of hapi_bmn failed!
