@@ -23,9 +23,9 @@ python train.py \
 
 #set different loss index because of different log structure
 if [[ ${model_list[${i}]} == 'STNET' || ${model_list[${i}]} == 'TSM' || ${model_list[${i}]} == 'TSN' || ${model_list[${i}]} == 'NONLOCAL' ]];then
-   cat log_${config_list[${i}]} | grep "Epoch 0" | tail "-2" | head -1 | tr ',' ' ' | awk '{print "kpis\t""'${model_list[i]}'""_loss\t"$10}' | python _ce.py
+   cat log_${config_list[${i}]} | grep "Epoch 0" | tail "-2" | head -1 | tr ',' ' ' | awk '{print "kpis\t""'${model_list[i]}'""_loss\t"$14}' | python _ce.py
 else
-   cat log_${config_list[${i}]} | grep "Epoch 0" | tail "-2" | head -1 | tr ',' ' ' | awk '{print "kpis\t""'${model_list[i]}'""_loss\t"$11}' | python _ce.py
+   cat log_${config_list[${i}]} | grep "Epoch 0" | tail "-2" | head -1 | tr ',' ' ' | awk '{print "kpis\t""'${model_list[i]}'""_loss\t"$15}' | python _ce.py
 fi
 cat log_${config_list[${i}]} | grep "Epoch 0" | tail "-1" | tr ',' ' ' | awk '{print "kpis\t""'${model_list[i]}'""_time\t"$11}' | python _ce.py
 

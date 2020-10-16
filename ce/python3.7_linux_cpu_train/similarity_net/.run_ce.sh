@@ -43,4 +43,4 @@ train() {
 export CUDA_VISIBLE_DEVICES=0
 export CPU_NUM=10
 train 1> log_cpu 
-cat log | python _ce.py
+cat log_cpu | python _ce.py

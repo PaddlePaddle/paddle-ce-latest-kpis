@@ -3,18 +3,18 @@
 import os
 import sys
 sys.path.append(os.environ['ceroot'])
-from kpi import CostKpi
+from kpi import AccKpi
 from kpi import DurationKpi
 
 train_duration_card1 = DurationKpi('train_duration_card1', 0.02, 0, actived=True)
-train_p_card1 = CostKpi('train_p_card1', 0.01, 0, actived=True)
-train_r_card1 = CostKpi('train_r_card1', 0.01, 0, actived=True)
-train_f1_card1 = CostKpi('train_f1_card1', 0.01, 0, actived=True)
+train_p_card1 = AccKpi('train_p_card1', 0.01, 0, actived=True)
+train_r_card1 = AccKpi('train_r_card1', 0.01, 0, actived=True)
+train_f1_card1 = AccKpi('train_f1_card1', 0.01, 0, actived=True)
 
 train_duration_card4 = DurationKpi('train_duration_card4', 0.02, 0, actived=True)
-train_p_card4 = CostKpi('train_p_card4', 0.01, 0, actived=True)
-train_r_card4 = CostKpi('train_r_card4', 0.01, 0, actived=True)
-train_f1_card4 = CostKpi('train_f1_card4', 0.01, 0, actived=True)
+train_p_card4 = AccKpi('train_p_card4', 0.01, 0, actived=True)
+train_r_card4 = AccKpi('train_r_card4', 0.01, 0, actived=True)
+train_f1_card4 = AccKpi('train_f1_card4', 0.01, 0, actived=True)
 
 tracking_kpis = [
         train_duration_card1,
