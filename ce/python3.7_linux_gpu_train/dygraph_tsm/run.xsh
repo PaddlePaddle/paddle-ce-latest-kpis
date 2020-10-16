@@ -7,4 +7,6 @@ if [ -f "data/dataset/kinetics/*.list" ];then rm -rf data/dataset/kinetics/*.lis
 fi
 ln -s ${dataset_path}/video/kinetics/train.list data/dataset/kinetics/train.list
 ln -s ${dataset_path}/video/kinetics/val.list data/dataset/kinetics/val.list 
+wget https://paddlemodels.bj.bcebos.com/video_classification/ResNet50_pretrained.tar.gz
+tar -xvf ResNet50_pretrained.tar.gz
 ./.run_ce.sh

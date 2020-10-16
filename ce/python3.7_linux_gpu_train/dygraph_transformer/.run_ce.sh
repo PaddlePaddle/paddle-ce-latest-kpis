@@ -11,6 +11,7 @@ train_single() {
   --trg_vocab_fpath wmt16_ende_data_bpe/vocab_all.bpe.32000 \
   --special_token '<s>' '<e>' '<unk>' \
   --training_file wmt16_ende_data_bpe/train_file \
+  --validation_file wmt16_ende_data_bpe/newstest2014.tok.bpe.32000.en-de \
   --batch_size 4096 \
   --print_step 10 \
   --use_cuda True \
@@ -25,6 +26,7 @@ train_multi() {
   --trg_vocab_fpath wmt16_ende_data_bpe/vocab_all.bpe.32000 \
   --special_token '<s>' '<e>' '<unk>' \
   --training_file wmt16_ende_data_bpe/train_file \
+  --validation_file wmt16_ende_data_bpe/newstest2014.tok.bpe.32000.en-de \
   --batch_size 4096 \
   --print_step 10 \
   --use_cuda True \
