@@ -13,10 +13,10 @@ time_card1_kpi = DurationKpi(
     0,
     actived=True,
     desc='train speed in one GPU card')
-loss_card8_kpi = CostKpi(
-    'loss_card8', 0.08, 0, actived=True, desc='train cost')
-time_card8_kpi = DurationKpi(
-    'time_card8',
+loss_card4_kpi = CostKpi(
+    'loss_card4', 0.08, 0, actived=True, desc='train cost')
+time_card4_kpi = DurationKpi(
+    'time_card4',
     0.08,
     0,
     actived=True,
@@ -24,8 +24,8 @@ time_card8_kpi = DurationKpi(
 tracking_kpis = [
     loss_card1_kpi, 
     time_card1_kpi,
-    loss_card8_kpi,
-    time_card8_kpi 
+    loss_card4_kpi,
+    time_card4_kpi 
 ]
 
 
@@ -37,8 +37,8 @@ def parse_log(log):
     "
     loss_card1\t1.0
     time_card1\t1.0
-    loss_card8\t1.0
-    time_card8\t1.0
+    loss_card4\t1.0
+    time_card4\t1.0
     "
     '''
     for line in log.split('\n'):

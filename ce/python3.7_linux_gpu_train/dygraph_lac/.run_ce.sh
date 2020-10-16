@@ -62,7 +62,7 @@ train_single $cudaid 1>log_1card
 cat log_1card | python _ce.py
 
 
-cudaid=4,5,6,7
+cudaid=0,1,2,3
 export CUDA_VISIBLE_DEVICES=$cudaid
 train $cudaid 1>log_4card
 cat log_4card | python _ce.py

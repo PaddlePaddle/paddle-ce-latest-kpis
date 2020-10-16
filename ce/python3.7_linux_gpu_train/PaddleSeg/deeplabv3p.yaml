@@ -10,7 +10,7 @@ AUG:
     MIN_SCALE_FACTOR: 0.5  # for stepscaling
     SCALE_STEP_SIZE: 0.25  # for stepscaling
     MIRROR: False
-BATCH_SIZE: 16
+BATCH_SIZE: 8
 DATASET:
     DATA_DIR: "./dataset/cityscapes/"
     IMAGE_TYPE: "rgb"  # choice rgb or rgba
