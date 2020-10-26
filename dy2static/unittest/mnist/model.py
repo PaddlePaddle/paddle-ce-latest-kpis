@@ -24,7 +24,6 @@ from paddle.fluid.dygraph.nn import Conv2D, Linear, Pool2D
 from paddle.fluid.optimizer import AdamOptimizer
 from paddle.jit import ProgramTranslator
 
-
 SEED = 2020
 
 
@@ -116,8 +115,6 @@ class MNIST(fluid.dygraph.Layer):
         return x
 
 
-
-
 def parse_args():
     parser = argparse.ArgumentParser("mnist model benchmark.")
     # parser.add_argument(
@@ -135,6 +132,7 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+
 def print_arguments(args):
     print('-----------  Configuration Arguments -----------')
     for arg, value in sorted(vars(args).items()):
@@ -147,12 +145,13 @@ def train(args, to_static=False):
     prog_trans = ProgramTranslator()
     prog_trans.enable(to_static)
     # set device
-    device = 'gpu:0' if fluid.is_compiled_with_cuda() and args.device == 'GPU' else 'cpu'
+    device = 'gpu:0' if fluid.is_compiled_with_cuda(
+    ) and args.device == 'GPU' else 'cpu'
     paddle.set_device(device)
     # set random seed to initialize parameters
     fluid.default_main_program().random_seed = SEED
     fluid.default_startup_program().random_seed = SEED
-    
+
     # create model
     mnist = MNIST()
     adam = AdamOptimizer(
@@ -160,7 +159,11 @@ def train(args, to_static=False):
 
     # load dataset
     train_dataset = paddle.vision.datasets.MNIST(mode='train')
-    train_loader = paddle.io.DataLoader(train_dataset, places=paddle.CPUPlace(), batch_size=args.batch_size, shuffle=False)
+    train_loader = paddle.io.DataLoader(
+        train_dataset,
+        places=paddle.CPUPlace(),
+        batch_size=args.batch_size,
+        shuffle=False)
 
     # start training
     for pass_id in range(args.pass_num):
@@ -174,12 +177,12 @@ def train(args, to_static=False):
             img = data[0]
             label = data[1]
             prediction, acc, avg_loss = mnist(img, label)
-            
+
             # backward
             avg_loss.backward()
             adam.minimize(avg_loss)
             mnist.clear_gradients()
-            
+
             batch_end = time()
 
             # fetch numpy data
@@ -193,11 +196,14 @@ def train(args, to_static=False):
             cost_time.append(cost_t)
 
             if batch_id % 10 == 0:
-                print("ToStatic = %s, Pass = %d, Iter = %d, Loss = %f, Accuracy = %f, Elapse(ms) = %f" %
-                    (to_static, pass_id, batch_id, avg_loss, acc, cost_t))
+                print(
+                    "ToStatic = %s, Pass = %d, Iter = %d, Loss = %f, Accuracy = %f, Elapse(ms) = %f"
+                    % (to_static, pass_id, batch_id, avg_loss, acc, cost_t))
         # print log from each pass_id
-        print("to_static=%s, pass=%d, train_avg_acc=%f,train_avg_loss=%f, elapse(ms)=%f" %
-        (to_static, pass_id, np.mean(accuracy), np.mean(loss), np.mean(cost_time)))
+        print(
+            "to_static=%s, pass=%d, train_avg_acc=%f,train_avg_loss=%f, elapse(ms)=%f"
+            % (to_static, pass_id, np.mean(accuracy), np.mean(loss),
+               np.mean(cost_time)))
 
 
 def run_benchmark(args):
@@ -206,6 +212,7 @@ def run_benchmark(args):
 
     # train in static mode
     train(args, to_static=True)
+
 
 if __name__ == '__main__':
     args = parse_args()
