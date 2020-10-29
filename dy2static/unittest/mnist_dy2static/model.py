@@ -201,7 +201,7 @@ def train(args, to_static=False):
                     % (to_static, pass_id, batch_id, avg_loss, acc, cost_t))
         # print log from each pass_id
         print(
-            "to_static=%s, pass=%d, train_avg_acc=%f,train_avg_loss=%f, elapse(ms)=%f"
+            "to_static=%s, pass=%d, train_avg_acc=%f, train_avg_loss=%f, elapse(ms)=%f"
             % (to_static, pass_id, np.mean(accuracy), np.mean(loss),
                np.mean(cost_time)))
 
