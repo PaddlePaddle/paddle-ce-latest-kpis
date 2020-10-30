@@ -88,7 +88,7 @@ def train(args, to_static):
     # init environment
     env = gym.make('CartPole-v0')
     env.seed(SEED)
-    paddle.manual_seed(SEED)
+    paddle.seed(SEED)
     paddle.framework.random._manual_program_seed(SEED)
     local_random = np.random.RandomState(SEED)
 

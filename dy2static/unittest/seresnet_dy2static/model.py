@@ -364,7 +364,7 @@ def train(args, to_static):
 
     # set random seed
     np.random.seed(SEED)
-    paddle.manual_seed(SEED)
+    paddle.seed(SEED)
     paddle.framework.random._manual_program_seed(SEED)
     # set device
     device = 'gpu:0' if paddle.fluid.is_compiled_with_cuda(
