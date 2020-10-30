@@ -20,7 +20,8 @@ from kpi import CostKpi, DurationKpi, AccKpi
 
 dynamic_train_reward_kpi = AccKpi('Average_reward', 0.002, 0, actived=True)
 dynamic_train_loss_kpi = CostKpi('loss_probs', 0.002, 0, actived=True)
-dynamic_train_elapse_kpi = DurationKpi('Elapse', 0.002, 0, actived=True)
+dynamic_train_elapse_kpi = DurationKpi(
+    'Elapse', 0.002, 0, actived=True, unit_repr="ms")
 
 tracking_kpis = [
     dynamic_train_reward_kpi, dynamic_train_loss_kpi, dynamic_train_elapse_kpi

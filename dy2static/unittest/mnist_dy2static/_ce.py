@@ -22,13 +22,13 @@ static_train_acc_kpi = AccKpi('static_train_avg_acc', 0.002, 0, actived=True)
 static_train_loss_kpi = CostKpi(
     'static_train_avg_loss', 0.002, 0, actived=True)
 static_train_elapse_kpi = DurationKpi(
-    'static_train_elapse', 0.002, 0, actived=True)
+    'static_train_elapse', 0.002, 0, actived=True, unit_repr="ms")
 
 dynamic_train_acc_kpi = AccKpi('dynamic_train_avg_acc', 0.002, 0, actived=True)
 dynamic_train_loss_kpi = CostKpi(
     'dynamic_train_avg_loss', 0.002, 0, actived=True)
 dynamic_train_elapse_kpi = DurationKpi(
-    'dynamic_train_elapse', 0.002, 0, actived=True)
+    'dynamic_train_elapse', 0.002, 0, actived=True, unit_repr="ms")
 
 tracking_kpis = [
     static_train_acc_kpi, static_train_loss_kpi, static_train_elapse_kpi,
