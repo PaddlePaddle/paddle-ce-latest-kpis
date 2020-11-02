@@ -158,12 +158,9 @@ def train(args, to_static=False):
         learning_rate=0.001, parameter_list=mnist.parameters())
 
     # load dataset
-    train_dataset = paddle.vision.datasets.MNIST(mode='train')
+    train_dataset = paddle.vision.datasets.MNIST(mode='train', backend='cv2')
     train_loader = paddle.io.DataLoader(
-        train_dataset,
-        places=paddle.CPUPlace(),
-        batch_size=args.batch_size,
-        shuffle=False)
+        train_dataset, batch_size=args.batch_size, shuffle=False)
 
     # start training
     for pass_id in range(args.pass_num):
@@ -174,7 +171,7 @@ def train(args, to_static=False):
         for batch_id, data in enumerate(train_loader()):
             batch_start = time()
 
-            img = data[0]
+            img = data[0].unsqueeze(1)
             label = data[1]
             prediction, acc, avg_loss = mnist(img, label)
 
