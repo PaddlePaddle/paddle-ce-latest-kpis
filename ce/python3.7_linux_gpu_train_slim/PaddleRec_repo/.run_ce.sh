@@ -13,6 +13,7 @@ else
     echo -e "\033[32m ${log_path}/$2_SUCCESS \033[0m"
 fi
 }
+python setup.py install
 # contentunderstanding
 run_con_cpu(){
 cp ${dataset_path}/rec_config/$1_cpu_config.yaml ./
