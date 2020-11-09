@@ -26,6 +26,9 @@ from paddle.jit import ProgramTranslator
 
 SEED = 2020
 
+if fluid.is_compiled_with_cuda():
+    fluid.set_flags({'FLAGS_cudnn_deterministic': True})
+
 
 class SimpleImgConvPool(fluid.dygraph.Layer):
     def __init__(self,
@@ -42,7 +45,7 @@ class SimpleImgConvPool(fluid.dygraph.Layer):
                  conv_dilation=1,
                  conv_groups=1,
                  act=None,
-                 use_cudnn=False,
+                 use_cudnn=True,
                  param_attr=None,
                  bias_attr=None):
         super(SimpleImgConvPool, self).__init__()
@@ -160,7 +163,10 @@ def train(args, to_static=False):
     # load dataset
     train_dataset = paddle.vision.datasets.MNIST(mode='train', backend='cv2')
     train_loader = paddle.io.DataLoader(
-        train_dataset, batch_size=args.batch_size, shuffle=False)
+        train_dataset,
+        batch_size=args.batch_size,
+        shuffle=False,
+        drop_last=True)
 
     # start training
     for pass_id in range(args.pass_num):
