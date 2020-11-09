@@ -44,29 +44,39 @@ def parse_log(log: str):
     Returns:
         dynamic_logs[-1] (dict): parsed log info
     """
-    dynamic_logs = []
-    static_logs = []
+    dynamic_train_elapse = []
+    static_train_elapse = []
     for line in log.split('\n'):
         Log = {}
         fs = line.strip().split(',\t')
         try:
             if "ToStatic = False" in fs:
-                Log['dynamic_train_loss'] = float(fs[3].split('=')[-1])
-                Log['dynamic_train_acc1'] = float(fs[4].split('=')[-1])
-                Log['dynamic_train_acc5'] = float(fs[5].split('=')[-1])
-                Log['dynamic_train_elapse'] = float(fs[6].split('=')[-1])
-                dynamic_logs.append(Log)
+                dynamic_train_loss = float(fs[3].split('=')[-1])
+                dynamic_train_acc1 = float(fs[4].split('=')[-1])
+                dynamic_train_acc5 = float(fs[5].split('=')[-1])
+                dynamic_train_elapse.append(float(fs[6].split('=')[-1]))
             elif "ToStatic = True" in fs:
-                Log['static_train_loss'] = float(fs[3].split('=')[-1])
-                Log['static_train_acc1'] = float(fs[4].split('=')[-1])
-                Log['static_train_acc5'] = float(fs[5].split('=')[-1])
-                Log['static_train_elapse'] = float(fs[6].split('=')[-1])
-                static_logs.append(Log)
+                static_train_loss = float(fs[3].split('=')[-1])
+                static_train_acc1 = float(fs[4].split('=')[-1])
+                static_train_acc5 = float(fs[5].split('=')[-1])
+                static_train_elapse.append(float(fs[6].split('=')[-1]))
             else:
                 pass
         except:
             pass
-    return dynamic_logs[-1], static_logs[-1]
+
+    Log['dynamic_train_loss'] = dynamic_train_loss
+    Log['dynamic_train_acc1'] = dynamic_train_acc1
+    Log['dynamic_train_acc5'] = dynamic_train_acc5
+    Log['dynamic_train_elapse'] = sum(dynamic_train_elapse) / len(
+        dynamic_train_elapse)
+
+    Log['static_train_loss'] = static_train_loss
+    Log['static_train_acc1'] = static_train_acc1
+    Log['static_train_acc5'] = static_train_acc5
+    Log['static_train_elapse'] = sum(static_train_elapse) / len(
+        static_train_elapse)
+    return Log
 
 
 def log_to_ce(log: str):
@@ -74,20 +84,15 @@ def log_to_ce(log: str):
     Args:
         log (str): log read from sys std input
     """
-    final_dynamic_log, final_static_log = parse_log(log)
-    print(final_dynamic_log)
-    print(final_static_log)
+    dict_log = parse_log(log)
+    print(dict_log)
 
     kpi_tracker = {}
     for kpi in tracking_kpis:
         kpi_tracker[kpi.name] = kpi
 
-    for key in final_dynamic_log:
-        kpi_tracker[key].add_record(final_dynamic_log[key])
-        kpi_tracker[key].persist()
-
-    for key in final_static_log:
-        kpi_tracker[key].add_record(final_static_log[key])
+    for key in dict_log:
+        kpi_tracker[key].add_record(dict_log[key])
         kpi_tracker[key].persist()
 
 

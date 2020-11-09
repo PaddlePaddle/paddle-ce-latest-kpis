@@ -233,7 +233,7 @@ def run_benchmark(args):
     train(args, to_static=False)
 
     # train in static mode
-    # train(args, to_static=True)
+    train(args, to_static=True)
 
 
 if __name__ == '__main__':
