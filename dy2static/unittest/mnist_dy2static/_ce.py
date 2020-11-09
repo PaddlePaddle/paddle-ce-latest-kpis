@@ -43,8 +43,8 @@ def parse_log(log: str):
     Returns:
         static_logs[-1] (dict): parsed log info
     """
-    static_logs = []
-    dynamic_logs = []
+    dy2staic_elapse = []
+    dynamic_elapse = []
     for line in log.split('\n'):
         Log = {}
         fs = line.strip().split(', ')
@@ -57,18 +57,24 @@ def parse_log(log: str):
                   'train_avg_loss=0.843321',
                   'elapse(ms)=11.286300']
             '''
-            Log['static_train_avg_acc'] = float(fs[2].split('=')[-1])
-            Log['static_train_avg_loss'] = float(fs[3].split('=')[-1])
-            Log['static_train_elapse'] = float(fs[4].split('=')[-1])
-            static_logs.append(Log)
+            static_train_avg_acc = float(fs[2].split('=')[-1])
+            static_train_avg_loss = float(fs[3].split('=')[-1])
+            dy2staic_elapse.append(float(fs[4].split('=')[-1]))
         elif "to_static=False" in fs:
-            Log['dynamic_train_avg_acc'] = float(fs[2].split('=')[-1])
-            Log['dynamic_train_avg_loss'] = float(fs[3].split('=')[-1])
-            Log['dynamic_train_elapse'] = float(fs[4].split('=')[-1])
-            dynamic_logs.append(Log)
+            dynamic_train_avg_acc = float(fs[2].split('=')[-1])
+            dynamic_train_avg_loss = float(fs[3].split('=')[-1])
+            dynamic_elapse.append(float(fs[4].split('=')[-1]))
         else:
             pass
-    return static_logs[-1], dynamic_logs[-1]
+
+    Log['static_train_avg_acc'] = static_train_avg_acc
+    Log['static_train_avg_loss'] = static_train_avg_loss
+    Log['static_train_elapse'] = sum(dy2staic_elapse) / len(dy2staic_elapse)
+
+    Log['dynamic_train_avg_acc'] = dynamic_train_avg_acc
+    Log['dynamic_train_avg_loss'] = dynamic_train_avg_loss
+    Log['dynamic_train_elapse'] = sum(dynamic_elapse) / len(dynamic_elapse)
+    return Log
 
 
 def log_to_ce(log: str):
@@ -76,18 +82,14 @@ def log_to_ce(log: str):
     Args:
         log (str): log read from sys std input
     """
-    final_static_log, final_dynamic_log = parse_log(log)
+    dict_log = parse_log(log)
 
     kpi_tracker = {}
     for kpi in tracking_kpis:
         kpi_tracker[kpi.name] = kpi
 
-    for key in final_static_log:
-        kpi_tracker[key].add_record(final_static_log[key])
-        kpi_tracker[key].persist()
-
-    for key in final_dynamic_log:
-        kpi_tracker[key].add_record(final_dynamic_log[key])
+    for key in dict_log:
+        kpi_tracker[key].add_record(dict_log[key])
         kpi_tracker[key].persist()
 
 

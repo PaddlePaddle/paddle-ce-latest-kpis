@@ -35,18 +35,29 @@ def parse_log(log: str):
     Returns:
         dynamic_logs[-1] (dict): parsed log info
     """
-    dynamic_logs = []
+    dynamic_Elapse = []
+    dy2staic_Elapse = []
     for line in log.split('\n'):
         Log = {}
         fs = line.strip().split(',\t')
         if "ToStatic = False" in fs:
-            Log['Average_reward'] = float(fs[3].split('=')[-1])
-            Log['loss_probs'] = float(fs[4].split('=')[-1])
-            Log['Elapse'] = float(fs[5].split('=')[-1])
-            dynamic_logs.append(Log)
+            dynamic_Average_reward = float(fs[3].split('=')[-1])
+            dynamic_loss_probs = float(fs[4].split('=')[-1])
+            dynamic_Elapse.append(float(fs[5].split('=')[-1]))
+        elif "ToStatic = True" in fs:
+            dy2static_Average_reward = float(fs[3].split('=')[-1])
+            dy2static_loss_probs = float(fs[4].split('=')[-1])
+            dy2staic_Elapse.append(float(fs[5].split('=')[-1]))
         else:
             pass
-    return dynamic_logs[-1]
+    Log['dynamic_Average_reward'] = dynamic_Average_reward
+    Log['dynamic_loss_probs'] = dynamic_loss_probs
+    Log['dynamic_Elapse'] = sum(dynamic_Elapse) / len(dynamic_Elapse)
+
+    Log['dy2static_Average_reward'] = dy2static_Average_reward
+    Log['dy2static_loss_probs'] = dy2static_loss_probs
+    Log['dy2staic_Elapse'] = sum(dy2staic_Elapse) / len(dy2staic_Elapse)
+    return Log
 
 
 def log_to_ce(log: str):
@@ -54,14 +65,14 @@ def log_to_ce(log: str):
     Args:
         log (str): log read from sys std input
     """
-    final_dynamic_log = parse_log(log)
+    dict_log = parse_log(log)
 
     kpi_tracker = {}
     for kpi in tracking_kpis:
         kpi_tracker[kpi.name] = kpi
 
-    for key in final_dynamic_log:
-        kpi_tracker[key].add_record(final_dynamic_log[key])
+    for key in dict_log:
+        kpi_tracker[key].add_record(dict_log[key])
         kpi_tracker[key].persist()
 
 
