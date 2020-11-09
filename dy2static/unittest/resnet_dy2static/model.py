@@ -308,12 +308,25 @@ def train(args, to_static):
     return total_loss.numpy()
 
 
+def export_inference_model(class_dim=1000):
+    paddle.set_device('cpu')
+    for layers_num in [50, 101]:
+        resnet = ResNet(layers=layers_num, class_dim=class_dim)
+
+        img = paddle.randn([1, 3, 224, 224])
+        pred = resnet(img)
+        paddle.jit.save(resnet, 'resnet_{}/x'.format(layers_num))
+
+
 def run_benchmark(args):
     # train in dygraph mode
     train(args, to_static=False)
 
     # train in static mode
     train(args, to_static=True)
+
+    # save inference model with class_dim=1000
+    export_inference_model()
 
 
 if __name__ == '__main__':
