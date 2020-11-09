@@ -29,6 +29,31 @@ textcnn_pretrain_epoch_time_gpu1_kpi = DurationKpi('textcnn_pretrain_epoch_time_
 textcnn_pretrain_acc_gpu1_kpi = AccKpi('textcnn_pretrain_acc_gpu1', 0.08, 0, actived=True)
 textcnn_pretrain_loss_gpu1_kpi = DurationKpi('textcnn_pretrain_loss_gpu1', 0.02, 0, actived=True)
 
+dnn_epoch_time_cpu_kpi = DurationKpi('dnn_epoch_time_cpu', 0.02, 0, actived=True)
+dnn_auc_cpu_kpi = AccKpi('dnn_auc_cpu', 0.08, 0, actived=True)
+dnn_epoch_time_gpu1_kpi = DurationKpi('dnn_epoch_time_gpu1', 0.02, 0, actived=True)
+dnn_auc_gpu1_kpi = AccKpi('dnn_auc_gpu1', 0.08, 0, actived=True)
+
+deepfm_epoch_time_cpu_kpi = DurationKpi('deepfm_epoch_time_cpu', 0.02, 0, actived=True)
+deepfm_auc_cpu_kpi = AccKpi('deepfm_auc_cpu', 0.08, 0, actived=True)
+deepfm_epoch_time_gpu1_kpi = DurationKpi('deepfm_epoch_time_gpu1', 0.02, 0, actived=True)
+deepfm_auc_gpu1_kpi = AccKpi('deepfm_auc_gpu1', 0.08, 0, actived=True)
+
+fm_epoch_time_cpu_kpi = DurationKpi('fm_epoch_time_cpu', 0.02, 0, actived=True)
+fm_auc_cpu_kpi = AccKpi('fm_auc_cpu', 0.08, 0, actived=True)
+fm_epoch_time_gpu1_kpi = DurationKpi('fm_epoch_time_gpu1', 0.02, 0, actived=True)
+fm_auc_gpu1_kpi = AccKpi('fm_auc_gpu1', 0.08, 0, actived=True)
+
+logistic_regression_epoch_time_cpu_kpi = DurationKpi('logistic_regression_epoch_time_cpu', 0.02, 0, actived=True)
+logistic_regression_auc_cpu_kpi = AccKpi('logistic_regression_auc_cpu', 0.08, 0, actived=True)
+logistic_regression_epoch_time_gpu1_kpi = DurationKpi('logistic_regression_epoch_time_gpu1', 0.02, 0, actived=True)
+logistic_regression_auc_gpu1_kpi = AccKpi('logistic_regression_auc_gpu1', 0.08, 0, actived=True)
+
+wide_deep_epoch_time_cpu_kpi = DurationKpi('wide_deep_epoch_time_cpu', 0.02, 0, actived=True)
+wide_deep_auc_cpu_kpi = AccKpi('wide_deep_auc_cpu', 0.08, 0, actived=True)
+wide_deep_epoch_time_gpu1_kpi = DurationKpi('wide_deep_epoch_time_gpu1', 0.02, 0, actived=True)
+wide_deep_auc_gpu1_kpi = AccKpi('wide_deep_auc_gpu1', 0.08, 0, actived=True)
+
 tracking_kpis = [
     tagspace_epoch_time_cpu_kpi,
     tagspace_acc_cpu_kpi,
@@ -47,7 +72,27 @@ tracking_kpis = [
     textcnn_loss_gpu1_kpi,
     textcnn_pretrain_epoch_time_gpu1_kpi,
     textcnn_pretrain_acc_gpu1_kpi,
-    textcnn_pretrain_loss_gpu1_kpi
+    textcnn_pretrain_loss_gpu1_kpi,
+    dnn_epoch_time_cpu_kpi,
+    dnn_auc_cpu_kpi,
+    dnn_epoch_time_gpu1_kpi,
+    dnn_auc_gpu1_kpi,
+    deepfm_epoch_time_cpu_kpi,
+    deepfm_auc_cpu_kpi,
+    deepfm_epoch_time_gpu1_kpi,
+    deepfm_auc_gpu1_kpi,
+    fm_epoch_time_cpu_kpi,
+    fm_auc_cpu_kpi,
+    fm_epoch_time_gpu1_kpi,
+    fm_auc_gpu1_kpi,
+    logistic_regression_epoch_time_cpu_kpi,
+    logistic_regression_auc_cpu_kpi,
+    logistic_regression_epoch_time_gpu1_kpi,
+    logistic_regression_auc_gpu1_kpi,
+    wide_deep_epoch_time_cpu_kpi,
+    wide_deep_auc_cpu_kpi,
+    wide_deep_epoch_time_gpu1_kpi,
+    wide_deep_auc_gpu1_kpi
 ]
 
 

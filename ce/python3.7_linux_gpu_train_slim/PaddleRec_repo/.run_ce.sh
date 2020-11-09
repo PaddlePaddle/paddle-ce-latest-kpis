@@ -121,7 +121,7 @@ cat ${log_path}/${model}_gpu1 |grep done |awk -F ',|=' 'END{print "kpis\t""'${mo
 
 
 # 4.4 lr
-model=lr
+model=logistic_regression
 cd ${current_dir}/models/rank/${model}
 mv data data_bk
 ln -s ${dataset_path}/rec_repo/${model}/data
