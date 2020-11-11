@@ -18,13 +18,23 @@ sys.path.insert(0, os.environ['ceroot'])
 
 from kpi import CostKpi, DurationKpi, AccKpi
 
-dynamic_train_reward_kpi = AccKpi('Average_reward', 0.002, 0, actived=True)
-dynamic_train_loss_kpi = CostKpi('loss_probs', 0.002, 0, actived=True)
+dynamic_train_reward_kpi = AccKpi(
+    'dynamic_Average_reward', 0.002, 0, actived=True)
+dynamic_train_loss_kpi = CostKpi('dynamic_loss_probs', 0.002, 0, actived=True)
 dynamic_train_elapse_kpi = DurationKpi(
-    'Elapse', 0.002, 0, actived=True, unit_repr="ms")
+    'dynamic_Elapse', 0.002, 0, actived=True, unit_repr="ms")
+
+dy2static_train_reward_kpi = AccKpi(
+    'dy2static_Average_reward', 0.002, 0, actived=True)
+dy2static_train_loss_kpi = CostKpi(
+    'dy2static_loss_probs', 0.002, 0, actived=True)
+dy2static_train_elapse_kpi = DurationKpi(
+    'dy2static_Elapse', 0.002, 0, actived=True, unit_repr="ms")
 
 tracking_kpis = [
-    dynamic_train_reward_kpi, dynamic_train_loss_kpi, dynamic_train_elapse_kpi
+    dynamic_train_reward_kpi, dynamic_train_loss_kpi, dynamic_train_elapse_kpi,
+    dy2static_train_reward_kpi, dy2static_train_loss_kpi,
+    dy2static_train_elapse_kpi
 ]
 
 
@@ -36,27 +46,31 @@ def parse_log(log: str):
         dynamic_logs[-1] (dict): parsed log info
     """
     dynamic_Elapse = []
-    dy2staic_Elapse = []
+    dy2static_Elapse = []
     for line in log.split('\n'):
         Log = {}
         fs = line.strip().split(',\t')
-        if "ToStatic = False" in fs:
-            dynamic_Average_reward = float(fs[3].split('=')[-1])
-            dynamic_loss_probs = float(fs[4].split('=')[-1])
-            dynamic_Elapse.append(float(fs[5].split('=')[-1]))
-        elif "ToStatic = True" in fs:
-            dy2static_Average_reward = float(fs[3].split('=')[-1])
-            dy2static_loss_probs = float(fs[4].split('=')[-1])
-            dy2staic_Elapse.append(float(fs[5].split('=')[-1]))
-        else:
+        try:
+            if "ToStatic = False" in fs:
+                dynamic_Average_reward = float(fs[3].split('=')[-1])
+                dynamic_loss_probs = float(fs[4].split('=')[-1])
+                dynamic_Elapse.append(float(fs[5].split('=')[-1]))
+            elif "ToStatic = True" in fs:
+                dy2static_Average_reward = float(fs[3].split('=')[-1])
+                dy2static_loss_probs = float(fs[4].split('=')[-1])
+                dy2static_Elapse.append(float(fs[5].split('=')[-1]))
+            else:
+                pass
+        except:
             pass
+
     Log['dynamic_Average_reward'] = dynamic_Average_reward
     Log['dynamic_loss_probs'] = dynamic_loss_probs
     Log['dynamic_Elapse'] = sum(dynamic_Elapse) / len(dynamic_Elapse)
 
     Log['dy2static_Average_reward'] = dy2static_Average_reward
     Log['dy2static_loss_probs'] = dy2static_loss_probs
-    Log['dy2staic_Elapse'] = sum(dy2staic_Elapse) / len(dy2staic_Elapse)
+    Log['dy2static_Elapse'] = sum(dy2static_Elapse) / len(dy2static_Elapse)
     return Log
 
 
