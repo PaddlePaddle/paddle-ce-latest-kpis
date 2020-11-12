@@ -50,7 +50,8 @@ def file_to_ids(src_file, src_vocab):
 
 
 def get_ptb_data(batch_size, num_steps):
-    data_path = '/root/.cache/paddle/dataset/ptb_lm'
+    home_path = os.path.expanduser("~")
+    data_path = os.path.join(home_path, ".cache/paddle/dataset/ptb_lm")
     flag_value = 1342
     download.get_uncompress_data(data_path, flag_value)
 
