@@ -292,10 +292,10 @@ def train(args, to_static=False):
 
             if batch_id % PRINT_STEP == 0:
                 print(
-                    'ToStatic = %s, pass = %d, Iter %d, Loss %0.3f, Elapse(ms) = %f'
+                    'ToStatic = %s, pass = %d, Iter %d, Loss = %0.3f, Elapse(ms) = %f'
                     % (to_static, pass_id, batch_id, out_loss, cost_t))
         # print log from each pass_id
-        print('ToStatic = %s, pass = %d, Loss %0.3f, Elapse(ms) = %f' %
+        print('to_static = %s, pass = %d, Loss = %0.3f, Elapse(ms) = %f' %
               (to_static, pass_id, np.mean(loss), np.mean(cost_time)))
 
     ret = out_loss, last_hidden.numpy(), last_cell.numpy()
