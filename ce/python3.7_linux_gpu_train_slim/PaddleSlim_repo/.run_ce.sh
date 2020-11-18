@@ -44,15 +44,15 @@ python distill.py \
 --teacher_pretrained_model ../pretrain/$2_pretrained
 }
 for i in $(seq 0 2); do
-    CUDA_VISIBLE_DEVICES=${cudaid1} train_dist ${dist_student[$i]} ${dist_teacher[$i]} ${batch_size_1card[$i]} >${current_dir}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu1 2>&1
-    tail -20 ${current_dir}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu1 > ${current_dir}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu1_20
+    CUDA_VISIBLE_DEVICES=${cudaid1} train_dist ${dist_student[$i]} ${dist_teacher[$i]} ${batch_size_1card[$i]} >${log_path}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu1 2>&1
+    tail -20 ${log_path}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu1 > ${log_path}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu1_20
     cd ${current_dir}
-    cat ${current_dir}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu1_20|grep epoch |grep top1 |tr -d ','|awk -F ' ' 'END{print "kpis\t""'dist_${dist_teacher[$i]}_${dist_student[$i]}_acc_top1_gpu1'""\t"$6"\nkpis\t""'dist_${dist_teacher[$i]}_${dist_student[$i]}_acc_top5_gpu1'""\t"$8}' | python _ce.py
+    cat ${log_path}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu1_20|grep epoch |grep top1 |tr -d ','|awk -F ' ' 'END{print "kpis\t""'dist_${dist_teacher[$i]}_${dist_student[$i]}_acc_top1_gpu1'""\t"$6"\nkpis\t""'dist_${dist_teacher[$i]}_${dist_student[$i]}_acc_top5_gpu1'""\t"$8}' | python _ce.py
     cd ${current_dir}/demo/distillation
-    CUDA_VISIBLE_DEVICES=${cudaid8} train_dist ${dist_student[$i]} ${dist_teacher[$i]} ${batch_size_8card[$i]} >${current_dir}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu8 2>&1
-    tail -20 ${current_dir}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu8 > ${current_dir}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu8_20
+    CUDA_VISIBLE_DEVICES=${cudaid8} train_dist ${dist_student[$i]} ${dist_teacher[$i]} ${batch_size_8card[$i]} >${log_path}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu8 2>&1
+    tail -20 ${log_path}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu8 > ${log_path}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu8_20
     cd ${current_dir}
-    cat ${current_dir}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu8_20|grep epoch |grep top1 |tr -d ','|awk -F ' ' 'END{print "kpis\t""'dist_${dist_teacher[$i]}_${dist_student[$i]}_acc_top1_gpu8'""\t"$6"\nkpis\t""'dist_${dist_teacher[$i]}_${dist_student[$i]}_acc_top5_gpu8'""\t"$8}' | python _ce.py
+    cat ${log_path}/dist_${dist_teacher[$i]}_${dist_student[$i]}_gpu8_20|grep epoch |grep top1 |tr -d ','|awk -F ' ' 'END{print "kpis\t""'dist_${dist_teacher[$i]}_${dist_student[$i]}_acc_top1_gpu8'""\t"$6"\nkpis\t""'dist_${dist_teacher[$i]}_${dist_student[$i]}_acc_top5_gpu8'""\t"$8}' | python _ce.py
     #move models for lite
     cd ${current_dir}/demo/distillation
     mkdir slim_dist_${dist_teacher[$i]}_${dist_student[$i]}_uncombined
@@ -67,13 +67,15 @@ done
 cd ${current_dir}/demo/deep_mutual_learning
 ln -s ${dataset_path}/dml/dataset
 model=dml_mv1_mv1_gpu1
-CUDA_VISIBLE_DEVICES=${cudaid1} python dml_train.py --models='mobilenet-mobilenet' --epochs 5 --batch_size 64 >${current_dir}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} python dml_train.py --models='mobilenet-mobilenet' --epochs 5 --batch_size 64 >${log_path}/${model} 2>&1
 cd ${current_dir}
-cat ${current_dir}/${model}|grep best_valid_acc |awk -F ' ' 'END{print "kpis\t""'dml_mv1_mv1_gpu1_best_valid_acc'""\t"$11}' | python _ce.py
+cat ${log_path}/${model}|grep best_valid_acc |awk -F ' ' 'END{print "kpis\t""'dml_mv1_mv1_gpu1_best_valid_acc'""\t"$11}' | python _ce.py
+
+cd ${current_dir}/demo/deep_mutual_learning
 model=dml_mv1_res50_gpu1
-CUDA_VISIBLE_DEVICES=${cudaid1} python dml_train.py --models='mobilenet-resnet50' --epochs 5 --batch_size 64 >${current_dir}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} python dml_train.py --models='mobilenet-resnet50' --epochs 5 --batch_size 64 >${log_path}/${model} 2>&1
 cd ${current_dir}
-cat ${current_dir}/${model}|grep best_valid_acc |awk -F ' ' 'END{print "kpis\t""'dml_mv1_res50_gpu1_best_valid_acc'""\t"$11}' | python _ce.py
+cat ${log_path}/${model}|grep best_valid_acc |awk -F ' ' 'END{print "kpis\t""'dml_mv1_res50_gpu1_best_valid_acc'""\t"$11}' | python _ce.py
 
 
 
@@ -88,13 +90,13 @@ python train.py \
 --num_epochs 1
 }
 for i in $(seq 0 0); do
-    CUDA_VISIBLE_DEVICES=${cudaid1} quan_aware_train ${quan_aware_models[$i]} >${current_dir}/quan_aware_${quan_aware_models[$i]}_gpu1 2>&1
+    CUDA_VISIBLE_DEVICES=${cudaid1} quan_aware_train ${quan_aware_models[$i]} >${log_path}/quan_aware_${quan_aware_models[$i]}_gpu1 2>&1
     cd ${current_dir}
-    cat ${current_dir}/quan_aware_${quan_aware_models[$i]}_gpu1|grep Final |awk -F ' ' 'END{print "kpis\tquant_aware_""'${quan_aware_models[$i]}_acc_top1_gpu1'""\t"$8"\nkpis\tquant_aware_""'${quan_aware_models[$i]}_acc_top5_gpu1'""\t"$10}'|tr -d ";" | python _ce.py
+    cat ${log_path}/quan_aware_${quan_aware_models[$i]}_gpu1|grep Final |awk -F ' ' 'END{print "kpis\tquant_aware_""'${quan_aware_models[$i]}_acc_top1_gpu1'""\t"$8"\nkpis\tquant_aware_""'${quan_aware_models[$i]}_acc_top5_gpu1'""\t"$10}'|tr -d ";" | python _ce.py
     cd ${current_dir}/demo/quant/quant_aware
-    CUDA_VISIBLE_DEVICES=${cudaid8} quan_aware_train ${quan_aware_models[$i]} >${current_dir}/quan_aware_${quan_aware_models[$i]}_gpu8 2>&1
+    CUDA_VISIBLE_DEVICES=${cudaid8} quan_aware_train ${quan_aware_models[$i]} >${log_path}/quan_aware_${quan_aware_models[$i]}_gpu8 2>&1
     cd ${current_dir}
-    cat ${current_dir}/quan_aware_${quan_aware_models[$i]}_gpu8|grep Final |awk -F ' ' 'END{print "kpis\tquant_aware_""'${quan_aware_models[$i]}_acc_top1_gpu8'""\t"$8"\nkpis\tquant_aware_""'${quan_aware_models[$i]}_acc_top5_gpu8'""\t"$10}'|tr -d ';' | python _ce.py
+    cat ${log_path}/quan_aware_${quan_aware_models[$i]}_gpu8|grep Final |awk -F ' ' 'END{print "kpis\tquant_aware_""'${quan_aware_models[$i]}_acc_top1_gpu8'""\t"$8"\nkpis\tquant_aware_""'${quan_aware_models[$i]}_acc_top5_gpu8'""\t"$10}'|tr -d ';' | python _ce.py
     cd ${current_dir}/demo/quant/quant_aware
 #    for lite
     mkdir slim_quan_aware_${quan_aware_models[$i]}_combined
@@ -108,13 +110,17 @@ for i in $(seq 0 0); do
 done
 # quant_aware MobileNet
 cd ${current_dir}/demo/quant/quant_aware
-CUDA_VISIBLE_DEVICES=${cudaid1} python train.py --model MobileNet --pretrained_model ../../pretrain/MobileNetV1_pretrained --checkpoint_dir ./output/mobilenetv1 --num_epochs 1 >${current_dir}/quant_aware_v1_1card 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} python train.py --model MobileNet \
+--pretrained_model ../../pretrain/MobileNetV1_pretrained \
+--checkpoint_dir ./output/mobilenetv1 --num_epochs 1 >${log_path}/quant_aware_v1_1card 2>&1
 cd ${current_dir}
-cat quant_aware_v1_1card |grep Final |awk -F ' ' 'END{print "kpis\tquant_aware_v1_acc_top1_gpu1\t"$8"\nkpis\tquant_aware_v1_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
+cat ${log_path}/quant_aware_v1_1card  |grep Final |awk -F ' ' 'END{print "kpis\tquant_aware_v1_acc_top1_gpu1\t"$8"\nkpis\tquant_aware_v1_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
 cd ${current_dir}/demo/quant/quant_aware
-CUDA_VISIBLE_DEVICES=${cudaid8} python train.py --model MobileNet --pretrained_model ../../pretrain/MobileNetV1_pretrained --checkpoint_dir ./output/mobilenetv1 --num_epochs 1 >${current_dir}/quant_aware_v1_8card 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid8} python train.py --model MobileNet \
+--pretrained_model ../../pretrain/MobileNetV1_pretrained \
+--checkpoint_dir ./output/mobilenetv1 --num_epochs 1 >${log_path}/quant_aware_v1_8card 2>&1
 cd ${current_dir}
-cat quant_aware_v1_8card |grep Final |awk -F ' ' 'END{print "kpis\tquant_aware_v1_acc_top1_gpu8\t"$8"\nkpis\tquant_aware_v1_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
+cat ${log_path}/quant_aware_v1_8card |grep Final |awk -F ' ' 'END{print "kpis\tquant_aware_v1_acc_top1_gpu8\t"$8"\nkpis\tquant_aware_v1_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
 # quantization_models
 cd ${current_dir}/demo/quant/quant_aware
 mkdir slim_quan_v1_aware_combined
@@ -137,22 +143,30 @@ if [ -d "v1_cpu5_b100_lr1dir" ];then
     rm -rf v1_cpu5_b100_lr1dir
 fi
 model=quant_em_word2vec_T
-time (OPENBLAS_NUM_THREADS=1 CPU_NUM=5 python train.py --train_data_dir data/convert_text8 --dict_path data/test_build_dict --num_passes 1 --batch_size 100 --model_output_dir v1_cpu5_b100_lr1dir --base_lr 1.0 --print_batch 1000 --with_speed --is_sparse >${log_path}/${model}) >>${log_path}/${model} 2>&1
+OPENBLAS_NUM_THREADS=1 CPU_NUM=5 python train.py --train_data_dir data/convert_text8 \
+--dict_path data/test_build_dict --num_passes 1 --batch_size 100 \
+--model_output_dir v1_cpu5_b100_lr1dir --base_lr 1.0 --print_batch 1000 \
+--with_speed --is_sparse >${log_path}/${model} 2>&1
 print_info $? ${model}
 # before quan infer
 model=quant_em_infer1
-time (python infer.py --infer_epoch --test_dir data/test_mid_dir --dict_path data/test_build_dict_word_to_id_ --batch_size 20000 --model_dir v1_cpu5_b100_lr1dir/  --start_index 0 --last_index 0 >${log_path}/${model}) >>${log_path}/${model} 2>&1
+python infer.py --infer_epoch --test_dir data/test_mid_dir \
+--dict_path data/test_build_dict_word_to_id_ --batch_size 20000 \
+--model_dir v1_cpu5_b100_lr1dir/  --start_index 0 --last_index 0 >${log_path}/${model} 2>&1
 print_info $? ${model}
 # after quan infer
 model=quant_em_infer2
-time (python infer.py --infer_epoch --test_dir data/test_mid_dir --dict_path data/test_build_dict_word_to_id_ --batch_size 20000 --model_dir v1_cpu5_b100_lr1dir/  --start_index 0 --last_index 0 --emb_quant True >${log_path}/${model}) >>${log_path}/${model} 2>&1
+python infer.py --infer_epoch --test_dir data/test_mid_dir \
+--dict_path data/test_build_dict_word_to_id_ --batch_size 20000 \
+--model_dir v1_cpu5_b100_lr1dir/  --start_index 0 --last_index 0 --emb_quant True >${log_path}/${model} 2>&1
 print_info $? ${model}
 
 # 2.3 quan_post
 cd ${current_dir}/demo/quant/quant_post
 # export for quan
 model=quant_post_export
-CUDA_VISIBLE_DEVICES=${cudaid1} python export_model.py --model "MobileNet" --pretrained_model ../../pretrain/MobileNetV1_pretrained --data imagenet >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} python export_model.py --model "MobileNet" \
+--pretrained_model ../../pretrain/MobileNetV1_pretrained --data imagenet >${log_path}/${model} 2>&1
 print_info $? ${model}
 #before quan ;inference_model/  combined
 mkdir slim_quan_MobileNet_post_1_combined
@@ -162,15 +176,18 @@ mv ./slim_quan_MobileNet_post_1_combined/weights ./slim_quan_MobileNet_post_1_co
 copy_for_lite slim_quan_MobileNet_post_1_combined ${models_from_train}/
 # quant_post
 model=quant_post_T
-CUDA_VISIBLE_DEVICES=${cudaid1} python quant_post.py --model_path ./inference_model/MobileNet --save_path ./quant_model_train/MobileNet --model_filename model --params_filename weights >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} python quant_post.py --model_path ./inference_model/MobileNet \
+--save_path ./quant_model_train/MobileNet --model_filename model --params_filename weights >${log_path}/${model} 2>&1
 print_info $? ${model}
 # before quan eval
 model=quant_post_eval1
-CUDA_VISIBLE_DEVICES=${cudaid1} python eval.py --model_path ./inference_model/MobileNet --model_name model --params_name weights >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} python eval.py --model_path ./inference_model/MobileNet \
+--model_name model --params_name weights >${log_path}/${model} 2>&1
 print_info $? ${model}
 # after quan eval
 model=quant_post_eval2
-CUDA_VISIBLE_DEVICES=${cudaid1} python eval.py --model_path ./quant_model_train/MobileNet --model_name __model__ --params_name __params__ >${log_path}/${model} 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} python eval.py --model_path ./quant_model_train/MobileNet \
+--model_name __model__ --params_name __params__ >${log_path}/${model} 2>&1
 print_info $? ${model}
 #for lite combined
 mkdir slim_quan_MobileNet_post_2_combined
@@ -183,16 +200,16 @@ cd ${current_dir}/demo/quant/pact_quant_aware
 CUDA_VISIBLE_DEVICES=${cudaid1} python train.py --model MobileNetV3_large_x1_0 \
 --pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
 --num_epochs 1 --lr 0.0001 --use_pact True --batch_size 64 --lr_strategy=piecewise_decay \
---step_epochs 1 --l2_decay 1e-5  >${current_dir}/pact_quant_aware_mv3_1card 2>&1
+--step_epochs 1 --l2_decay 1e-5  >${log_path}/pact_quant_aware_mv3_1card 2>&1
 cd ${current_dir}
-cat pact_quant_aware_mv3_1card |grep Final |awk -F ' ' 'END{print "kpis\tpact_quant_aware_mv3_acc_top1_gpu1\t"$8"\nkpis\tpact_quant_aware_mv3_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
+cat ${log_path}/pact_quant_aware_mv3_1card |grep Final |awk -F ' ' 'END{print "kpis\tpact_quant_aware_mv3_acc_top1_gpu1\t"$8"\nkpis\tpact_quant_aware_mv3_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
 cd ${current_dir}/demo/quant/pact_quant_aware
 CUDA_VISIBLE_DEVICES=${cudaid8} python train.py --model MobileNetV3_large_x1_0 \
 --pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
 --num_epochs 1 --lr 0.0001 --use_pact True --batch_size 128 --lr_strategy=piecewise_decay \
---step_epochs 1 --l2_decay 1e-5 >${current_dir}/pact_quant_aware_mv3_8card 2>&1
+--step_epochs 1 --l2_decay 1e-5 >${log_path}/pact_quant_aware_mv3_8card 2>&1
 cd ${current_dir}
-cat pact_quant_aware_mv3_8card |grep Final |awk -F ' ' 'END{print "kpis\tpact_quant_aware_mv3_acc_top1_gpu8\t"$8"\nkpis\tpact_quant_aware_mv3_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
+cat ${log_path}/pact_quant_aware_mv3_8card |grep Final |awk -F ' ' 'END{print "kpis\tpact_quant_aware_mv3_acc_top1_gpu8\t"$8"\nkpis\tpact_quant_aware_mv3_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
 # quantization_models
 cd ${current_dir}/demo/quant/pact_quant_aware
 mkdir slim_pact_quant_aware_mv3_combined
@@ -206,47 +223,51 @@ if [ -d "quantization_models" ];then
 fi
 
 # pact_quant_aware MobileNetV3_2 (pact quan all)
-cp ${dataset_path}/pact_quant_aware/pact_quan_V3_2_train.py ./
-cd ${current_dir}/demo/quant/pact_quant_aware
-CUDA_VISIBLE_DEVICES=${cudaid1} python pact_quan_V3_2_train.py --model MobileNetV3_large_x1_0 \
---pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
---num_epochs 1 --lr 0.0001 --use_pact True --batch_size 64 --lr_strategy=piecewise_decay \
---step_epochs 1 --l2_decay 1e-5  >${current_dir}/pact_quant_aware_mv3_2_1card 2>&1
-cd ${current_dir}
-cat pact_quant_aware_mv3_2_1card |grep Final |awk -F ' ' 'END{print "kpis\tpact_quant_aware_mv3_2_acc_top1_gpu1\t"$8"\nkpis\tpact_quant_aware_mv3_2_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
-cd ${current_dir}/demo/quant/pact_quant_aware
-CUDA_VISIBLE_DEVICES=${cudaid8} python pact_quan_V3_2_train.py --model MobileNetV3_large_x1_0 \
---pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
---num_epochs 1 --lr 0.0001 --use_pact True --batch_size 128 --lr_strategy=piecewise_decay \
---step_epochs 1 --l2_decay 1e-5  >${current_dir}/pact_quant_aware_mv3_2_8card 2>&1
-cd ${current_dir}
-cat pact_quant_aware_mv3_2_8card |grep Final |awk -F ' ' 'END{print "kpis\tpact_quant_aware_mv3_2_acc_top1_gpu8\t"$8"\nkpis\tpact_quant_aware_mv3_2_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
-# quantization_models
-cd ${current_dir}/demo/quant/pact_quant_aware
-mkdir slim_pact_quant_aware_mv3_2_combined
-cp ./quantization_models/MobileNetV3_large_x1_0/act_moving_average_abs_max_w_channel_wise_abs_max/float/* ./slim_pact_quant_aware_mv3_2_combined/
-mv ./slim_pact_quant_aware_mv3_2_combined/model ./slim_pact_quant_aware_mv3_2_combined/__model__
-mv ./slim_pact_quant_aware_mv3_2_combined/params ./slim_pact_quant_aware_mv3_2_combined/__params__
-#for lite
-copy_for_lite slim_pact_quant_aware_mv3_2_combined ${models_from_train}
-if [ -d "quantization_models" ];then
-    mv  quantization_models slim_pact_quant_aware_mv3_2_combined
-fi
+#cp ${dataset_path}/pact_quant_aware/pact_quan_V3_2_train.py ./
+#cd ${current_dir}/demo/quant/pact_quant_aware
+#CUDA_VISIBLE_DEVICES=${cudaid1} python pact_quan_V3_2_train.py --model MobileNetV3_large_x1_0 \
+#--pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
+#--num_epochs 1 --lr 0.0001 --use_pact True --batch_size 64 --lr_strategy=piecewise_decay \
+#--step_epochs 1 --l2_decay 1e-5  >${current_dir}/pact_quant_aware_mv3_2_1card 2>&1
+#cd ${current_dir}
+#cat pact_quant_aware_mv3_2_1card |grep Final |awk -F ' ' 'END{print "kpis\tpact_quant_aware_mv3_2_acc_top1_gpu1\t"$8"\nkpis\tpact_quant_aware_mv3_2_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
+#cd ${current_dir}/demo/quant/pact_quant_aware
+#CUDA_VISIBLE_DEVICES=${cudaid8} python pact_quan_V3_2_train.py --model MobileNetV3_large_x1_0 \
+#--pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
+#--num_epochs 1 --lr 0.0001 --use_pact True --batch_size 128 --lr_strategy=piecewise_decay \
+#--step_epochs 1 --l2_decay 1e-5  >${current_dir}/pact_quant_aware_mv3_2_8card 2>&1
+#cd ${current_dir}
+#cat pact_quant_aware_mv3_2_8card |grep Final |awk -F ' ' 'END{print "kpis\tpact_quant_aware_mv3_2_acc_top1_gpu8\t"$8"\nkpis\tpact_quant_aware_mv3_2_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
+## quantization_models
+#cd ${current_dir}/demo/quant/pact_quant_aware
+#mkdir slim_pact_quant_aware_mv3_2_combined
+#cp ./quantization_models/MobileNetV3_large_x1_0/act_moving_average_abs_max_w_channel_wise_abs_max/float/* ./slim_pact_quant_aware_mv3_2_combined/
+#mv ./slim_pact_quant_aware_mv3_2_combined/model ./slim_pact_quant_aware_mv3_2_combined/__model__
+#mv ./slim_pact_quant_aware_mv3_2_combined/params ./slim_pact_quant_aware_mv3_2_combined/__params__
+##for lite
+#copy_for_lite slim_pact_quant_aware_mv3_2_combined ${models_from_train}
+#if [ -d "quantization_models" ];then
+#    mv  quantization_models slim_pact_quant_aware_mv3_2_combined
+#fi
 
 
 #3.1 prune MobileNetV1
 cd ${current_dir}/demo/prune
-CUDA_VISIBLE_DEVICES=${cudaid1} python train.py --model "MobileNet" --pruned_ratio 0.31 --data "imagenet" --pretrained_model ../pretrain/MobileNetV1_pretrained/ --num_epochs 1 --save_inference True >${current_dir}/prune_v1_T_1card 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} python train.py --model "MobileNet" \
+--pruned_ratio 0.31 --data "imagenet" --pretrained_model ../pretrain/MobileNetV1_pretrained/ \
+--num_epochs 1 --save_inference True >${log_path}/prune_v1_T_1card 2>&1
 cd ${current_dir}
-cat prune_v1_T_1card |grep Final |awk -F ' ' 'END{print "kpis\tprune_v1_acc_top1_gpu1\t"$8"\nkpis\tprune_v1_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
+cat ${log_path}/prune_v1_T_1card |grep Final |awk -F ' ' 'END{print "kpis\tprune_v1_acc_top1_gpu1\t"$8"\nkpis\tprune_v1_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
 cd ${current_dir}/demo/prune
-CUDA_VISIBLE_DEVICES=${cudaid8} python train.py --model "MobileNet" --pruned_ratio 0.31 --data "imagenet" --pretrained_model ./MobileNetV1_pretrained/ --num_epochs 1  --save_inference True >${current_dir}/prune_v1_T_8card 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid8} python train.py --model "MobileNet" \
+--pruned_ratio 0.31 --data "imagenet" --pretrained_model ./MobileNetV1_pretrained/ \
+--num_epochs 1  --save_inference True >${log_path}/prune_v1_T_8card 2>&1
 # for lite uncombined
 mkdir slim_prune_MobileNetv1_uncombined
 cp ./models/infer_models/0/* ./slim_prune_MobileNetv1_uncombined/
 copy_for_lite slim_prune_MobileNetv1_uncombined ${models_from_train}
 cd ${current_dir}
-cat prune_v1_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_v1_acc_top1_gpu8\t"$8"\nkpis\tprune_v1_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
+cat ${log_path}/prune_v1_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_v1_acc_top1_gpu8\t"$8"\nkpis\tprune_v1_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
 # 3.2 prune eval
 cd ${current_dir}/demo/prune
 model=slim_prune_eval
@@ -274,17 +295,17 @@ python train.py \
     --model_path="./fpgm_mobilenetv1_models" \
     --save_inference True
 }
-CUDA_VISIBLE_DEVICES=${cudaid1} slim_prune_fpgm_v1 >${current_dir}/slim_prune_fpgm_v1_f50_T_1card 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} slim_prune_fpgm_v1 >${log_path}/slim_prune_fpgm_v1_f50_T_1card 2>&1
 cd ${current_dir}
-cat slim_prune_fpgm_v1_f50_T_1card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v1_f50_acc_top1_gpu1\t"$8"\nkpis\tprune_fpgm_v1_f50_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
+cat ${log_path}/slim_prune_fpgm_v1_f50_T_1card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v1_f50_acc_top1_gpu1\t"$8"\nkpis\tprune_fpgm_v1_f50_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
 cd ${current_dir}/demo/prune
-CUDA_VISIBLE_DEVICES=${cudaid8} slim_prune_fpgm_v1 >${current_dir}/slim_prune_fpgm_v1_f50_T_8card 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid8} slim_prune_fpgm_v1 >${log_path}/slim_prune_fpgm_v1_f50_T_8card 2>&1
 # for lite uncombined
 mkdir slim_prune_fpgm_v1_f50_uncombined
 cp ./fpgm_mobilenetv1_models/infer_models/0/* ./slim_prune_fpgm_v1_f50_uncombined/
 copy_for_lite slim_prune_fpgm_v1_f50_uncombined ${models_from_train}
 cd ${current_dir}
-cat slim_prune_fpgm_v1_f50_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v1_f50_acc_top1_gpu8\t"$8"\nkpis\tprune_fpgm_v1_f50_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
+cat ${log_path}/slim_prune_fpgm_v1_f50_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v1_f50_acc_top1_gpu8\t"$8"\nkpis\tprune_fpgm_v1_f50_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
 # 3.2.2 prune eval
 cd ${current_dir}/demo/prune
 model=slim_prune_fpgm_v1_eval
@@ -309,17 +330,17 @@ python train.py \
     --model_path="./output/fpgm_mobilenetv2_models" \
     --save_inference True
 }
-CUDA_VISIBLE_DEVICES=${cudaid1} slim_prune_fpgm_v2 >${current_dir}/slim_prune_fpgm_v2_f50_T_1card 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} slim_prune_fpgm_v2 >${log_path}/slim_prune_fpgm_v2_f50_T_1card 2>&1
 cd ${current_dir}
-cat slim_prune_fpgm_v2_f50_T_1card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v2_f50_acc_top1_gpu1\t"$8"\nkpis\tprune_fpgm_v2_f50_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
+cat ${log_path}/slim_prune_fpgm_v2_f50_T_1card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v2_f50_acc_top1_gpu1\t"$8"\nkpis\tprune_fpgm_v2_f50_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
 cd ${current_dir}/demo/prune
-CUDA_VISIBLE_DEVICES=${cudaid8} slim_prune_fpgm_v2 >${current_dir}/slim_prune_fpgm_v2_f50_T_8card 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid8} slim_prune_fpgm_v2 >${log_path}/slim_prune_fpgm_v2_f50_T_8card 2>&1
 # for lite uncombined
 mkdir slim_prune_fpgm_v2_f50_uncombined
 cp ./fpgm_mobilenetv2_models/infer_models/0/* ./slim_prune_fpgm_v2_f50_uncombined/
 copy_for_lite slim_prune_fpgm_v2_f50_uncombined ${models_from_train}
 cd ${current_dir}
-cat slim_prune_fpgm_v2_f50_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v2_f50_acc_top1_gpu8\t"$8"\nkpis\tprune_fpgm_v2_f50_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
+cat ${log_path}/slim_prune_fpgm_v2_f50_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v2_f50_acc_top1_gpu8\t"$8"\nkpis\tprune_fpgm_v2_f50_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
 # 3.2.2 prune eval
 cd ${current_dir}/demo/prune
 model=slim_prune_fpgm_v2_eval
@@ -345,17 +366,17 @@ python train.py \
     --model_path="./fpgm_resnet34_models" \
     --save_inference True
 }
-CUDA_VISIBLE_DEVICES=${cudaid1} slim_prune_fpgm_resnet34 >${current_dir}/slim_prune_fpgm_resnet34_f50_T_1card 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid1} slim_prune_fpgm_resnet34 >${log_path}/slim_prune_fpgm_resnet34_f50_T_1card 2>&1
 cd ${current_dir}
-cat slim_prune_fpgm_resnet34_f50_T_1card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_resnet34_f50_acc_top1_gpu1\t"$8"\nkpis\tprune_fpgm_resnet34_f50_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
+cat ${log_path}/slim_prune_fpgm_resnet34_f50_T_1card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_resnet34_f50_acc_top1_gpu1\t"$8"\nkpis\tprune_fpgm_resnet34_f50_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
 cd ${current_dir}/demo/prune
-CUDA_VISIBLE_DEVICES=${cudaid8} slim_prune_fpgm_v1 >${current_dir}/slim_prune_fpgm_resnet34_f50_T_8card 2>&1
+CUDA_VISIBLE_DEVICES=${cudaid8} slim_prune_fpgm_v1 >${log_path}/slim_prune_fpgm_resnet34_f50_T_8card 2>&1
 # for lite uncombined
 mkdir slim_prune_fpgm_resnet34_f50_uncombined
 cp ./fpgm_resnet34_models/infer_models/0/* ./slim_prune_fpgm_resnet34_f50_uncombined/
 copy_for_lite slim_prune_fpgm_resnet34_f50_uncombined ${models_from_train}
 cd ${current_dir}
-cat slim_prune_fpgm_resnet34_f50_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_resnet34_f50_acc_top1_gpu8\t"$8"\nkpis\tprune_fpgm_resnet34_f50_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
+cat ${log_path}/slim_prune_fpgm_resnet34_f50_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_resnet34_f50_acc_top1_gpu8\t"$8"\nkpis\tprune_fpgm_resnet34_f50_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
 # 3.2.2 prune eval
 cd ${current_dir}/demo/prune
 model=slim_prune_fpgm_resnet34_eval
@@ -379,13 +400,13 @@ eval_prune(){
     python eval.py --model $1 --data "imagenet" --model_path "./models/0"
 }
 for i in $(seq 0 0); do
-    CUDA_VISIBLE_DEVICES=${cudaid1} train_prune ${prune_models[$i]} >${current_dir}/prune_${prune_models[$i]}_gpu1 2>&1
+    CUDA_VISIBLE_DEVICES=${cudaid1} train_prune ${prune_models[$i]} >${log_path}/prune_${prune_models[$i]}_gpu1 2>&1
     cd ${current_dir}
-    cat ${current_dir}/prune_${prune_models[$i]}_gpu1|grep Final |awk -F ' ' 'END{print "kpis\tprune_""'${prune_models[$i]}_acc_top1_gpu1'""\t"$8"\nkpis\tprune_""'${prune_models[$i]}_acc_top5_gpu1'""\t"$10}'|tr -d ';' | python _ce.py
+    cat ${log_path}/prune_${prune_models[$i]}_gpu1|grep Final |awk -F ' ' 'END{print "kpis\tprune_""'${prune_models[$i]}_acc_top1_gpu1'""\t"$8"\nkpis\tprune_""'${prune_models[$i]}_acc_top5_gpu1'""\t"$10}'|tr -d ';' | python _ce.py
     cd ${current_dir}/demo/prune
-    CUDA_VISIBLE_DEVICES=${cudaid8} train_prune ${prune_models[$i]} >${current_dir}/prune_${prune_models[$i]}_gpu8 2>&1
+    CUDA_VISIBLE_DEVICES=${cudaid8} train_prune ${prune_models[$i]} >${log_path}/prune_${prune_models[$i]}_gpu8 2>&1
     cd ${current_dir}
-    cat ${current_dir}/prune_${prune_models[$i]}_gpu8|grep Final |awk -F ' ' 'END{print "kpis\tprune_""'${prune_models[$i]}_acc_top1_gpu8'""\t"$8"\nkpis\tprune_""'${prune_models[$i]}_acc_top5_gpu8'""\t"$10}'|tr -d ';' | python _ce.py
+    cat ${log_path}/prune_${prune_models[$i]}_gpu8|grep Final |awk -F ' ' 'END{print "kpis\tprune_""'${prune_models[$i]}_acc_top1_gpu8'""\t"$8"\nkpis\tprune_""'${prune_models[$i]}_acc_top5_gpu8'""\t"$10}'|tr -d ';' | python _ce.py
     #move models for lite uncombined
     cd ${current_dir}/demo/prune
     mkdir slim_prune_${prune_models[$i]}_uncombined
