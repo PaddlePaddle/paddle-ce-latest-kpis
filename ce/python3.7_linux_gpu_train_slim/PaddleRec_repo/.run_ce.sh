@@ -8,10 +8,10 @@ export log_path_rec=${log_path}/rec
 print_info(){
 if [ $1 -ne 0 ];then
     mv ${log_path_rec}/$2 ${log_path_rec}/$2_FAIL.log
-    echo -e "\033[31m ${log_path_rec}/$2_FAIL \033[0m"
+    echo -e "\033[31m $2_FAIL \033[0m"
 else
     mv ${log_path_rec}/$2 ${log_path_rec}/$2_SUCCESS.log
-    echo -e "\033[32m ${log_path_rec}/$2_SUCCESS \033[0m"
+    echo -e "\033[32m $2_SUCCESS \033[0m"
 fi
 }
 python setup.py install
@@ -19,12 +19,12 @@ python setup.py install
 run_con_cpu(){
 cp ${dataset_path}/rec_repo/rec_config/$1_cpu_config.yaml ./
 python -m paddlerec.run -m ./$1_cpu_config.yaml >${log_path_rec}/$1_cpu 2>&1
-print_info $? $1
+print_info $? $1_cpu
 }
 run_con_gpu(){
 cp ${dataset_path}/rec_repo/rec_config/$1_gpu_config.yaml ./
 CUDA_VISIBLE_DEVICES=${cudaid1} python -m paddlerec.run -m ./$1_gpu_config.yaml >${log_path_rec}/$1_gpu1 2>&1
-print_info $? $1
+print_info $? $1_gpu1
 }
 
 # 1.1 tagspace  1epoch
@@ -66,7 +66,7 @@ cat ${log_path_rec}/${model}_gpu1_SUCCESS.log |grep done |head -1|awk -F ' |,|='
 cat ${log_path_rec}/${model}_gpu1_SUCCESS.log |grep done |tail -1 |awk -F ' |,|=' '{print "kpis\t""'${model}'""_acc_gpu1\t"$20"\nkpis\t""'${model}'""_loss_gpu1\t"$23}'|tr -d '[][]' |python _ce.py
 
 # 2 match(3/3)
-# 2.1 match-pyramid
+# 2.1 match-pyramid  这个目录下的模型都是eval中写死了训练的log路径，需要改进
 model=match-pyramid
 model_tmp=match_pyramid
 cd ${current_dir}/models/match/${model}
@@ -85,12 +85,14 @@ cat ${log_path_rec}/${model}_cpu_eval_SUCCESS.log |grep map|awk -F ' ' '{print "
 cat ${log_path_rec}/${model}_gpu1_SUCCESS.log |grep done |head -2|tail -1 |awk -F ' ' '{print "kpis\t""'${model_tmp}'""_epoch_time_gpu1\t"$6}'|python _ce.py
 cat ${log_path_rec}/${model}_gpu1_eval_SUCCESS.log |grep map|awk -F ' ' '{print "kpis\t""'${model_tmp}'""_map_gpu1\t"$2}'|python _ce.py
 
-# 2.2 dsmm
-model=dsmm
+# 2.2 dssm
+model=dssm
 cd ${current_dir}/models/match/${model}
 mv data data_bk
 ln -s ${dataset_path}/rec_repo/${model}/data
 cp run.sh run_cpu.sh && cp run.sh run_gpu.sh
+sed -i 's/config/dssm_cpu_config/g' run_cpu.sh
+sed -i 's/config/dssm_gpu1_config/g' run_gpu.sh
 bash run_cpu.sh > ${log_path_rec}/${model}_cpu 2>&1
 print_info $? ${model}_cpu
 CUDA_VISIBLE_DEVICES=${cudaid1} bash run_gpu.sh > ${log_path_rec}/${model}_gpu1 2>&1
@@ -107,7 +109,7 @@ mv data data_bk
 ln -s ${dataset_path}/rec_repo/${model}/data
 cp run.sh run_cpu.sh && cp run.sh run_gpu.sh
 sed -i 's/config/multiview-simnet_cpu_config/g' run_cpu.sh
-sed -i 's/config/multiview-simnet_gpu1_config/g' run_cpu.sh
+sed -i 's/config/multiview-simnet_gpu1_config/g' run_gpu.sh
 bash run_cpu.sh > ${log_path_rec}/${model}_cpu 2>&1
 print_info $? ${model}_cpu
 CUDA_VISIBLE_DEVICES=${cudaid1} bash run_gpu.sh > ${log_path_rec}/${model}_gpu1 2>&1
@@ -238,7 +240,7 @@ print_info $? ${model}_infer_cpu
 python infer.py --test_dir ./data/all_test --dict_path ./data/all_dict/word_id_dict.txt \
 --batch_size 10000 --model_dir ./increment_w2v_gpu/  \
 --start_index 0 --last_index 4 --emb_size 300 >${log_path_rec}/${model}_infer_gpu1 2>&1
-print_info $? ${model}_infer_cpu
+print_info $? ${model}_infer_gpu1
 cd ${current_dir}
 cat ${log_path_rec}/${model}_cpu_SUCCESS.log |grep done |head -1 |awk -F ' ' '{print "kpis\t""'${model}'""_epoch_time_cpu\t"$6}' |tr -d ','|python _ce.py
 cat ${log_path_rec}/${model}_infer_cpu_SUCCESS.log |grep acc|awk -F ' |:' 'END{print "kpis\t""'${model}'""_acc_cpu\t"$5}' |tr -d '[]'|python _ce.py
@@ -253,3 +255,14 @@ run_con_cpu ${model}
 print_info $? ${model}
 run_con_gpu ${model}
 print_info $? ${model}
+python infer.py --test_epoch 19 --inference_model_dir ./inference_youtubednn_cpu \
+--increment_model_dir ./increment_youtubednn_cpu --watch_vec_size 64 \
+--search_vec_size 64 --other_feat_size 64 --topk 5 >${log_path_rec}/${model}_infer_cpu 2>&1
+print_info $? ${model}_infer_cpu
+CUDA_VISIBLE_DEVICES=${cudaid1} python infer.py --use_gpu 1 --test_epoch 19 \
+--inference_model_dir ./inference_youtubednn_gpu --increment_model_dir ./increment_youtubednn_gpu \
+--watch_vec_size 64 --search_vec_size 64 \
+--other_feat_size 64 --topk 5 >${log_path_rec}/${model}_infer_gpu1 2>&1
+print_info $? ${model}_infer_gpu1
+
+
