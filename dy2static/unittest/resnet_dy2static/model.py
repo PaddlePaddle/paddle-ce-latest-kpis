@@ -243,6 +243,7 @@ def reader_decorator(reader):
 
 
 def train(args, to_static):
+    program_translator.enable(to_static)
     # set random seed
     np.random.seed(SEED)
     paddle.seed(SEED)
