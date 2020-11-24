@@ -3,14 +3,18 @@ current_dir=$PWD
 export MKL_NUM_THREADS=1
 export OMP_NUM_THREADS=1
 cudaid1=${card2:=0,1} # use 0-th card as default
+pip install pandas
+pip install jieba
+
+
 mkdir ${log_path}/rec
 export log_path_rec=${log_path}/rec
 print_info(){
 if [ $1 -ne 0 ];then
-    mv ${log_path_rec}/$2 ${log_path_rec}/$2_FAIL.log
+    mv ${log_path_rec}/$2 ${log_path_rec}/FAIL_$2.log
     echo -e "\033[31m $2_FAIL \033[0m"
 else
-    mv ${log_path_rec}/$2 ${log_path_rec}/$2_SUCCESS.log
+    mv ${log_path_rec}/$2 ${log_path_rec}/SUCCESS_$2.log
     echo -e "\033[32m $2_SUCCESS \033[0m"
 fi
 }
@@ -142,9 +146,9 @@ run_con_cpu ${model}
 run_con_gpu ${model}
 cd ${current_dir}
 cat ${log_path_rec}/${model}_cpu_SUCCESS.log |grep done |tail -1 |awk -F ' |,|=' '{print "kpis\t""'${model}'""_AUC_income_cpu\t"$15"\nkpis\t""'${model}'""_AUC_marital_cpu\t"$18}'|tr -d '[][]' |python _ce.py
-cat ${log_path_rec}/${model}_cpu_SUCCESS.log |grep done |tail -1 |awk -F ' |,|=' '{print "kpis\t""'${model}'""_epoch_time_cpu\t"$7' |python _ce.py
+cat ${log_path_rec}/${model}_cpu_SUCCESS.log |grep done |tail -1 |awk -F ' |,|=' '{print "kpis\t""'${model}'""_epoch_time_cpu\t"$7}' |python _ce.py
 cat ${log_path_rec}/${model}_gpu1_SUCCESS.log |grep done |tail -1 |awk -F ' |,|=' '{print "kpis\t""'${model}'""_AUC_income_gpu1\t"$15"\nkpis\t""'${model}'""_AUC_marital_gpu1\t"$18}'|tr -d '[][]' |python _ce.py
-cat ${log_path_rec}/${model}_gpu1_SUCCESS.log |grep done |tail -1 |awk -F ' |,|=' '{print "kpis\t""'${model}'""_epoch_time_gpu1\t"$7' |python _ce.py
+cat ${log_path_rec}/${model}_gpu1_SUCCESS.log |grep done |tail -1 |awk -F ' |,|=' '{print "kpis\t""'${model}'""_epoch_time_gpu1\t"$7}' |python _ce.py
 
 # 4.1 rank(5/21) deepfm
 model=deepfm

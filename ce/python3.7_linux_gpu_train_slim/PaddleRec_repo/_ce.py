@@ -76,8 +76,10 @@ logistic_regression_auc_gpu1_kpi = AccKpi('logistic_regression_auc_gpu1', 0.08, 
 
 wide_deep_epoch_time_cpu_kpi = DurationKpi('wide_deep_epoch_time_cpu', 0.02, 0, actived=True)
 wide_deep_auc_cpu_kpi = AccKpi('wide_deep_auc_cpu', 0.08, 0, actived=True)
+wide_deep_acc_cpu_kpi = AccKpi('wide_deep_acc_cpu', 0.08, 0, actived=True)
 wide_deep_epoch_time_gpu1_kpi = DurationKpi('wide_deep_epoch_time_gpu1', 0.02, 0, actived=True)
 wide_deep_auc_gpu1_kpi = AccKpi('wide_deep_auc_gpu1', 0.08, 0, actived=True)
+wide_deep_acc_gpu1_kpi = AccKpi('wide_deep_acc_gpu1', 0.08, 0, actived=True)
 
 gnn_epoch_time_cpu_kpi = DurationKpi('gnn_epoch_time_cpu', 0.02, 0, actived=True)
 gnn_recall20_cpu_kpi = AccKpi('gnn_recall20_cpu', 0.08, 0, actived=True)
@@ -146,9 +148,11 @@ tracking_kpis = [
     logistic_regression_auc_gpu1_kpi,
     wide_deep_epoch_time_cpu_kpi,
     wide_deep_auc_cpu_kpi,
+    wide_deep_acc_cpu_kpi,
     wide_deep_epoch_time_gpu1_kpi,
     wide_deep_auc_gpu1_kpi,
     gnn_epoch_time_cpu_kpi,
+    wide_deep_acc_gpu1_kpi,
     gnn_recall20_cpu_kpi,
     gnn_epoch_time_gpu1_kpi,
     gnn_recall20_gpu1_kpi,
