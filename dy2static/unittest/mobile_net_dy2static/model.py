@@ -554,9 +554,6 @@ def train(args, to_static):
                 # reset cost_time
             cost_time = 0.
 
-            if batch_id == 100:
-                break
-
     return total_loss.numpy()
 
 
