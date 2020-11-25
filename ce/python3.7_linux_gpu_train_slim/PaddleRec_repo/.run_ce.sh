@@ -11,10 +11,10 @@ mkdir ${log_path}/rec
 export log_path_rec=${log_path}/rec
 print_info(){
 if [ $1 -ne 0 ];then
-    mv ${log_path_rec}/$2 ${log_path_rec}/FAIL_$2.log
+    mv ${log_path_rec}/$2 ${log_path_rec}/$2_FAIL.log
     echo -e "\033[31m $2_FAIL \033[0m"
 else
-    mv ${log_path_rec}/$2 ${log_path_rec}/SUCCESS_$2.log
+    mv ${log_path_rec}/$2 ${log_path_rec}/$2_SUCCESS.log
     echo -e "\033[32m $2_SUCCESS \033[0m"
 fi
 }
