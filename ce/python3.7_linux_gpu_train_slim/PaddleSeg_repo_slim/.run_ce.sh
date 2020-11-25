@@ -45,7 +45,7 @@ python -m paddle.distributed.launch ./slim/distillation/train_distill.py \
 --teacher_cfg ./slim/distillation/cityscape_teacher.yaml \
 --use_gpu \
 --do_eval \
--o BATCH_SIZE 7
+BATCH_SIZE 7
 }
 CUDA_VISIBLE_DEVICES=${cudaid1} seg_dist_Dv3_xception_mobilenet 1>seg_dist_Dv3_xception_mobilenet_1card 2>&1
 cat seg_dist_Dv3_xception_mobilenet_1card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_dist_Dv3_xception_mobilenet_acc_1card\t"$4"\tkpis\tseg_dist_Dv3_xception_mobilenet_IoU_1card\t"$6}' | python _ce.py
@@ -75,6 +75,10 @@ model=dist_Dv3_xception_mobilenet_eval
 CUDA_VISIBLE_DEVICES=${cudaid1} python pdseg/eval.py --use_gpu --cfg ./slim/distillation/cityscape.yaml \
 TEST.TEST_MODEL ./snapshots/cityscape_mbv2_kd_e100_1/final >${log_path}/${model} 2>&1
 print_info $? ${model}
+if [ -d "snapshots" ];then
+	mv  snapshots seg_dist_snapshots
+fi
+
 
 # 2 seg quan
 seg_quan_Deeplabv3_v2 ()
@@ -116,7 +120,7 @@ print_info $? ${model}
 # infer environment
 model=seg_quan_Dv3_v2_infer
 CUDA_VISIBLE_DEVICES=${cudaid1} python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
---input_dir=./test_img >${log_path}/${model} 2>&1
+--input_dir=./test_img --use_pr=True >${log_path}/${model} 2>&1
 print_info $? ${model}
 # for lite
 mv freeze_model seg_quan_Dv3_v2_combined
@@ -133,6 +137,10 @@ MODEL.DEEPLAB.ENABLE_DECODER False \
 TRAIN.SYNC_BATCH_NORM False \
 BATCH_SIZE 7 >${log_path}/${model} 2>&1
 print_info $? ${model}
+
+if [ -d "snapshots" ];then
+	mv  snapshots seg_quant_snapshots
+fi
 
 # 3 prune
 # 3.1 prune train
@@ -160,6 +168,10 @@ CUDA_VISIBLE_DEVICES=${cudaid1} python -u ./slim/prune/eval_prune.py \
 --use_gpu \
 TEST.TEST_MODEL ./snapshots/cityscape_fast_scnn/final >${log_path}/${model} 2>&1
 print_info $? ${model}
+
+if [ -d "snapshots" ];then
+	mv  snapshots seg_prune_snapshots
+fi
 
 # 3.3 prune no infer
 
