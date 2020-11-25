@@ -31,6 +31,7 @@ CUDA_VISIBLE_DEVICES=${cudaid1} python -m paddlerec.run -m ./$1_gpu_config.yaml 
 print_info $? $1_gpu1
 }
 
+contentunderstanding(){
 # 1.1 tagspace  1epoch
 model=tagspace
 cd ${current_dir}/models/contentunderstanding/tagspace
@@ -68,7 +69,9 @@ cat ${log_path_rec}/${model}_cpu_SUCCESS.log |grep done |head -1|awk -F ' |,|=' 
 cat ${log_path_rec}/${model}_cpu_SUCCESS.log |grep done |tail -1 |awk -F ' |,|=' '{print "kpis\t""'${model}'""_acc_cpu\t"$20"\nkpis\t""'${model}'""_loss_cpu\t"$23}'|tr -d '[][]' |python _ce.py
 cat ${log_path_rec}/${model}_gpu1_SUCCESS.log |grep done |head -1|awk -F ' |,|=' '{print "kpis\t""'${model}'""_epoch_time_gpu1\t"$7}' |python _ce.py
 cat ${log_path_rec}/${model}_gpu1_SUCCESS.log |grep done |tail -1 |awk -F ' |,|=' '{print "kpis\t""'${model}'""_acc_gpu1\t"$20"\nkpis\t""'${model}'""_loss_gpu1\t"$23}'|tr -d '[][]' |python _ce.py
+}
 
+match(){
 # 2 match(3/3)
 # 2.1 match-pyramid  这个目录下的模型都是eval中写死了训练的log路径，需要改进
 model=match-pyramid
@@ -121,8 +124,9 @@ print_info $? ${model}_gpu1
 cd ${current_dir}
 cat ${log_path_rec}/${model}_cpu_SUCCESS.log |tail -2 |head -1|awk -F ' ' '{print "kpis\t""'${model_tmp}'""_pos_neg_cpu\t"$2}'|python _ce.py
 cat ${log_path_rec}/${model}_gpu1_SUCCESS.log |tail -2 |head -1|awk -F ' ' '{print "kpis\t""'${model_tmp}'""_pos_neg_gpu1\t"$2}'|python _ce.py
+}
 
-
+multitask(){
 # 3.1 multitask (2/4)  esmm
 model=esmm
 cd ${current_dir}/models/multitask/esmm
@@ -149,7 +153,9 @@ cat ${log_path_rec}/${model}_cpu_SUCCESS.log |grep done |tail -1 |awk -F ' |,|='
 cat ${log_path_rec}/${model}_cpu_SUCCESS.log |grep done |tail -1 |awk -F ' |,|=' '{print "kpis\t""'${model}'""_epoch_time_cpu\t"$7}' |python _ce.py
 cat ${log_path_rec}/${model}_gpu1_SUCCESS.log |grep done |tail -1 |awk -F ' |,|=' '{print "kpis\t""'${model}'""_AUC_income_gpu1\t"$15"\nkpis\t""'${model}'""_AUC_marital_gpu1\t"$18}'|tr -d '[][]' |python _ce.py
 cat ${log_path_rec}/${model}_gpu1_SUCCESS.log |grep done |tail -1 |awk -F ' |,|=' '{print "kpis\t""'${model}'""_epoch_time_gpu1\t"$7}' |python _ce.py
+}
 
+rank(){
 # 4.1 rank(5/21) deepfm
 model=deepfm
 cd ${current_dir}/models/rank/deepfm
@@ -216,7 +222,9 @@ cat ${log_path_rec}/${model}_cpu_SUCCESS.log |grep done |head -1 |awk -F ' ' '{p
 cat ${log_path_rec}/${model}_cpu_SUCCESS.log |grep done |awk -F ',|=' 'END{print "kpis\t""'${model}'""_auc_cpu\t"$5"\nkpis\t""'${model}'""_acc_cpu\t"$7}' |tr -d '[]'|python _ce.py
 cat ${log_path_rec}/${model}_gpu1_SUCCESS.log |grep done |head -1 |awk -F ' ' '{print "kpis\t""'${model}'""_epoch_time_gpu1\t"$6}' |tr -d ','|python _ce.py
 cat ${log_path_rec}/${model}_gpu1_SUCCESS.log |grep done |awk -F ',|=' 'END{print "kpis\t""'${model}'""_auc_gpu1\t"$5"\nkpis\t""'${model}'""_acc_gpu1\t"$7}' |tr -d '[]'|python _ce.py
+}
 
+recall(){
 # 5 recall (3/8)
 # 5.1 gnn
 model=gnn
@@ -225,6 +233,7 @@ mv data data_bk
 ln -s ${dataset_path}/rec_repo/${model}/data
 run_con_cpu ${model}
 run_con_gpu ${model}
+cd ${current_dir}
 cat ${log_path_rec}/${model}_cpu_SUCCESS.log |grep done |head -1 |awk -F ' ' '{print "kpis\t""'${model}'""_epoch_time_cpu\t"$6}' |tr -d ','|python _ce.py
 cat ${log_path_rec}/${model}_cpu_SUCCESS.log |grep done |awk -F ' |=' 'END{print "kpis\t""'${model}'""_recall20_cpu\t"$17}' |tr -d '[]'|python _ce.py
 cat ${log_path_rec}/${model}_gpu1_SUCCESS.log |grep done |head -1 |awk -F ' ' '{print "kpis\t""'${model}'""_epoch_time_gpu1\t"$6}' |tr -d ','|python _ce.py
@@ -268,5 +277,10 @@ CUDA_VISIBLE_DEVICES=${cudaid1} python infer.py --use_gpu 1 --test_epoch 19 \
 --watch_vec_size 64 --search_vec_size 64 \
 --other_feat_size 64 --topk 5 >${log_path_rec}/${model}_infer_gpu1 2>&1
 print_info $? ${model}_infer_gpu1
+}
 
-
+contentunderstanding
+match
+multitask
+rank
+recall

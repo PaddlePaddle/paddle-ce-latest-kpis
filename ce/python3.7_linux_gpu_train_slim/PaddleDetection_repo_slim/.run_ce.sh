@@ -142,6 +142,110 @@ cp ./quan_export/dete_quan_${quan_models[$i]}/float/* ./dete_quan_${quan_models[
 copy_for_lite dete_quan_${quan_models[$i]}_combined ${models_from_train}
 done
 
+if [ -d "output" ];then
+	mv  output quant_output
+fi
+
+
+
+# 2.2 quan_ssd_models
+#ssdlite_mobilenet_v3_small 现在报错
+quan_ssd_models=(ssd_mobilenet_v1_voc)
+dete_quan_ssd()
+{
+    python slim/quantization/train.py --not_quant_pattern yolo_output \
+    --eval \
+    -c ./configs/ssd/$1.yml \
+    -o max_iters=8000  snapshot_iter=1000 \
+    LearningRate.base_lr=0.0001 \
+    LearningRate.schedulers='[!PiecewiseDecay {gamma: 0.1, milestones: [40000]}]'
+}
+
+for i in $(seq 0 1); do
+    CUDA_VISIBLE_DEVICES=${cudaid1} dete_quan_ssd ${quan_ssd_models[$i]} > dete_quan_${quan_ssd_models[$i]}_1card 2>&1
+    cat dete_quan_${quan_ssd_models[$i]}_1card|grep Best | awk -F ' ' 'END{print "kpis\tdete_quan_""'${quan_ssd_models[$i]}_bestap_1card'""\t"$7}'|tr -d ',' | python _ce.py
+    CUDA_VISIBLE_DEVICES=${cudaid8} dete_quan_ssd ${quan_ssd_models[$i]} > dete_quan_${quan_ssd_models[$i]}_8card 2>&1
+    cat dete_quan_${quan_ssd_models[$i]}_8card|grep Best | awk -F ' ' 'END{print "kpis\tdete_quan_""'${quan_ssd_models[$i]}_bestap_8card'""\t"$7}'|tr -d ',' | python _ce.py
+done
+# 2.2.2 eval
+model=dete_quan_ssd_eval
+for i in $(seq 0 1); do
+CUDA_VISIBLE_DEVICES=${cudaid1} python slim/quantization/eval.py \
+    --not_quant_pattern yolo_output  \
+    -c ./configs/ssd/${quan_ssd_models[$i]}.yml >${model}_${quan_ssd_models[$i]} 2>&1
+print_info $? ${model}_${quan_ssd_models[$i]}
+done
+# 2.2.3 infer
+model=dete_quan_ssd_infer
+for i in $(seq 0 1); do
+    CUDA_VISIBLE_DEVICES=${cudaid1}  python slim/quantization/infer.py \
+    --not_quant_pattern yolo_output \
+    -c ./configs/ssd/${quan_ssd_models[$i]}.yml \
+    --infer_dir ./demo  >${model}_${quan_ssd_models[$i]} 2>&1
+print_info $? ${model}_${quan_ssd_models[$i]}
+done
+
+# 2.2.4 export
+model=dete_quan_ssd_export
+for i in $(seq 0 1); do
+    CUDA_VISIBLE_DEVICES=${cudaid1} python slim/quantization/export_model.py \
+    --not_quant_pattern yolo_output  \
+    -c ./configs/ssd/${quan_ssd_models[$i]}.yml \
+    --output_dir ./quan_export/dete_quan_${quan_ssd_models[$i]} >${model}_${quan_ssd_models[$i]} 2>&1
+print_info $? ${model}_${quan_ssd_models[$i]}
+mkdir dete_quan_${quan_ssd_models[$i]}_combined
+cp ./quan_export/dete_quan_${quan_ssd_models[$i]}/float/* ./dete_quan_${quan_ssd_models[$i]}_combined/
+# for lite
+copy_for_lite dete_quan_${quan_ssd_models[$i]}_combined ${models_from_train}
+done
+if [ -d "output" ];then
+	mv  output quan_ssd_output
+fi
+
+# 2.3 dete_quan_yolov3_darknet_voc    ok
+CUDA_VISIBLE_DEVICES=${cudaid1} dete_quan_yolov3 yolov3_darknet_voc > dete_quan_yolov3_darknet_voc_1card 2>&1
+cat dete_quan_yolov3_darknet_voc_1card|grep Best | awk -F ' ' 'END{print "kpis\tdete_quan_yolov3_darknet_voc_bestap_1card\t"$7}'|tr -d ',' | python _ce.py
+CUDA_VISIBLE_DEVICES=${cudaid8} dete_quan_yolov3 yolov3_darknet_voc > dete_quan_yolov3_darknet_voc_8card 2>&1
+cat dete_quan_yolov3_darknet_voc_8card|grep Best | awk -F ' ' 'END{print "kpis\tdete_quan_yolov3_darknet_voc_bestap_8card\t"$7}'|tr -d ',' | python _ce.py
+
+
+# 3.2 dete_prune_rcnn  yolov3_darknet_voc ok
+dete_prune_rcnn(){
+python slim/prune/prune.py \
+-c configs/$1.yml \
+--pruned_params "res4f_branch2b_weights,res4f_branch2a_weights" \
+--pruned_ratios="0.2,0.3" \
+--eval \
+-o max_iters=8000  snapshot_iter=1000
+}
+dete_prune_rcnn_models=(mask_rcnn_r50_1x faster_rcnn_r50_1x yolov3_darknet_voc)
+for i in $(seq 0 2); do
+    CUDA_VISIBLE_DEVICES=${cudaid1} dete_prune_rcnn ${dete_prune_rcnn_models[$i]} > dete_prune_${dete_prune_rcnn_models[$i]}_1card 2>&1
+    cat dete_prune_${dete_prune_rcnn_models[$i]}_1card|grep Best | awk -F ' ' 'END{print "kpis\tdete_prune_""'${dete_prune_rcnn_models[$i]}_bestap_1card'""\t"$7}'|tr -d ',' | python _ce.py
+    CUDA_VISIBLE_DEVICES=${cudaid8} dete_prune_rcnn ${dete_prune_rcnn_models[$i]} > dete_prune_${dete_prune_rcnn_models[$i]}_8card 2>&1
+    cat dete_prune_${dete_prune_rcnn_models[$i]}_8card|grep Best | awk -F ' ' 'END{print "kpis\tdete_prune_""'${dete_prune_rcnn_models[$i]}_bestap_8card'""\t"$7}'|tr -d ',' | python _ce.py
+done
+#3.3 prune export
+model=dete_prune_export
+for i in $(seq 0 2); do
+    CUDA_VISIBLE_DEVICES=${cudaid1} python slim/prune/export_model.py \
+    -c configs/${dete_prune_rcnn_models[$i]}.yml \
+    --pruned_params "res4f_branch2b_weights,res4f_branch2a_weights" \
+    --pruned_ratios="0.2,0.3" >${model}_${dete_prune_rcnn_models[$i]} 2>&1
+print_info $? ${model}_${dete_prune_rcnn_models[$i]} 2>&1
+# for lite
+mkdir dete_prune_${dete_prune_rcnn_models[$i]}_combined
+cp output/${dete_prune_rcnn_models[$i]}/__model__ ./dete_prune_${dete_prune_rcnn_models[$i]}_combined/
+cp output/${dete_prune_rcnn_models[$i]}/__params__ ./dete_prune_${dete_prune_rcnn_models[$i]}_combined/
+copy_for_lite dete_prune_${dete_prune_rcnn_models[$i]}_combined ${models_from_train}
+done
+if [ -d "output" ];then
+	mv  output dete_prune_rcnn_output
+fi
+
+
+
+
 ## 3 prune
 ## 3.1 prune train
 cp ./configs/dcn/yolov3_r50vd_dcn.yml ./configs/
