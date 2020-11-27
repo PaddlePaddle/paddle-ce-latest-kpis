@@ -406,14 +406,14 @@ CUDA_VISIBLE_DEVICES=${cudaid1} python infer.py --use_gpu 1 --test_epoch 19 \
 print_info $? ${model}_infer_gpu1
 }
 
-#contentunderstanding_cpu
-#match_cpu
-#multitask_cpu
-#rank_cpu
-#recall_cpu
+contentunderstanding_cpu
+match_cpu
+multitask_cpu
+rank_cpu
+recall_cpu
 
-contentunderstanding_gpu1
-match_gpu1
-multitask_gpu1
-rank_gpu1
-recall_gpu1
+#contentunderstanding_gpu1
+#match_gpu1
+#multitask_gpu1
+#rank_gpu1
+#recall_gpu1

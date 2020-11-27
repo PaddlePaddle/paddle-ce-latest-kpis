@@ -5,10 +5,10 @@ export current_dir=$PWD
 
 print_info(){
 if [ $1 -ne 0 ];then
-    mv ${log_path}/$2 ${log_path}/$2_FAIL.log
+    mv ${log_path}/$2 ${log_path}/FAIL_$2.log
     echo -e "\033[31m ${log_path}/$2_FAIL \033[0m"
 else
-    mv ${log_path}/$2 ${log_path}/$2_SUCCESS.log
+    mv ${log_path}/$2 ${log_path}/SUCCESS_$2.log
     echo -e "\033[32m ${log_path}/$2_SUCCESS \033[0m"
 fi
 }
@@ -45,15 +45,15 @@ python -m paddle.distributed.launch ./slim/distillation/train_distill.py \
 --teacher_cfg ./slim/distillation/cityscape_teacher.yaml \
 --use_gpu \
 --do_eval \
--o BATCH_SIZE 7
+BATCH_SIZE 7
 }
-CUDA_VISIBLE_DEVICES=${cudaid1} seg_dist_Dv3_xception_mobilenet 1>seg_dist_Dv3_xception_mobilenet_1card 2>&1
-cat seg_dist_Dv3_xception_mobilenet_1card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_dist_Dv3_xception_mobilenet_acc_1card\t"$4"\tkpis\tseg_dist_Dv3_xception_mobilenet_IoU_1card\t"$6}' | python _ce.py
-CUDA_VISIBLE_DEVICES=${cudaid8} seg_dist_Dv3_xception_mobilenet 1>seg_dist_Dv3_xception_mobilenet_8card 2>&1
-cat seg_dist_Dv3_xception_mobilenet_8card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_dist_Dv3_xception_mobilenet_acc_8card\t"$4"\tkpis\tseg_dist_Dv3_xception_mobilenet_IoU_8card\t"$6}' | python _ce.py
+CUDA_VISIBLE_DEVICES=${cudaid1} seg_dist_Dv3_xception_mobilenet 1>${log_path}/seg_dist_Dv3_xception_mobilenet_1card 2>&1
+cat ${log_path}/seg_dist_Dv3_xception_mobilenet_1card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_dist_Dv3_xception_mobilenet_acc_1card\t"$4"\tkpis\tseg_dist_Dv3_xception_mobilenet_IoU_1card\t"$6}' | python _ce.py
+CUDA_VISIBLE_DEVICES=${cudaid8} seg_dist_Dv3_xception_mobilenet 1>${log_path}/seg_dist_Dv3_xception_mobilenet_8card 2>&1
+cat ${log_path}/seg_dist_Dv3_xception_mobilenet_8card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_dist_Dv3_xception_mobilenet_acc_8card\t"$4"\tkpis\tseg_dist_Dv3_xception_mobilenet_IoU_8card\t"$6}' | python _ce.py
 
 # 1.2  dist export
-model=dist_Dv3_xception_mobilenet_export
+model=seg_dist_Dv3_xception_mobilenet_export
 CUDA_VISIBLE_DEVICES=${cudaid1} python pdseg/export_model.py --cfg ./slim/distillation/cityscape.yaml \
 TEST.TEST_MODEL ./snapshots/cityscape_mbv2_kd_e100_1/final >${log_path}/${model} 2>&1
 print_info $? ${model}
@@ -62,7 +62,7 @@ print_info $? ${model}
 cd ./deploy/python
 pip install -r requirements.txt
 yum install -y libglib2.0-0 libsm6 libxext6 libxrender-dev
-model=dist_Dv3_xception_mobilenet_infer
+model=seg_dist_Dv3_xception_mobilenet_infer
 cd ${current_dir}
 python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
 --input_dir=./test_img --use_pr=True >${log_path}/${model} 2>&1
@@ -71,10 +71,14 @@ mv freeze_model seg_dist_v3_xception_mobilenet
 # lite op not support
 #cp -r seg_dist_v3_xception_mobilenet  ${models_from_train}/
 # 1.4 dist eval
-model=dist_Dv3_xception_mobilenet_eval
+model=seg_dist_Dv3_xception_mobilenet_eval
 CUDA_VISIBLE_DEVICES=${cudaid1} python pdseg/eval.py --use_gpu --cfg ./slim/distillation/cityscape.yaml \
 TEST.TEST_MODEL ./snapshots/cityscape_mbv2_kd_e100_1/final >${log_path}/${model} 2>&1
 print_info $? ${model}
+if [ -d "snapshots" ];then
+	mv  snapshots seg_dist_snapshots
+fi
+
 
 # 2 seg quan
 seg_quan_Deeplabv3_v2 ()
@@ -95,10 +99,10 @@ TRAIN.SNAPSHOT_EPOCH 1 \
 SOLVER.NUM_EPOCHS 1 \
 BATCH_SIZE 7
 }
-CUDA_VISIBLE_DEVICES=${cudaid1} seg_quan_Deeplabv3_v2 1>seg_quan_Deeplabv3_v2_1card 2>&1
-cat seg_quan_Deeplabv3_v2_1card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_quan_Dv3_v2_acc_1card\t"$4"\tkpis\tseg_quan_Dv3_v2_IoU_1card\t"$6}' | python _ce.py
-CUDA_VISIBLE_DEVICES=${cudaid8} seg_quan_Deeplabv3_v2 1>seg_quan_Deeplabv3_v2_8card 2>&1
-cat seg_quan_Deeplabv3_v2_8card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_quan_Dv3_v2_acc_8card\t"$4"\tkpis\tseg_quan_Dv3_v2_IoU_8card\t"$6}' | python _ce.py
+CUDA_VISIBLE_DEVICES=${cudaid1} seg_quan_Deeplabv3_v2 1>${log_path}/seg_quan_Deeplabv3_v2_1card 2>&1
+cat ${log_path}/seg_quan_Deeplabv3_v2_1card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_quan_Dv3_v2_acc_1card\t"$4"\tkpis\tseg_quan_Dv3_v2_IoU_1card\t"$6}' | python _ce.py
+CUDA_VISIBLE_DEVICES=${cudaid8} seg_quan_Deeplabv3_v2 1>${log_path}/seg_quan_Deeplabv3_v2_8card 2>&1
+cat ${log_path}/seg_quan_Deeplabv3_v2_8card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_quan_Dv3_v2_acc_8card\t"$4"\tkpis\tseg_quan_Dv3_v2_IoU_8card\t"$6}' | python _ce.py
 
 # 2.2  seg quan export
 model=seg_quan_Dv3_v2_export
@@ -116,7 +120,7 @@ print_info $? ${model}
 # infer environment
 model=seg_quan_Dv3_v2_infer
 CUDA_VISIBLE_DEVICES=${cudaid1} python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
---input_dir=./test_img >${log_path}/${model} 2>&1
+--input_dir=./test_img --use_pr=True >${log_path}/${model} 2>&1
 print_info $? ${model}
 # for lite
 mv freeze_model seg_quan_Dv3_v2_combined
@@ -134,6 +138,10 @@ TRAIN.SYNC_BATCH_NORM False \
 BATCH_SIZE 7 >${log_path}/${model} 2>&1
 print_info $? ${model}
 
+if [ -d "snapshots" ];then
+	mv  snapshots seg_quant_snapshots
+fi
+
 # 3 prune
 # 3.1 prune train
 seg_prune_Fast_SCNN (){
@@ -148,10 +156,10 @@ SLIM.PRUNE_RATIOS '[0.1,0.1,0.1]' \
 TRAIN.SNAPSHOT_EPOCH 1 \
 SOLVER.NUM_EPOCHS 1
 }
-CUDA_VISIBLE_DEVICES=${cudaid1} seg_prune_Fast_SCNN 1>seg_prune_Fast_SCNN_1card 2>&1
-cat seg_prune_Fast_SCNN_1card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_prune_Fast_SCNN_acc_1card\t"$4"\tkpis\tseg_prune_Fast_SCNN_IoU_1card\t"$6}' | python _ce.py
-CUDA_VISIBLE_DEVICES=${cudaid8} seg_prune_Fast_SCNN 1>seg_prune_Fast_SCNN_8card 2>&1
-cat seg_prune_Fast_SCNN_8card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_prune_Fast_SCNN_acc_8card\t"$4"\tkpis\tseg_prune_Fast_SCNN_IoU_8card\t"$6}' | python _ce.py
+CUDA_VISIBLE_DEVICES=${cudaid1} seg_prune_Fast_SCNN 1>${log_path}/seg_prune_Fast_SCNN_1card 2>&1
+cat ${log_path}/seg_prune_Fast_SCNN_1card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_prune_Fast_SCNN_acc_1card\t"$4"\tkpis\tseg_prune_Fast_SCNN_IoU_1card\t"$6}' | python _ce.py
+CUDA_VISIBLE_DEVICES=${cudaid8} seg_prune_Fast_SCNN 1>${log_path}/seg_prune_Fast_SCNN_8card 2>&1
+cat ${log_path}/seg_prune_Fast_SCNN_8card |grep image=50 |awk -F ' |=' 'END{print "kpis\tseg_prune_Fast_SCNN_acc_8card\t"$4"\tkpis\tseg_prune_Fast_SCNN_IoU_8card\t"$6}' | python _ce.py
 
 # 3.2 seg/prune eval
 model=seg_prune_Fast_SCNN_eval
@@ -160,6 +168,10 @@ CUDA_VISIBLE_DEVICES=${cudaid1} python -u ./slim/prune/eval_prune.py \
 --use_gpu \
 TEST.TEST_MODEL ./snapshots/cityscape_fast_scnn/final >${log_path}/${model} 2>&1
 print_info $? ${model}
+
+if [ -d "snapshots" ];then
+	mv  snapshots seg_prune_snapshots
+fi
 
 # 3.3 prune no infer
 
