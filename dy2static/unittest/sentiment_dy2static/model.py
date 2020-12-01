@@ -125,8 +125,6 @@ def train(args, to_static):
                 total_sample += 1
 
                 if (batch_id + 1) % args.log_step == 0:
-                    #time_end = time.time()
-                    #used_time = time_end - time_begin
                     print(
                         "ToStatic = {},\tPass = {},\tIter = {},\tLoss = {:.3f},\tAcc = {:.3f},\tElapse(ms) = {:.3f}"
                         .format(to_static, pass_id, batch_id,

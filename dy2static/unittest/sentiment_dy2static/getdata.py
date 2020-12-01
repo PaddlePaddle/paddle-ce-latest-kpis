@@ -84,6 +84,4 @@ def get_train_data_generator(batch_size, epoch, max_seq_len, shuffle=True):
 
         return reader
 
-    #def get_train_examples():
-    #    return data_reader ()
     return fluid.io.batch(data_reader(), batch_size)
