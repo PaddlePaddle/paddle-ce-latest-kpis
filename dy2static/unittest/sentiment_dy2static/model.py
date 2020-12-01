@@ -64,11 +64,11 @@ def add_args(args):
     args.class_num = 2
     args.lr = 0.01
     args.vocab_size = 33256
-    args.max_seq_len = 256
     args.padding_size = 50
+    args.max_seq_len = args.padding_size
     args.log_step = 5
     args.train_step = 50
-    args.model_type = 'gru_net'
+    args.model_type = 'cnn_net'
     return args
 
 
