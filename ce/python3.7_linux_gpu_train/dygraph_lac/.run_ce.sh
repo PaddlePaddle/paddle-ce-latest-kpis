@@ -5,7 +5,7 @@ export FLAGS_fast_eager_deletion_mode=1
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 
 train() {
-    python -m paddle.distributed.launch  --selected_gpus=$1 train.py \
+    python -m paddle.distributed.launch  --gpus=$1 train.py \
         --train_data ./data/train.tsv \
         --test_data ./data/test.tsv \
         --model_save_dir ./padding_models \

@@ -20,7 +20,7 @@ train_single() {
 }
 
 train_multi() {
- python -m paddle.distributed.launch --started_port 8999 --selected_gpus=$1 --log_dir ./mylog train.py \
+ python -m paddle.distributed.launch --started_port 8999 --gpus=$1 --log_dir ./mylog train.py \
   --epoch 2 \
   --src_vocab_fpath wmt16_ende_data_bpe/vocab_all.bpe.32000 \
   --trg_vocab_fpath wmt16_ende_data_bpe/vocab_all.bpe.32000 \

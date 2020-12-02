@@ -31,7 +31,7 @@ train_single() {
 }
 
 train_multi() {
-  python -m paddle.distributed.launch --selected_gpus=$1 --log_dir ./cls_log run_classifier.py \
+  python -m paddle.distributed.launch --gpus=$1 --log_dir ./cls_log run_classifier.py \
     --task_name ${TASK_NAME} \
     --use_cuda true \
     --use_data_parallel true \
