@@ -11,7 +11,7 @@ cat log_1card | grep "Iter" | tail "-1" | tr ',' ' ' | awk '{print "kpis\tloss_c
 cat log_1card | grep "Iter" | tail "-1" | tr ',' ' '| awk '{print "kpis\ttime_card1\t"$6}' | python _ce.py
 
 export CUDA_VISIBLE_DEVICES=0,1,2,3
-python -m paddle.distributed.launch --selected_gpu=0,1,2,3 train.py --use_multiprocess=False --use_data_parallel=1 --batch_size=8 --snapshot_iter 100 --max_iter 200 >log_4card 2>&1
+python -m paddle.distributed.launch --gpus=0,1,2,3 train.py --use_multiprocess=False --use_data_parallel=1 --batch_size=8 --snapshot_iter 100 --max_iter 200 >log_4card 2>&1
 cat log_4card | grep "Iter" | tail "-1" | tr ',' ' ' | awk '{print "kpis\tloss_card4\t"$4}' | python _ce.py
 
 cat log_4card | grep "Iter" | tail "-1" | tr ',' ' '| awk '{print "kpis\ttime_card4\t"$6}' | python _ce.py
