@@ -175,7 +175,8 @@ model=dete_quan_ssd_eval
 for i in $(seq 0 1); do
 CUDA_VISIBLE_DEVICES=${cudaid1} python slim/quantization/eval.py \
     --not_quant_pattern yolo_output  \
-    -c ./configs/ssd/${quan_ssd_models[$i]}.yml >${log_path}/${model}_${quan_ssd_models[$i]} 2>&1
+    -c ./configs/ssd/${quan_ssd_models[$i]}.yml \
+    -o weights=./output/${quan_ssd_models[$i]}/best_model >${log_path}/${model}_${quan_ssd_models[$i]} 2>&1
 print_info $? ${model}_${quan_ssd_models[$i]}
 done
 # 2.2.3 infer
@@ -184,6 +185,7 @@ for i in $(seq 0 1); do
     CUDA_VISIBLE_DEVICES=${cudaid1}  python slim/quantization/infer.py \
     --not_quant_pattern yolo_output \
     -c ./configs/ssd/${quan_ssd_models[$i]}.yml \
+    -o weights=./output/${quan_ssd_models[$i]}/best_model \
     --infer_dir ./demo  >${log_path}/${model}_${quan_ssd_models[$i]} 2>&1
 print_info $? ${model}_${quan_ssd_models[$i]}
 done
@@ -194,6 +196,7 @@ for i in $(seq 0 1); do
     CUDA_VISIBLE_DEVICES=${cudaid1} python slim/quantization/export_model.py \
     --not_quant_pattern yolo_output  \
     -c ./configs/ssd/${quan_ssd_models[$i]}.yml \
+    -o weights=./output/${quan_ssd_models[$i]}/best_model \
     --output_dir ./quan_export/dete_quan_${quan_ssd_models[$i]} >${log_path}/${model}_${quan_ssd_models[$i]} 2>&1
 print_info $? ${model}_${quan_ssd_models[$i]}
 mkdir dete_quan_${quan_ssd_models[$i]}_combined
