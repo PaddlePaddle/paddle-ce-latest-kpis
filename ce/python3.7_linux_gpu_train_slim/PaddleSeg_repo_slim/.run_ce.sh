@@ -64,8 +64,9 @@ pip install -r requirements.txt
 yum install -y libglib2.0-0 libsm6 libxext6 libxrender-dev
 model=seg_dist_Dv3_xception_mobilenet_infer
 cd ${current_dir}
+
 python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
---input_dir=./test_img --use_pr=True >${log_path}/${model} 2>&1
+--input_dir=./test_img >${log_path}/${model} 2>&1
 print_info $? ${model}
 mv freeze_model seg_dist_v3_xception_mobilenet
 # lite op not support
@@ -118,10 +119,10 @@ print_info $? ${model}
 
 # 2.3 quan infer
 # infer environment
-model=seg_quan_Dv3_v2_infer
-CUDA_VISIBLE_DEVICES=${cudaid1} python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
---input_dir=./test_img --use_pr=True >${log_path}/${model} 2>&1
-print_info $? ${model}
+#model=seg_quan_Dv3_v2_infer
+#CUDA_VISIBLE_DEVICES=${cudaid1} python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
+#--input_dir=./test_img >${log_path}/${model} 2>&1
+#print_info $? ${model}
 # for lite
 mv freeze_model seg_quan_Dv3_v2_combined
 copy_for_lite seg_quan_Dv3_v2_combined ${models_from_train}
