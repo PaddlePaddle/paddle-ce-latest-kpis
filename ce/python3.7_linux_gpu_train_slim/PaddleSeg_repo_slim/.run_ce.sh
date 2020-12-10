@@ -119,10 +119,10 @@ print_info $? ${model}
 
 # 2.3 quan infer
 # infer environment
-model=seg_quan_Dv3_v2_infer
-CUDA_VISIBLE_DEVICES=${cudaid1} python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
---input_dir=./test_img >${log_path}/${model} 2>&1
-print_info $? ${model}
+#model=seg_quan_Dv3_v2_infer
+#CUDA_VISIBLE_DEVICES=${cudaid1} python ./deploy/python/infer.py --conf=./freeze_model/deploy.yaml \
+#--input_dir=./test_img >${log_path}/${model} 2>&1
+#print_info $? ${model}
 # for lite
 mv freeze_model seg_quan_Dv3_v2_combined
 copy_for_lite seg_quan_Dv3_v2_combined ${models_from_train}
