@@ -530,4 +530,4 @@ CUDA_VISIBLE_DEVICES=${cudaid1} python train_eval.py \
 --test_data_dir=./lfw/ >${log_path}/${model} 2>&1
 print_info $? ${model}
 }
-slimfacenet
+#slimfacenet
