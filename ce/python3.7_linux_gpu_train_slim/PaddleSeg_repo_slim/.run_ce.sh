@@ -1,6 +1,7 @@
 #!/bin/bash
 
 rm -rf *_factor.txt
+cd legacy
 export current_dir=$PWD
 
 print_info(){
