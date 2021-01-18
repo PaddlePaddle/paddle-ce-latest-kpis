@@ -301,14 +301,14 @@ CUDA_VISIBLE_DEVICES=${cudaid8} python train.py --model "MobileNet" \
 --num_epochs 1  --save_inference True >${log_path}/prune_v1_T_8card 2>&1
 # for lite uncombined
 mkdir slim_prune_MobileNetv1_uncombined
-cp ./models/infer_models/0/* ./slim_prune_MobileNetv1_uncombined/
+cp ./models/infer_models/0.* ./slim_prune_MobileNetv1_uncombined/
 copy_for_lite slim_prune_MobileNetv1_uncombined ${models_from_train}
 cd ${current_dir}
 cat ${log_path}/prune_v1_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_v1_acc_top1_gpu8\t"$8"\nkpis\tprune_v1_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
 # 3.2 prune eval
 cd ${current_dir}/demo/prune
 model=slim_prune_eval
-python eval.py --model "MobileNet" --data "imagenet" --model_path "./models/0"  >${log_path}/${model} 2>&1
+python eval.py --model "MobileNet" --data "imagenet" --model_path "./models/infer_models/0"  >${log_path}/${model} 2>&1
 print_info $? ${model}
 if [ -d "models" ];then
     mv  models MobileNet_models
@@ -339,7 +339,7 @@ cd ${current_dir}/demo/prune
 CUDA_VISIBLE_DEVICES=${cudaid8} slim_prune_fpgm_v1 >${log_path}/slim_prune_fpgm_v1_f50_T_8card 2>&1
 # for lite uncombined
 mkdir slim_prune_fpgm_v1_f50_uncombined
-cp ./fpgm_mobilenetv1_models/infer_models/0/* ./slim_prune_fpgm_v1_f50_uncombined/
+cp ./fpgm_mobilenetv1_models/infer_models/0.* ./slim_prune_fpgm_v1_f50_uncombined/
 copy_for_lite slim_prune_fpgm_v1_f50_uncombined ${models_from_train}
 cd ${current_dir}
 cat ${log_path}/slim_prune_fpgm_v1_f50_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v1_f50_acc_top1_gpu8\t"$8"\nkpis\tprune_fpgm_v1_f50_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
@@ -374,7 +374,7 @@ cd ${current_dir}/demo/prune
 CUDA_VISIBLE_DEVICES=${cudaid8} slim_prune_fpgm_v2 >${log_path}/slim_prune_fpgm_v2_f50_T_8card 2>&1
 # for lite uncombined
 mkdir slim_prune_fpgm_v2_f50_uncombined
-cp ./fpgm_mobilenetv2_models/infer_models/0/* ./slim_prune_fpgm_v2_f50_uncombined/
+cp ./fpgm_mobilenetv2_models/infer_models/0.* ./slim_prune_fpgm_v2_f50_uncombined/
 copy_for_lite slim_prune_fpgm_v2_f50_uncombined ${models_from_train}
 cd ${current_dir}
 cat ${log_path}/slim_prune_fpgm_v2_f50_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v2_f50_acc_top1_gpu8\t"$8"\nkpis\tprune_fpgm_v2_f50_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
@@ -410,7 +410,7 @@ cd ${current_dir}/demo/prune
 CUDA_VISIBLE_DEVICES=${cudaid8} slim_prune_fpgm_v1 >${log_path}/slim_prune_fpgm_resnet34_f50_T_8card 2>&1
 # for lite uncombined
 mkdir slim_prune_fpgm_resnet34_f50_uncombined
-cp ./fpgm_resnet34_models/infer_models/0/* ./slim_prune_fpgm_resnet34_f50_uncombined/
+cp ./fpgm_resnet34_models/infer_models/0.* ./slim_prune_fpgm_resnet34_f50_uncombined/
 copy_for_lite slim_prune_fpgm_resnet34_f50_uncombined ${models_from_train}
 cd ${current_dir}
 cat ${log_path}/slim_prune_fpgm_resnet34_f50_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_resnet34_f50_acc_top1_gpu8\t"$8"\nkpis\tprune_fpgm_resnet34_f50_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
@@ -435,7 +435,7 @@ python train.py \
 }
 
 eval_prune(){
-    python eval.py --model $1 --data "imagenet" --model_path "./models/0"
+    python eval.py --model $1 --data "imagenet" --model_path "./models/infer_models/0"
 }
 for i in $(seq 0 0); do
     CUDA_VISIBLE_DEVICES=${cudaid1} train_prune ${prune_models[$i]} >${log_path}/prune_${prune_models[$i]}_gpu1 2>&1
@@ -448,7 +448,7 @@ for i in $(seq 0 0); do
     #move models for lite uncombined
     cd ${current_dir}/demo/prune
     mkdir slim_prune_${prune_models[$i]}_uncombined
-    cp ./models/infer_models/0/* slim_prune_${prune_models[$i]}_uncombined/
+    cp ./models/infer_models/0.* slim_prune_${prune_models[$i]}_uncombined/
     copy_for_lite slim_prune_${prune_models[$i]}_uncombined ${models_from_train}
     eval_prune ${prune_models[$i]} >${log_path}/prune_${prune_models[$i]}_eval 2>&1
     print_info $? prune_${prune_models[$i]}_eval
@@ -460,7 +460,7 @@ done
 # 3.4 dygraph
 dy_prune_ResNet50_f42(){
 cd ${slim_dir}/demo/dygraph/pruning
-ln -s ../data data
+ln -s ${dataset_path}/slim/data data
 CUDA_VISIBLE_DEVICES=${cudaid1} python train.py \
     --use_gpu=True \
     --model="resnet34" \
@@ -545,13 +545,15 @@ CUDA_VISIBLE_DEVICES=${cudaid8} python rl_nas_mobilenetv2.py --search_steps 1 --
 print_info $? ${model}
 
 # 4.4 parl_nas
+parl_nas(){
 model=parl_nas_v2_T_1card
 CUDA_VISIBLE_DEVICES=${cudaid1} python parl_nas_mobilenetv2.py --search_steps 1 --port 8887 >${log_path}/${model} 2>&1
 print_info $? ${model}
 model=parl_nas_v2_T_8card
 CUDA_VISIBLE_DEVICES=${cudaid8} python parl_nas_mobilenetv2.py --search_steps 1 --port 8889 >${log_path}/${model} 2>&1
 print_info $? ${model}
-
+}
+#parl_nas
 # 5 darts
 # search 1card # DARTS一阶近似搜索方法
 cd ${current_dir}/demo/darts

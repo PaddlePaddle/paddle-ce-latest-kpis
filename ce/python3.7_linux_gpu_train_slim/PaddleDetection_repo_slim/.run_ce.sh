@@ -140,7 +140,7 @@ for i in $(seq 0 2); do
     -o weights=./output/${quan_models[$i]}/best_model >${log_path}/${model}_${quan_models[$i]} 2>&1
 print_info $? ${model}_${quan_models[$i]}
 mkdir dete_quan_${quan_models[$i]}_combined
-cp ./quan_export/dete_quan_${quan_models[$i]}/float/* ./dete_quan_${quan_models[$i]}_combined/
+cp ./quan_export/dete_quan_${quan_models[$i]}/float/dete_quan_${quan_models[$i]}/* ./dete_quan_${quan_models[$i]}_combined/
 # for lite
 copy_for_lite dete_quan_${quan_models[$i]}_combined ${models_from_train}
 done
@@ -200,7 +200,7 @@ for i in $(seq 0 1); do
     --output_dir ./quan_export/dete_quan_${quan_ssd_models[$i]} >${log_path}/${model}_${quan_ssd_models[$i]} 2>&1
 print_info $? ${model}_${quan_ssd_models[$i]}
 mkdir dete_quan_${quan_ssd_models[$i]}_combined
-cp ./quan_export/dete_quan_${quan_ssd_models[$i]}/float/* ./dete_quan_${quan_ssd_models[$i]}_combined/
+cp ./quan_export/dete_quan_${quan_ssd_models[$i]}/float/dete_quan_${quan_ssd_models[$i]}/* ./dete_quan_${quan_ssd_models[$i]}_combined/
 # for lite
 copy_for_lite dete_quan_${quan_ssd_models[$i]}_combined ${models_from_train}
 done
