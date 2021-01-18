@@ -7,7 +7,7 @@ pip install -r requirements.txt
 python setup.py install
 cd -
 #copy PaddleSeg files
-cp -r ${seg_dir}/. ./
+cp -r ${seg_dir}/legacy/. ./
 pip install -r requirements.txt
 if [ -d "dataset/cityscapes" ];then rm -rf dataset/cityscapes
 fi
