@@ -458,7 +458,7 @@ for i in $(seq 0 0); do
 done
 
 # 3.4 dygraph
-dy_prune_ResNet50_f42(){
+dy_prune_ResNet34_f42(){
 cd ${slim_dir}/demo/dygraph/pruning
 ln -s ${dataset_path}/slim/data data
 CUDA_VISIBLE_DEVICES=${cudaid1} python train.py \
@@ -516,7 +516,7 @@ CUDA_VISIBLE_DEVICES=${cudaid1} python export_model.py \
 --output_path=./infer_final/resnet > ${log_path}/dy_prune_ResNet50_f42_gpu1_export 2>&1
 print_info $? dy_prune_ResNet50_f42_gpu1_export
 }
-dy_prune_ResNet50_f42
+dy_prune_ResNet34_f42
 
 #4 nas
 # 4.1 sa_nas_mobilenetv2
