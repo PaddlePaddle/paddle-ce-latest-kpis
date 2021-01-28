@@ -222,35 +222,6 @@ if [ -d "quantization_models" ];then
     mv  quantization_models slim_pact_quant_aware_mv3_combined
 fi
 
-# pact_quant_aware MobileNetV3_2 (pact quan all)
-#cp ${dataset_path}/pact_quant_aware/pact_quan_V3_2_train.py ./
-#cd ${current_dir}/demo/quant/pact_quant_aware
-#CUDA_VISIBLE_DEVICES=${cudaid1} python pact_quan_V3_2_train.py --model MobileNetV3_large_x1_0 \
-#--pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
-#--num_epochs 1 --lr 0.0001 --use_pact True --batch_size 64 --lr_strategy=piecewise_decay \
-#--step_epochs 1 --l2_decay 1e-5  >${current_dir}/pact_quant_aware_mv3_2_1card 2>&1
-#cd ${current_dir}
-#cat pact_quant_aware_mv3_2_1card |grep Final |awk -F ' ' 'END{print "kpis\tpact_quant_aware_mv3_2_acc_top1_gpu1\t"$8"\nkpis\tpact_quant_aware_mv3_2_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
-#cd ${current_dir}/demo/quant/pact_quant_aware
-#CUDA_VISIBLE_DEVICES=${cudaid8} python pact_quan_V3_2_train.py --model MobileNetV3_large_x1_0 \
-#--pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
-#--num_epochs 1 --lr 0.0001 --use_pact True --batch_size 128 --lr_strategy=piecewise_decay \
-#--step_epochs 1 --l2_decay 1e-5  >${current_dir}/pact_quant_aware_mv3_2_8card 2>&1
-#cd ${current_dir}
-#cat pact_quant_aware_mv3_2_8card |grep Final |awk -F ' ' 'END{print "kpis\tpact_quant_aware_mv3_2_acc_top1_gpu8\t"$8"\nkpis\tpact_quant_aware_mv3_2_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
-## quantization_models
-#cd ${current_dir}/demo/quant/pact_quant_aware
-#mkdir slim_pact_quant_aware_mv3_2_combined
-#cp ./quantization_models/MobileNetV3_large_x1_0/act_moving_average_abs_max_w_channel_wise_abs_max/float/* ./slim_pact_quant_aware_mv3_2_combined/
-#mv ./slim_pact_quant_aware_mv3_2_combined/model ./slim_pact_quant_aware_mv3_2_combined/__model__
-#mv ./slim_pact_quant_aware_mv3_2_combined/params ./slim_pact_quant_aware_mv3_2_combined/__params__
-##for lite
-#copy_for_lite slim_pact_quant_aware_mv3_2_combined ${models_from_train}
-#if [ -d "quantization_models" ];then
-#    mv  quantization_models slim_pact_quant_aware_mv3_2_combined
-#fi
-
-
 dy_quant(){
 cd ${slim_dir}/demo/dygraph/quant
 CUDA_VISIBLE_DEVICES=${cudaid1} python train.py --model='mobilenet_v1' \
@@ -259,7 +230,7 @@ CUDA_VISIBLE_DEVICES=${cudaid1} python train.py --model='mobilenet_v1' \
 --batch_size 128 \
 > ${log_path}/dy_quant_v1_gpu1 2>&1
 print_info $? dy_quant_v1_gpu1
-CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch --gpus="4,5,6,7" \
+CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch --gpus="0,1,2,3" \
 train.py --model='mobilenet_v1' \
 --pretrained_model '../../pretrain/MobileNetV1_pretrained' \
 --num_epochs 1 \
@@ -275,7 +246,7 @@ CUDA_VISIBLE_DEVICES=${cudaid1}  python train.py  --lr=0.001 \
 print_info $? dy_pact_quant_v3_gpu1
 # 多卡训练，以0到3号卡为例
 CUDA_VISIBLE_DEVICES=${cudaid4}  python -m paddle.distributed.launch \
---gpus="4,5,6,7" \
+--gpus="0,1,2,3" \
 train.py  --lr=0.001 \
 --pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
 --use_pact=True --num_epochs=1 \
@@ -291,8 +262,12 @@ dy_quant
 #3.1 prune MobileNetV1
 cd ${current_dir}/demo/prune
 CUDA_VISIBLE_DEVICES=${cudaid1} python train.py --model "MobileNet" \
---pruned_ratio 0.31 --data "imagenet" --pretrained_model ../pretrain/MobileNetV1_pretrained/ \
---num_epochs 1 --save_inference True >${log_path}/prune_v1_T_1card 2>&1
+--pruned_ratio 0.31 \
+--data "imagenet" \
+--pretrained_model ../pretrain/MobileNetV1_pretrained/ \
+--num_epochs 1 \
+--test_period=5 \
+--save_inference True >${log_path}/prune_v1_T_1card 2>&1
 cd ${current_dir}
 cat ${log_path}/prune_v1_T_1card |grep Final |awk -F ' ' 'END{print "kpis\tprune_v1_acc_top1_gpu1\t"$8"\nkpis\tprune_v1_acc_top5_gpu1\t"$10}' |tr -d ";" | python _ce.py
 cd ${current_dir}/demo/prune
@@ -374,7 +349,7 @@ cd ${current_dir}/demo/prune
 CUDA_VISIBLE_DEVICES=${cudaid8} slim_prune_fpgm_v2 >${log_path}/slim_prune_fpgm_v2_f50_T_8card 2>&1
 # for lite uncombined
 mkdir slim_prune_fpgm_v2_f50_uncombined
-cp ./fpgm_mobilenetv2_models/infer_models/0.* ./slim_prune_fpgm_v2_f50_uncombined/
+cp ./ouput/fpgm_mobilenetv2_models/infer_models/0.* ./slim_prune_fpgm_v2_f50_uncombined/
 copy_for_lite slim_prune_fpgm_v2_f50_uncombined ${models_from_train}
 cd ${current_dir}
 cat ${log_path}/slim_prune_fpgm_v2_f50_T_8card |grep Final |awk -F ' ' 'END{print "kpis\tprune_fpgm_v2_f50_acc_top1_gpu8\t"$8"\nkpis\tprune_fpgm_v2_f50_acc_top5_gpu8\t"$10}' |tr -d ";" | python _ce.py
@@ -421,6 +396,7 @@ python eval.py --model "ResNet34" --data "imagenet" --model_path "./fpgm_resnet3
 print_info $? ${model}
 
 # 3.3 prune ResNet50
+prune_ResNet50(){
 cd ${current_dir}/demo/prune
 prune_models=(ResNet50)
 train_prune(){
@@ -428,6 +404,7 @@ python train.py \
 --model $1 \
 --pruned_ratio 0.31 \
 --data "imagenet" \
+--test_period=5 \
 --save_inference True \
 --pretrained_model ../pretrain/$1_pretrained/ \
 --num_epochs 1 \
@@ -456,7 +433,8 @@ for i in $(seq 0 0); do
 	    mv  models ${prune_models[$i]}_models
     fi
 done
-
+}
+#prune_ResNet50
 # 3.4 dygraph
 dy_prune_ResNet34_f42(){
 cd ${slim_dir}/demo/dygraph/pruning
@@ -473,7 +451,7 @@ CUDA_VISIBLE_DEVICES=${cudaid1} python train.py \
     --model_path="./fpgm_resnet34_025_120_models" >${log_path}/dy_prune_ResNet50_f42_gpu1 2>&1
 print_info $? dy_prune_ResNet50_f42_gpu1
 CUDA_VISIBLE_DEVICES=${cudaid4}  python -m paddle.distributed.launch \
---gpus="4,5,6,7" \
+--gpus="0,1,2,3" \
 --log_dir="fpgm_resnet34_f-42_train_log" \
 train.py \
     --use_gpu=True \
@@ -610,10 +588,10 @@ CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch \
 --use_data_parallel 1 --arch='DARTS_V2' --data_dir ../data/ILSVRC2012 >${log_path}/${model} 2>&1
 print_info $? ${model}
 # 可视化
-pip install graphviz
-model=slim_darts_visualize_pcdarts
-python visualize.py PC_DARTS > ${log_path}/${model} 2>&1
-print_info $? ${model}
+#pip install graphviz
+#model=slim_darts_visualize_pcdarts
+#python visualize.py PC_DARTS > ${log_path}/${model} 2>&1
+#print_info $? ${model}
 
 # 6 slimfacenet
 slimfacenet(){
