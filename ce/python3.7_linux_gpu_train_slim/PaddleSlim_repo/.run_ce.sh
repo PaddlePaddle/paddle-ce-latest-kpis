@@ -427,8 +427,8 @@ for i in $(seq 0 0); do
     mkdir slim_prune_${prune_models[$i]}_uncombined
     cp ./models/infer_models/0.* slim_prune_${prune_models[$i]}_uncombined/
     copy_for_lite slim_prune_${prune_models[$i]}_uncombined ${models_from_train}
-    eval_prune ${prune_models[$i]} >${log_path}/prune_${prune_models[$i]}_eval 2>&1
-    print_info $? prune_${prune_models[$i]}_eval
+#    eval_prune ${prune_models[$i]} >${log_path}/prune_${prune_models[$i]}_eval 2>&1
+#    print_info $? prune_${prune_models[$i]}_eval
     if [ -d "models" ];then
 	    mv  models ${prune_models[$i]}_models
     fi
@@ -556,17 +556,17 @@ model=pcdarts_search_8card
 CUDA_VISIBLE_DEVICES=${cudaid8} python search.py --epochs 1 --method='PC-DARTS' --use_multiprocess False --batch_size=128 --learning_rate=0.1 --arch_learning_rate=6e-4 --epochs_no_archopt=15 >${log_path}/${model} 2>&1
 print_info $? ${model}
 # 分布式 search
-model=darts1_search_distributed
-CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch --gpus=0,1,2,3 \
---log_dir ./mylog_search  search.py --use_data_parallel 1 \
---epochs 1 --use_multiprocess False >${log_path}/${model} 2>&1
-print_info $? ${model}
-model=darts2_search_distributed
-CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch --gpus=0,1,2,3 --log_dir ./mylog_search  search.py --use_data_parallel 1 --epochs 1 --unrolled=True --use_multiprocess False >${log_path}/${model} 2>&1
-print_info $? ${model}
-model=pcdarts_search_distributed
-CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch --gpus=0,1,2,3 --log_dir ./mylog_search  search.py --use_data_parallel 1 --epochs 1 --use_multiprocess False --epochs 1 --method='PC-DARTS' --use_multiprocess False --batch_size=256 --learning_rate=0.1 --arch_learning_rate=6e-4 --epochs_no_archopt=15 >${log_path}/${model} 2>&1
-print_info $? ${model}
+#model=darts1_search_distributed
+#CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch --gpus=0,1,2,3 \
+#--log_dir ./mylog_search  search.py --use_data_parallel 1 \
+#--epochs 1 --use_multiprocess False >${log_path}/${model} 2>&1
+#print_info $? ${model}
+#model=darts2_search_distributed
+#CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch --gpus=0,1,2,3 --log_dir ./mylog_search  search.py --use_data_parallel 1 --epochs 1 --unrolled=True --use_multiprocess False >${log_path}/${model} 2>&1
+#print_info $? ${model}
+#model=pcdarts_search_distributed
+#CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch --gpus=0,1,2,3 --log_dir ./mylog_search  search.py --use_data_parallel 1 --epochs 1 --use_multiprocess False --epochs 1 --method='PC-DARTS' --use_multiprocess False --batch_size=256 --learning_rate=0.1 --arch_learning_rate=6e-4 --epochs_no_archopt=15 >${log_path}/${model} 2>&1
+#print_info $? ${model}
 #train
 model=pcdarts_train_1card
 CUDA_VISIBLE_DEVICES=${cudaid1} python train.py --arch='PC_DARTS' \
@@ -577,16 +577,16 @@ CUDA_VISIBLE_DEVICES=${cudaid8} python train_imagenet.py --arch='PC_DARTS' \
 --epochs 1 --use_multiprocess False --data_dir ../data/ILSVRC2012 --batch_size 64 >${log_path}/${model} 2>&1
 print_info $? ${model}
 # 分布式 train
-model=dartsv2_train_distributed
-CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch \
---gpus=0,1,2,3 --log_dir ./mylog_train train.py --use_data_parallel 1 \
---arch='DARTS_V2' >${log_path}/${model} 2>&1
-print_info $? ${model}
-model=dartsv2_train_imagenet_distributed
-CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch \
---gpus=0,1,2,3 --log_dir ./mylog_train_imagenet train_imagenet.py \
---use_data_parallel 1 --arch='DARTS_V2' --data_dir ../data/ILSVRC2012 >${log_path}/${model} 2>&1
-print_info $? ${model}
+#model=dartsv2_train_distributed
+#CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch \
+#--gpus=0,1,2,3 --log_dir ./mylog_train train.py --use_data_parallel 1 \
+#--arch='DARTS_V2' >${log_path}/${model} 2>&1
+#print_info $? ${model}
+#model=dartsv2_train_imagenet_distributed
+#CUDA_VISIBLE_DEVICES=${cudaid4} python -m paddle.distributed.launch \
+#--gpus=0,1,2,3 --log_dir ./mylog_train_imagenet train_imagenet.py \
+#--use_data_parallel 1 --arch='DARTS_V2' --data_dir ../data/ILSVRC2012 >${log_path}/${model} 2>&1
+#print_info $? ${model}
 # 可视化
 #pip install graphviz
 #model=slim_darts_visualize_pcdarts
