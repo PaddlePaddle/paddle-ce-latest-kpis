@@ -94,11 +94,13 @@ def log2kpis(dict_logs: dict) -> list:
         dict_kpi = {}
         kpi_file = "./latest_kpis/{}_factor.txt".format(key)
         kpi_base = float(load_records_from(kpi_file))
-        kpi_ratio = abs(value - kpi_base) / kpi_base
+        kpi_ratio = value - kpi_base / kpi_base
 
         if "acc1" in key.split('_') or "acc5" in key.split('_'):
+            # acc kpis
             kpi_status = "Passed" if kpi_ratio >= KpiThreshold[key] else "Failed"
         else:
+            # loss kpis, time elapse kpis
             kpi_status = "Passed" if kpi_ratio <= KpiThreshold[key] else "Failed"
 
         dict_kpi["model_name"] = model_name
