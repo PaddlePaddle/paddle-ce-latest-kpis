@@ -28,14 +28,13 @@ logging.basicConfig(level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
 
 KpiThreshold={}
-KpiThreshold['dynamic_train_loss'] = 0.002
-KpiThreshold['dynamic_train_acc1'] = 0.002
-KpiThreshold['dynamic_train_acc5'] = 0.002
-KpiThreshold['dynamic_train_elapse'] = 0.002
-KpiThreshold['static_train_loss'] = 0.002
-KpiThreshold['static_train_acc1'] = 0.002
-KpiThreshold['static_train_acc5'] = 0.002
+KpiThreshold['static_train_avg_acc'] = 0.002
+KpiThreshold['static_train_avg_loss'] = 0.002
 KpiThreshold['static_train_elapse'] = 0.002
+
+KpiThreshold['dynamic_train_avg_acc'] = 0.002
+KpiThreshold['dynamic_train_avg_loss'] = 0.002
+KpiThreshold['dynamic_train_elapse'] = 0.002
 
 
 def parse_log(log: str):
@@ -43,40 +42,39 @@ def parse_log(log: str):
     Args:
         log (str): log read from sys std input
     Returns:
-        dynamic_logs[-1] (dict): parsed log info
+        static_logs[-1] (dict): parsed log info
     """
-    dynamic_train_elapse = []
-    static_train_elapse = []
+    dy2staic_elapse = []
+    dynamic_elapse = []
     for line in log.split('\n'):
         Log = {}
-        fs = line.strip().split(',\t')
-        try:
-            if "ToStatic = False" in fs:
-                dynamic_train_loss = float(fs[3].split('=')[-1])
-                dynamic_train_acc1 = float(fs[4].split('=')[-1])
-                dynamic_train_acc5 = float(fs[5].split('=')[-1])
-                dynamic_train_elapse.append(float(fs[6].split('=')[-1]))
-            elif "ToStatic = True" in fs:
-                static_train_loss = float(fs[3].split('=')[-1])
-                static_train_acc1 = float(fs[4].split('=')[-1])
-                static_train_acc5 = float(fs[5].split('=')[-1])
-                static_train_elapse.append(float(fs[6].split('=')[-1]))
-            else:
-                pass
-        except:
+        fs = line.strip().split(', ')
+        if "to_static=True" in fs:
+            '''
+            after split, sample list is as below
+            fs = ['to_static=True',
+                  'pass=0',
+                  'train_avg_acc=0.895750',
+                  'train_avg_loss=0.843321',
+                  'elapse(ms)=11.286300']
+            '''
+            static_train_avg_acc = float(fs[2].split('=')[-1])
+            static_train_avg_loss = float(fs[3].split('=')[-1])
+            dy2staic_elapse.append(float(fs[4].split('=')[-1]))
+        elif "to_static=False" in fs:
+            dynamic_train_avg_acc = float(fs[2].split('=')[-1])
+            dynamic_train_avg_loss = float(fs[3].split('=')[-1])
+            dynamic_elapse.append(float(fs[4].split('=')[-1]))
+        else:
             pass
 
-    Log['dynamic_train_loss'] = dynamic_train_loss
-    Log['dynamic_train_acc1'] = dynamic_train_acc1
-    Log['dynamic_train_acc5'] = dynamic_train_acc5
-    Log['dynamic_train_elapse'] = sum(dynamic_train_elapse) / len(
-        dynamic_train_elapse)
+    Log['static_train_avg_acc'] = static_train_avg_acc
+    Log['static_train_avg_loss'] = static_train_avg_loss
+    Log['static_train_elapse'] = sum(dy2staic_elapse) / len(dy2staic_elapse)
 
-    Log['static_train_loss'] = static_train_loss
-    Log['static_train_acc1'] = static_train_acc1
-    Log['static_train_acc5'] = static_train_acc5
-    Log['static_train_elapse'] = sum(static_train_elapse) / len(
-        static_train_elapse)
+    Log['dynamic_train_avg_acc'] = dynamic_train_avg_acc
+    Log['dynamic_train_avg_loss'] = dynamic_train_avg_loss
+    Log['dynamic_train_elapse'] = sum(dynamic_elapse) / len(dynamic_elapse)
     return Log
 
 def log2kpis(dict_logs: dict) -> list:
