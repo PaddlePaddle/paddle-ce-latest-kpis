@@ -21,12 +21,12 @@ fi
 }
 
 ###########
-demo15(){
+demo19(){
 #必须先声明
 declare -A dic
 dic=([dnn]='models/rank/dnn' [wide_deep]='models/rank/wide_deep' [deepfm]='models/rank/deepfm' [fm]='models/rank/fm' [gateDnn]='models/rank/gateDnn' \
-[logistic_regression]='models/rank/logistic_regression' [naml]='models/rank/naml' [ffm]='models/rank/ffm' \
-[esmm]='models/multitask/esmm' [mmoe]='models/multitask/mmoe' \
+[logistic_regression]='models/rank/logistic_regression' [naml]='models/rank/naml' [ffm]='models/rank/ffm' [xdeepfm]='models/rank/xdeepfm' \
+[esmm]='models/multitask/esmm' [mmoe]='models/multitask/mmoe' [ple]='models/multitask/ple' [share_bottom]='models/multitask/share_bottom' \
 [dssm]='models/match/dssm' [match-pyramid]='models/match/match-pyramid' [multiview-simnet]='models/match/multiview-simnet' \
 [tagspace]='models/contentunderstanding/tagspace' [textcnn]='models/contentunderstanding/textcnn' \
 [ncf]='models/recall/ncf')
@@ -40,20 +40,20 @@ for model in $(echo ${!dic[*]});do
     echo -e "\033[31m -------------$PWD---------------\n  \033[0m"
     # dygraph
     echo -e "\033[31m start dy train ${i} ${model}  \033[0m "
-    python -u ../../../tools/trainer.py -m config.yaml
+    python -u ../../../tools/trainer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${i}_${model}_dy_train
     echo -e "\033[31m start dy infer ${model}  \033[0m"
-    python -u ../../../tools/infer.py -m config.yaml
+    python -u ../../../tools/infer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${i}_${model}_dy_infer
     rm -rf output_model_*
 
     # static
     echo -e "\033[31m start st train ${model}  \033[0m"
-    python -u ../../../tools/static_trainer.py -m config.yaml
+    python -u ../../../tools/static_trainer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${i}_${model}_st_train
     # 静态图预测
     echo -e "\033[31m start st infer ${model}  \033[0m"
-    python -u ../../../tools/static_infer.py -m config.yaml
+    python -u ../../../tools/static_infer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${i}_${model}_st_infer
     let i+=1
 done
@@ -70,7 +70,7 @@ yaml_mode=config_bigdata
 fi
 # dygraph
 echo -e "\033[31m start dy train 16 ${model} \n \033[0m "
-python -u ../../../tools/trainer.py -m ${yaml_mode}.yaml
+python -u ../../../tools/trainer.py -m ${yaml_mode}.yaml -o runner.use_gpu=True
 print_info $? ${model}_dy_train
 
 echo -e "\033[31m start dy infer 16 ${model} \n \033[0m "
@@ -81,7 +81,7 @@ rm -rf output_model_*
 
 # 静态图训练
 echo -e "\033[31m start st train 16 ${model} \n \033[0m "
-python -u ../../../tools/static_trainer.py -m ${yaml_mode}.yaml
+python -u ../../../tools/static_trainer.py -m ${yaml_mode}.yaml -o runner.use_gpu=True
 print_info $? ${model}_st_train
 
 # 静态图预测
@@ -133,38 +133,38 @@ dnn_all(){
     # dy_gpu1
     sed -i "s/  use_gpu: False/  use_gpu: True/g" config.yaml
     echo -e "\033[31m start _dy_train_gpu1 dnn_all \033[0m "
-    python -u ../../../tools/trainer.py -m config.yaml
+    python -u ../../../tools/trainer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_dy_train_gpu1
     echo -e "\033[31m start _dy_infer_gpu1 dnn_all \033[0m "
-    python -u ../../../tools/infer.py -m config.yaml
+    python -u ../../../tools/infer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_dy_infer_gpu1
     rm -rf output
     # dy_gpu2
     echo -e "\033[31m start _dy_train_gpu2 dnn_all \033[0m "
-    python -m paddle.distributed.launch ../../../tools/trainer.py -m config.yaml
+    python -m paddle.distributed.launch ../../../tools/trainer.py -m config.yaml -o runner.use_gpu=True runner.use_fleet=True
     print_info $? ${model}_dy_train_gpu2
     mv log ${model}_dy_train_gpu2_dist_logs
     echo -e "\033[31m start _dy_infer_gpu2 dnn_all \033[0m "
-    python -m paddle.distributed.launch ../../../tools/infer.py -m config.yaml
+    python -m paddle.distributed.launch ../../../tools/infer.py -m config.yaml -o runner.use_gpu=True runner.use_fleet=True
     print_info $? ${model}_dy_infer_gpu2
     mv log ${model}_dy_infer_gpu2_dist_logs
     rm -rf output
 
     # st_gpu1
     echo -e "\033[31m start _st_train_gpu1 dnn_all \033[0m "
-    python -u ../../../tools/static_trainer.py -m config.yaml
+    python -u ../../../tools/static_trainer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_st_train_gpu1
     echo -e "\033[31m start _st_infer_gpu1 dnn_all \033[0m "
-    python -u ../../../tools/static_infer.py -m config.yaml
+    python -u ../../../tools/static_infer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_st_infer_gpu1
     rm -rf output
     # st_gpu2
     echo -e "\033[31m start _st_train_gpu2 dnn_all \033[0m "
-    python -m paddle.distributed.launch ../../../tools/static_trainer.py -m config.yaml
+    python -m paddle.distributed.launch ../../../tools/static_trainer.py -m config.yaml -o runner.use_gpu=True runner.use_fleet=True
     print_info $? ${model}_st_train_gpu2
     mv log ${model}_st_train_gpu2_dist_logs
     echo -e "\033[31m start _st_infer_gpu2 dnn_all \033[0m "
-    python -m paddle.distributed.launch ../../../tools/static_infer.py -m config.yaml
+    python -m paddle.distributed.launch ../../../tools/static_infer.py -m config.yaml -o runner.use_gpu=True runner.use_fleet=True
     print_info $? ${model}_st_infer_gpu2
     mv log ${model}_st_infer_gpu2_dist_logs
 
@@ -188,29 +188,52 @@ done
 con_dy_train_infer(){
 echo "start run $1 dygraph con"
 # 动态图训练
-python -u ../../../tools/trainer.py -m config_bigdata.yaml > ${log_path}/con_$1_train 2>&1
+python -u ../../../tools/trainer.py -m config_bigdata.yaml -o runner.use_gpu=True > ${log_path}/con_$1_train 2>&1
 print_info $? con_$1_train
 # 动态图预测
-python -u ../../../tools/infer.py -m config_bigdata.yaml > ${log_path}/con_$1_infer 2>&1
+python -u ../../../tools/infer.py -m config_bigdata.yaml -o runner.use_gpu=True > ${log_path}/con_$1_infer 2>&1
 print_info $? con_$1_infer
 
 }
 con_st_train_infer(){
 echo "start run $1 static con"
 # 静态图训练
-python -u ../../../tools/static_trainer.py -m config_bigdata.yaml > ${log_path}/con_$1_train 2>&1
+python -u ../../../tools/static_trainer.py -m config_bigdata.yaml -o runner.use_gpu=True > ${log_path}/con_$1_train 2>&1
 print_info $? con_$1_train
 # 静态图预测
-python -u ../../../tools/static_infer.py -m config_bigdata.yaml > ${log_path}/con_$1_infer 2>&1
+python -u ../../../tools/static_infer.py -m config_bigdata.yaml -o runner.use_gpu=True > ${log_path}/con_$1_infer 2>&1
 print_info $? con_$1_infer
 }
-con15(){
+
+con_dy_train_gpu2_infer(){
+echo "start run $1 dygraph con"
+# 动态图训练
+python -m paddle.distributed.launch ../../../tools/trainer.py -m config_bigdata.yaml -o runner.use_gpu=True runner.use_fleet=True > ${log_path}/con_$1_train 2>&1
+print_info $? con_$1_train
+# 动态图预测
+python -m paddle.distributed.launch ../../../tools/infer.py -m config_bigdata.yaml -o runner.use_gpu=True runner.use_fleet=True > ${log_path}/con_$1_infer 2>&1
+print_info $? con_$1_infer
+
+}
+con_st_train_gpu2_infer(){
+echo "start run $1 static con"
+# 静态图训练
+python -u ../../../tools/static_trainer.py -m config_bigdata.yaml -o runner.use_gpu=True runner.use_fleet=True > ${log_path}/con_$1_train_gpu2 2>&1
+print_info $? con_$1_train_gpu2
+# 静态图预测
+python -u ../../../tools/static_infer.py -m config_bigdata.yaml -o runner.use_gpu=True runner.use_fleet=True > ${log_path}/con_$1_infer_gpu2 2>&1
+print_info $? con_$1_infer_gpu2
+}
+
+con19(){
 #必须先声明
 declare -A dic
-dic=([dnn]='models/rank/dnn' [wide_deep]='models/rank/wide_deep' [deepfm]='models/rank/deepfm' [fm]='models/rank/fm' [gateDnn]='models/rank/gateDnn' [logistic_regression]='models/rank/logistic_regression' [naml]='models/rank/naml' [ffm]='models/rank/ffm' \
-[esmm]='models/multitask/esmm' [mmoe]='models/multitask/mmoe' \
+dic=([dnn]='models/rank/dnn' [wide_deep]='models/rank/wide_deep' [deepfm]='models/rank/deepfm' [fm]='models/rank/fm' [gateDnn]='models/rank/gateDnn' \
+[logistic_regression]='models/rank/logistic_regression' [naml]='models/rank/naml' [ffm]='models/rank/ffm' [xdeepfm]='models/rank/xdeepfm' \
+[esmm]='models/multitask/esmm' [mmoe]='models/multitask/mmoe' [ple]='models/multitask/ple' [share_bottom]='models/multitask/share_bottom' \
 [dssm]='models/match/dssm' [match-pyramid]='models/match/match-pyramid' [multiview-simnet]='models/match/multiview-simnet' \
-[tagspace]='models/contentunderstanding/tagspace' [textcnn]='models/contentunderstanding/textcnn')
+[tagspace]='models/contentunderstanding/tagspace' [textcnn]='models/contentunderstanding/textcnn' \
+[ncf]='models/recall/ncf')
 echo ${!dic[*]}   # 输出所有的key
 echo ${dic[*]}    # 输出所有的value
 i=1
@@ -221,6 +244,10 @@ for model in $(echo ${!dic[*]});do
     con_dy_train_infer ${i}_rank_${model}_dy
     mv output_model_all_${model} output_model_all_${model}_dy
 
+    con_dy_train_gpu2_infer ${i}_rank_${model}_dy
+    mv output_model_all_${model} output_model_all_${model}_dy_gpu2
+
+
 #    con_st_train_infer ${i}_rank_${model}_st
 #    mv output_model_all_${model} output_model_all_${model}_st
     let i+=1
@@ -230,7 +257,7 @@ done
 run_demo(){
 mkdir ${repo_path}/demo_log
 export log_path=${repo_path}/demo_log
-demo15
+demo19
 word2vec
 dnn_all
 }
@@ -245,10 +272,9 @@ fi
 mv ${repo_path}/datasets ${repo_path}/datasets_bk
 ln -s ${all_data}/datasets ${repo_path}/datasets
 
-# rank
-con15
+con19
 con_movie_recommand
-word2vec con
+#word2vec con
 }
 ################################################
 #run_demo
