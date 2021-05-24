@@ -15,8 +15,6 @@ import os
 ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(ROOT_PATH)
 #公共全局变量
-HTTP_PROXY = "http://172.19.57.45:3128"
-HTTPS_PROXY = "http://172.19.57.45:3128"
 PADDLE_ON_MODEL_CE = "1"
 WITH_AVX = "ON"
 #资源配置
