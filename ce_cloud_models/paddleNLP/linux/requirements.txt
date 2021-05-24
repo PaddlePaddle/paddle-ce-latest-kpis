@@ -1,0 +1,22 @@
+numpy
+sentencepiece==0.1.95
+regex
+tqdm==4.57.0
+jieba
+colorlog
+colorama
+seqeval
+attrdict
+pyyaml
+h5py
+# paddlenlp
+# paddlenlp==2.0.0rc25
+pandas
+sentencepiece
+termcolor
+gensim
+tqdm
+pgl >= 2.1 
+nltk
+easydict
+multiprocess

@@ -1,0 +1,92 @@
+MODEL: "transformer" # 模型名
+PRIORITY: P0_delay
+GIT:
+  addr: $REPO_PaddleNLP
+  path: $ROOT_PATH/models_repo
+  branch: $TRANSFORMER_BRANCH
+
+ENV:
+  http_proxy: $HTTP_PROXY
+  https_proxy: $HTTPS_PROXY
+  PADDLE_ON_MODEL_CE: $PADDLE_ON_MODEL_CE
+
+VARIABLES:
+  model_scripts_path: scripts/transformer/ #脚本的路径
+  model_log_path: log/transformer/
+
+EXEC:
+  exec_cases: [TRAIN,PREDICT]
+  exec_priority: [p0,p1]
+  exec_tag: $EXEC_TAG
+
+#测试套
+DATA_PROC:
+  -
+    priority: p0
+    tag: linux_download_data
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh data_proc.sh
+
+TRAIN: # 训练步骤
+  -
+    priority: p0
+    tag: linux_dy_gpu1
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh 'single' $XPU 
+
+    kpis: #kpi指标
+      ppl:
+        latest: True
+        kpi_base: 14.429425
+        threshold: 0.1
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/single_card_train.log
+
+  -
+    priority: p1
+    tag: linux_dy_gpu2
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh 'multi' $XPU $SET_MULTI_CUDA
+
+    kpis: #kpi指标
+      ppl:
+        latest: True
+        kpi_base: 14.429425
+        threshold: 0.01
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/multi_cards_train.log
+
+PREDICT:
+  - #可以有多步
+    priority: p0
+    tag: linux_dy_gpu1
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh predict.sh $XPU  
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 7.376870
+        threshold: 0.01
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/eval.log
