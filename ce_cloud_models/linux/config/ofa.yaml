@@ -1,0 +1,341 @@
+MODEL: "ofa" # 模型名
+PRIORITY: P1
+GIT:
+  addr: $REPO_PaddleNLP
+  path: $ROOT_PATH/models_repo
+  branch: $DGU_BRANCH
+
+
+VARIABLES:
+  model_scripts_path: scripts/ofa/ #脚本的路径
+  model_log_path: log/ofa/
+
+EXEC:
+  exec_cases: [TRAIN, INFER]
+  exec_priority: [p0,p1]
+  exec_tag: $EXEC_TAG
+
+
+TRAIN: # 训练步骤
+  -
+    priority: p0
+    tag: linux_finetune_gpu1_SST-2
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'single' SST-2
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_SST-2_single_$XPU.log
+  
+  -
+    priority: p0
+    tag: linux_finetune_gpu2_SST-2
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'multi' SST-2
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_SST-2_multi_$XPU.log
+
+  -
+    priority: p0
+    tag: linux_finetune_gpu1_QNLI
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'single' QNLI
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_QNLI_single_$XPU.log
+  
+  -
+    priority: p0
+    tag: linux_finetune_gpu2_QNLI
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'multi' QNLI
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_QNLI_multi_$XPU.log
+  
+  -
+    priority: p0
+    tag: linux_finetune_gpu1_CoLA
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'single' CoLA
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_CoLA_single_$XPU.log
+  
+  -
+    priority: p0
+    tag: linux_finetune_gpu2_CoLA
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'multi' CoLA
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_CoLA_multi_$XPU.log
+  
+
+  -
+    priority: p0
+    tag: linux_finetune_gpu1_MRPC
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'single' MRPC
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_MRPC_single_$XPU.log
+  
+  -
+    priority: p0
+    tag: linux_finetune_gpu2_MRPC
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'multi' MRPC
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_MRPC_multi_$XPU.log
+
+  -
+    priority: p0
+    tag: linux_finetune_gpu1_STS-B
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'single' STS-B
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_STS-B_single_$XPU.log
+  
+  -
+    priority: p0
+    tag: linux_finetune_gpu2_STS-B
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'multi' STS-B
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_STS-B_multi_$XPU.log
+
+  -
+    priority: p0
+    tag: linux_finetune_gpu1_QQP
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'single' QQP
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_QQP_single_$XPU.log
+  
+  -
+    priority: p0
+    tag: linux_finetune_gpu2_QQP
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'multi' QQP
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_QQP_multi_$XPU.log
+
+  -
+    priority: p2 #时间太久
+    tag: linux_finetune_gpu1_MNLI
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'single' MNLI
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_MNLI_single_$XPU.log
+  
+  -
+    priority: p2 #时间太久
+    tag: linux_finetune_gpu2_MNLI
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'multi' MNLI
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_MNLI_multi_$XPU.log
+
+  -
+    priority: p0
+    tag: linux_finetune_gpu1_RTE
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'single' RTE
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_RTE_single_$XPU.log
+  
+  -
+    priority: p0
+    tag: linux_finetune_gpu2_RTE
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh $XPU 'multi' RTE
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.921639
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_RTE_multi_$XPU.log
+
+
