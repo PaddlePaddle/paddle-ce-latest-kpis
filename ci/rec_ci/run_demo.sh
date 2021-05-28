@@ -21,7 +21,7 @@ fi
 }
 
 ###########
-demo19(){
+demo20(){
 #必须先声明
 declare -A dic
 dic=([dnn]='models/rank/dnn' [wide_deep]='models/rank/wide_deep' [deepfm]='models/rank/deepfm' [fm]='models/rank/fm' [gateDnn]='models/rank/gateDnn' \
@@ -29,7 +29,7 @@ dic=([dnn]='models/rank/dnn' [wide_deep]='models/rank/wide_deep' [deepfm]='model
 [esmm]='models/multitask/esmm' [mmoe]='models/multitask/mmoe' [ple]='models/multitask/ple' [share_bottom]='models/multitask/share_bottom' \
 [dssm]='models/match/dssm' [match-pyramid]='models/match/match-pyramid' [multiview-simnet]='models/match/multiview-simnet' \
 [tagspace]='models/contentunderstanding/tagspace' [textcnn]='models/contentunderstanding/textcnn' \
-[ncf]='models/recall/ncf')
+[ncf]='models/recall/ncf' [mind]='models/recall/mind')
 echo ${!dic[*]}   # 输出所有的key
 echo ${dic[*]}    # 输出所有的value
 i=1
@@ -257,7 +257,7 @@ done
 run_demo(){
 mkdir ${repo_path}/demo_log
 export log_path=${repo_path}/demo_log
-demo19
+demo20
 word2vec
 dnn_all
 }
