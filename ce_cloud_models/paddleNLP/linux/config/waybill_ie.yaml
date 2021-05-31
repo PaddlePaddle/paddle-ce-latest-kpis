@@ -42,21 +42,21 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       Precision:
         latest: True
-        kpi_base: 0.979
+        kpi_base: 0.97417
         threshold: 0.01
         actived: True
         evaluation: "+"
         unit_repr: "s"
       Recall:
         latest: True
-        kpi_base: 0.986
+        kpi_base: 0.98318
         threshold: 0.01
         actived: True
         evaluation: "+"
         unit_repr: "s"
       F1:
         latest: True
-        kpi_base: 0.982
+        kpi_base: 0.97865
         threshold: 0.01
         actived: True
         evaluation: "+"
@@ -77,21 +77,21 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       Precision:
         latest: True
-        kpi_base: 0.885808
+        kpi_base: 0.87076
         threshold: 0.02
         actived: True
         evaluation: "+"
         unit_repr: "s"
       Recall:
         latest: True
-        kpi_base: 0.913373
-        threshold: 0.025
+        kpi_base: 0.90664
+        threshold: 0.01
         actived: True
         evaluation: "+"
         unit_repr: "s"
       F1:
         latest: True
-        kpi_base: 0.899379
+        kpi_base: 0.88834
         threshold: 0.02
         actived: True
         evaluation: "+"
