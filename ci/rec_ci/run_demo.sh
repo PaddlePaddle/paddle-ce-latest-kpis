@@ -21,7 +21,7 @@ fi
 }
 
 ###########
-demo20(){
+demo19(){
 #必须先声明
 declare -A dic
 dic=([dnn]='models/rank/dnn' [wide_deep]='models/rank/wide_deep' [deepfm]='models/rank/deepfm' [fm]='models/rank/fm' [gateDnn]='models/rank/gateDnn' \
@@ -29,7 +29,7 @@ dic=([dnn]='models/rank/dnn' [wide_deep]='models/rank/wide_deep' [deepfm]='model
 [esmm]='models/multitask/esmm' [mmoe]='models/multitask/mmoe' [ple]='models/multitask/ple' [share_bottom]='models/multitask/share_bottom' \
 [dssm]='models/match/dssm' [match-pyramid]='models/match/match-pyramid' [multiview-simnet]='models/match/multiview-simnet' \
 [tagspace]='models/contentunderstanding/tagspace' [textcnn]='models/contentunderstanding/textcnn' \
-[ncf]='models/recall/ncf' [mind]='models/recall/mind')
+[ncf]='models/recall/ncf')
 echo ${!dic[*]}   # 输出所有的key
 echo ${dic[*]}    # 输出所有的value
 i=1
@@ -91,6 +91,37 @@ print_info $? ${model}_st_infer
 
 }
 
+recall_demo(){
+cd ${repo_path}/models/recall/$1
+echo -e "\033[31m -------------$PWD-------------  \033[0m"
+model=demo_$1
+yaml_mode=config
+if [[ "$2" =~ "con" ]]; then
+model=all_$1
+yaml_mode=config_bigdata
+fi
+# dygraph
+echo -e "\033[31m start dy train 20 ${model} \n \033[0m "
+python -u ../../../tools/trainer.py -m ${yaml_mode}.yaml -o runner.use_gpu=True
+print_info $? ${model}_dy_train
+
+echo -e "\033[31m start dy infer 20 ${model} \n \033[0m "
+python -u infer.py -m ${yaml_mode}.yaml
+print_info $? ${model}_dy_infer
+
+rm -rf output_model_*
+
+# 静态图训练
+echo -e "\033[31m start st train 20 ${model} \n \033[0m "
+python -u ../../../tools/static_trainer.py -m ${yaml_mode}.yaml -o runner.use_gpu=True
+print_info $? ${model}_st_train
+
+# 静态图预测
+echo -e "\033[31m start st infer 20 ${model} \n \033[0m "
+python -u static_infer.py -m ${yaml_mode}.yaml
+print_info $? ${model}_st_infer
+
+}
 con_movie_recommand(){
 cd ${repo_path}/models/demo/movie_recommand
 echo -e "\033[31m $PWD  \033[0m"
@@ -257,8 +288,9 @@ done
 run_demo(){
 mkdir ${repo_path}/demo_log
 export log_path=${repo_path}/demo_log
-demo20
-word2vec
+demo19
+recall_demo word2vec
+recall_demo mind
 dnn_all
 }
 ################################################
