@@ -91,14 +91,14 @@ FINETUNE:
     kpis: #kpi指标
       pearson:
         latest: True
-        kpi_base: 0.34083571853619427
+        kpi_base: 0.34081
         threshold: 0.01
         actived: True
         evaluation: "+"
         unit_repr: "s"
       spearman:
         latest: True
-        kpi_base: 0.36727046367576166
+        kpi_base: 0.36726
         threshold: 0.01
         actived: True
         evaluation: "+"
@@ -116,7 +116,7 @@ FINETUNE:
     kpis: #kpi指标
       acc:
         latest: True
-        kpi_base: 0.5253523704924035
+        kpi_base: 0.52462
         threshold: 0.01
         actived: True
         evaluation: "+"
