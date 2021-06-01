@@ -24,7 +24,9 @@ echo "python="$1
 ####################################
 # for paddle env
 set -x
-python -m pip install pip==20.2.4
+python -m pip install pip==20.2.4;
+python -m pip install faiss-gpu;
+python -m pip install faiss-cpu;
 paddle=$2
 version=${paddle%_*}
 version_num=${paddle#*_}
