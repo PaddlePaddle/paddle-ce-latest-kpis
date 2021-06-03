@@ -15,7 +15,7 @@ unset https_proxy
 
 #路径配置
 root_path=$cur_path/../../
-code_path=$cur_path/../../models_repo/examples/language_model/gpt2/
+code_path=$cur_path/../../models_repo/examples/language_model/gpt/
 log_path=$root_path/log/$model_name/
 if [ ! -d $log_path ]; then
   mkdir -p $log_path
@@ -33,10 +33,10 @@ if [ $1 -ne 0 ];then
 fi
 }
 
-if [[ $1 == 'gpu' ]];then #GPU单卡多卡
+if [[ $2 == 'multi' ]];then #GPU单卡多卡
     python -m paddle.distributed.launch --gpus "$3" run_pretrain.py \
-        --model_type gpt2\
-        --model_name_or_path gpt2-small-en\
+        --model_type gpt\
+        --model_name_or_path "gpt2-en"\
         --input_dir "./data"\
         --output_dir "multi_output"\
         --max_lr 0.00015\
@@ -47,30 +47,13 @@ if [[ $1 == 'gpu' ]];then #GPU单卡多卡
         --save_steps 10\
         --decay_steps 320000\
         --warmup_rate 0.01\
-        --batch_size 8\
+        --micro_batch_size 2\
         --device $1 > $log_path/train_$2_$1.log 2>&1
     
     print_info $? train_$2_$1
-
-elif [[ $1 == 'recv' ]];then #恢复训练
-    python run_pretrain.py --model_type gpt2\
-        --model_name_or_path output/model_1000\
-        --input_dir "./data"\
-        --output_dir "checkpoint_output"\
-        --max_lr 0.00015\
-        --min_lr 0.00001\
-        --weight_decay 0.01\
-        --grad_clip 1.0\
-        --max_steps 10\
-        --save_steps 10\
-        --decay_steps 320000\
-        --warmup_rate 0.01\
-        --batch_size 8\
-        --device $2 > $log_path/train_$1_$2.log 2>&1
-    print_info $? train_$1_$2
-else #CPU
-    python run_pretrain.py --model_type gpt2\
-        --model_name_or_path gpt2-small-en\
+else #单卡或cpu
+    python run_pretrain.py --model_type gpt\
+        --model_name_or_path "gpt2-en"\
         --input_dir "./data"\
         --output_dir "output"\
         --max_lr 0.00015\
@@ -81,9 +64,9 @@ else #CPU
         --save_steps 10\
         --decay_steps 320000\
         --warmup_rate 0.01\
-        --batch_size 8\
-        --device $1 > $log_path/train_$1.log 2>&1
-    print_info $? train_$1
+        --micro_batch_size 2\
+        --device $1 > $log_path/train_$2_$1.log 2>&1
+    print_info $? train_$2_$1
 fi
 
 export http_proxy=$HTTPPROXY
