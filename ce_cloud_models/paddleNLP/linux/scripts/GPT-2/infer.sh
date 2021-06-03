@@ -20,7 +20,7 @@ cd $root_path/models_repo
 cd examples/language_model/gpt
 
 python export_model.py --model_type=gpt \
-    --model_path=gpt2-en\
+    --model_path=gpt2-medium-en\
     --output_path=./infer_model/model
 
 python deploy/python/inference.py --model_type gpt \
