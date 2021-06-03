@@ -129,21 +129,21 @@ EVAL:
       precision:
         latest: True
         kpi_base: 0.37389
-        threshold: 0.02
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"
       recall:
         latest: True
         kpi_base: 0.44899
-        threshold: 0.02
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"
       f1:
         latest: True
         kpi_base: 0.41631
-        threshold: 0.02
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"
