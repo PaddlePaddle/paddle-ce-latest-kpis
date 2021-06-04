@@ -582,7 +582,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/train_QQP_multi_$XPU.log
 
   -
-    priority: p2 #时间太久
+    priority: p0 #时间太久
     tag: linux_gpu1_MNLI
     env:
       CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
@@ -602,7 +602,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/train_MNLI_single_$XPU.log
   
   -
-    priority: p2 #时间太久
+    priority: p0 #时间太久
     tag: linux_gpu2_MNLI
     env:
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置

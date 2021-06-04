@@ -36,9 +36,10 @@ if [[ ${MULTI} == "multi" ]]; then
 N_GPU=2
 fi
 
+NAME=$(echo $3 | tr 'A-Z' 'a-z')
 
 python -u ./run_glue_ofa.py --model_type bert \
-    --model_name_or_path $data_path \
+    --model_name_or_path $data_path/${NAME}_ft_model_100.pdparams \
     --task_name $3 \
     --max_seq_length 128 \
     --batch_size 32 \
