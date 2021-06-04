@@ -27,7 +27,7 @@ DEVICE=$1
 
 python small.py \
     --task_name chnsenticorp \
-    --max_epoch 20 \
+    --max_epoch 1 \
     --vocab_size 1256608 \
     --batch_size 64 \
     --model_name bert-wwm-ext-chinese \
@@ -36,7 +36,7 @@ python small.py \
     --dropout_prob 0.2 \
     --vocab_path senta_word_dict.txt \
     --device ${DEVICE} \
-    --save_steps 1000 \
+    --save_steps 10 \
     --output_dir small_models/chnsenticorp/ >$log_path/train_$2_${DEVICE}.log 2>&1
 
 #set http_proxy
