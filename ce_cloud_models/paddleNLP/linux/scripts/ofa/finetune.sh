@@ -49,7 +49,7 @@ python -u ./run_glue.py \
     --max_steps  100 \
     --save_steps 10 \
     --output_dir ./tmp/$3/$2/ \
-    --device ${DEVICE}  > $log_path/train_$3_$2_$1.log 2>&1
+    --device ${DEVICE}  > $log_path/finetune_$3_$2_$1.log 2>&1
 
 #cat $model_name-base_finetune.log
 export http_proxy=$HTTPPROXY

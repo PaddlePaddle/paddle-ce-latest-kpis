@@ -35,7 +35,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_SST-2_single_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_SST-2_single_$XPU.log
   
   -
     priority: p0
@@ -55,7 +55,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_SST-2_multi_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_SST-2_multi_$XPU.log
 
   -
     priority: p0
@@ -75,7 +75,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_QNLI_single_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_QNLI_single_$XPU.log
   
   -
     priority: p0
@@ -95,7 +95,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_QNLI_multi_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_QNLI_multi_$XPU.log
   
   -
     priority: p0
@@ -115,7 +115,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_CoLA_single_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_CoLA_single_$XPU.log
   
   -
     priority: p0
@@ -135,7 +135,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_CoLA_multi_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_CoLA_multi_$XPU.log
   
 
   -
@@ -156,7 +156,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_MRPC_single_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_MRPC_single_$XPU.log
   
   -
     priority: p0
@@ -176,7 +176,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_MRPC_multi_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_MRPC_multi_$XPU.log
 
   -
     priority: p0
@@ -196,7 +196,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_STS-B_single_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_STS-B_single_$XPU.log
   
   -
     priority: p0
@@ -216,7 +216,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_STS-B_multi_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_STS-B_multi_$XPU.log
 
   -
     priority: p0
@@ -236,7 +236,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_QQP_single_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_QQP_single_$XPU.log
   
   -
     priority: p0
@@ -256,7 +256,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_QQP_multi_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_QQP_multi_$XPU.log
 
   -
     priority: p0 #时间太久
@@ -276,7 +276,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_MNLI_single_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_MNLI_single_$XPU.log
   
   -
     priority: p0 #时间太久
@@ -296,7 +296,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_MNLI_multi_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_MNLI_multi_$XPU.log
 
   -
     priority: p0
@@ -316,7 +316,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_RTE_single_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_RTE_single_$XPU.log
   
   -
     priority: p0
@@ -336,10 +336,7 @@ FINETUNE: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_RTE_multi_$XPU.log
-
-
-
+    output: $ROOT_PATH/$model_log_path/finetune_RTE_multi_$XPU.log
 
 
 TRAIN: # 训练步骤
