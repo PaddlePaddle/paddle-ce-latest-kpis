@@ -13,7 +13,7 @@ VARIABLES:
   model_log_path: log/bert/
 
 EXEC:
-  exec_cases: [DATA_PROC, TRAIN, INFER]
+  exec_cases: [DATA_PROC, TRAIN, FINETUNE, INFER]
   exec_priority: [p0,p1]
   exec_tag: $EXEC_TAG
 
@@ -65,10 +65,11 @@ TRAIN: # 训练步骤
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_multi_$XPU.log
 
+FINETUNE:
   # finetune
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_SST-2
+    tag: linux_gpu1_SST-2
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -86,7 +87,7 @@ TRAIN: # 训练步骤
   
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu2_SST-2
+    tag: linux_gpu2_SST-2
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -104,7 +105,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_QNLI
+    tag: linux_gpu1_QNLI
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -122,7 +123,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu2_QNLI
+    tag: linux_gpu2_QNLI
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -140,7 +141,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p9
-    tag: linux_finetune_gpu1_CoLA
+    tag: linux_gpu1_CoLA
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -158,7 +159,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p9
-    tag: linux_finetune_gpu2_CoLA
+    tag: linux_gpu2_CoLA
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -176,7 +177,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_MRPC
+    tag: linux_gpu1_MRPC
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -201,7 +202,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu2_MRPC
+    tag: linux_gpu2_MRPC
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -226,7 +227,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_STS-B
+    tag: linux_gpu1_STS-B
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -251,7 +252,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu2_STS-B
+    tag: linux_gpu2_STS-B
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -276,7 +277,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_QQP
+    tag: linux_gpu1_QQP
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -294,7 +295,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu2_QQP
+    tag: linux_gpu2_QQP
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -311,7 +312,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/QQP-_multi_fine-tune.log
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_MNLI
+    tag: linux_gpu1_MNLI
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -329,7 +330,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu2_MNLI
+    tag: linux_gpu2_MNLI
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -347,7 +348,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_RTE
+    tag: linux_gpu1_RTE
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -365,7 +366,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu2_RTE
+    tag: linux_gpu2_RTE
     run:
       -
         path: $ROOT_PATH/$model_scripts_path

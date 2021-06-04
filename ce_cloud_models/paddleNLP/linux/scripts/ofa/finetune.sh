@@ -17,7 +17,6 @@ unset https_proxy
 root_path=$cur_path/../../
 code_path=$cur_path/../../models_repo/examples/model_compression/ofa/
 log_path=$root_path/log/$model_name/
-data_path=$cur_path/../../models_repo/examples/benchmark/glue/tmp/$3/$2/
 if [ ! -d $log_path ]; then
   mkdir -p $log_path
 fi
@@ -36,20 +35,21 @@ if [[ ${MULTI} == "multi" ]]; then
 N_GPU=2
 fi
 
+cd ../../benchmark/glue/
 
-python -u ./run_glue_ofa.py --model_type bert \
-    --model_name_or_path $data_path \
+python -u ./run_glue.py \
+    --model_type bert \
+    --model_name_or_path bert-base-uncased \
     --task_name $3 \
     --max_seq_length 128 \
-    --batch_size 32 \
+    --batch_size 10   \
     --learning_rate 2e-5 \
     --num_train_epochs 1 \
-    --logging_steps 10 \
-    --save_steps 100 \
+    --logging_steps 1 \
     --max_steps  500 \
+    --save_steps 100 \
     --output_dir ./tmp/$3/$2/ \
-    --n_gpu $N_GPU \
-    --width_mult_list 1.0 0.8333333333333334 0.6666666666666666 0.5  > $log_path/train_$3_$2_$1.log 2>&1
+    --device ${DEVICE}  > $log_path/train_$3_$2_$1.log 2>&1
 
 #cat $model_name-base_finetune.log
 export http_proxy=$HTTPPROXY
