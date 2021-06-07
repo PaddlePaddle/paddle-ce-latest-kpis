@@ -46,7 +46,7 @@ python -u ./run_glue.py \
     --learning_rate 2e-5 \
     --num_train_epochs 1 \
     --logging_steps 1 \
-    --max_steps  30 \
+    --max_steps 10 \
     --save_steps 10 \
     --output_dir ./tmp/$3/$2/ \
     --device ${DEVICE}  > $log_path/finetune_$3_$2_$1.log 2>&1
