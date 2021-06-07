@@ -47,7 +47,7 @@ python -u ./run_glue_ofa.py --model_type bert \
     --num_train_epochs 1 \
     --logging_steps 10 \
     --save_steps 10 \
-    --max_steps  30 \
+    --max_steps 30 \
     --output_dir ./tmp/$3/$2/ \
     --n_gpu $N_GPU \
     --width_mult_list 1.0 0.8333333333333334 0.6666666666666666 0.5  > $log_path/train_$3_$2_$1.log 2>&1
