@@ -27,5 +27,6 @@ if [[ $1 == "gpu" ]]; then
         --task_name=$4 \
         --data_dir=./DGU_datasets/$4 \
         --output_dir=./checkpoints/$4 \
+        --epochs=1 \
         --device=$1 >$log_path/train_$2_$1.log 2>&1
 fi

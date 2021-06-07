@@ -43,14 +43,14 @@ then
     --batch_size 12 \
     --learning_rate 3e-5 \
     --num_train_epochs 1 \
-    --logging_steps 100 \
-    --save_steps 1000 \
+    --logging_steps 10 \
+    --save_steps 10 \
     --warmup_proportion 0.1 \
     --weight_decay 0.01 \
     --output_dir ./tmp/squad/ \
     --do_train \
     --do_predict \
-    --max_steps 502 \
+    --max_steps 100 \
     --device ${DEVICE} >$log_path/train_${DEVICE}_${DATASET}.log 2>&1
   print_info $? train_${DEVICE}_${DATASET}
 elif [[ ${DATASET} == "2.0" ]]
@@ -62,15 +62,15 @@ then
     --batch_size 12 \
     --learning_rate 3e-5 \
     --num_train_epochs 1 \
-    --logging_steps 1000 \
-    --save_steps 1000 \
+    --logging_steps 10 \
+    --save_steps 10 \
     --warmup_proportion 0.1 \
     --weight_decay 0.01 \
     --output_dir ./tmp/squad/ \
     --device ${DEVICE} \
     --do_train \
     --do_pred \
-    --max_steps 502 \
+    --max_steps 100 \
     --version_2_with_negative >$log_path/train_${DEVICE}_${DATASET}.log 2>&1
   print_info $? train_${DEVICE}_${DATASET}
 fi

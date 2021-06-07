@@ -33,7 +33,8 @@ python -m paddle.distributed.launch --gpus $3 run_du.py \
     --learning_rate 3e-5 \
     --num_train_epochs 1 \
     --logging_steps 10 \
-    --save_steps 1000 \
+    --save_steps 10 \
+    --max_steps 20 \
     --warmup_proportion 0.1 \
     --weight_decay 0.01 \
     --output_dir ./tmp/dureader-robust/ \

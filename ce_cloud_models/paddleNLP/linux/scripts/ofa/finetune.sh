@@ -5,7 +5,7 @@
 cur_path=`pwd`
 model_name=${PWD##*/}
 
-echo "$model_name 模型训练阶段"
+echo "$model_name 模型finetune阶段"
 
 #取消代理
 HTTPPROXY=$http_proxy
@@ -46,7 +46,7 @@ python -u ./run_glue.py \
     --learning_rate 2e-5 \
     --num_train_epochs 1 \
     --logging_steps 1 \
-    --max_steps  100 \
+    --max_steps  30 \
     --save_steps 10 \
     --output_dir ./tmp/$3/$2/ \
     --device ${DEVICE}  > $log_path/finetune_$3_$2_$1.log 2>&1
