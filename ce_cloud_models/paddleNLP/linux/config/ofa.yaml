@@ -1,5 +1,5 @@
 MODEL: "ofa" # 模型名
-PRIORITY: P1
+PRIORITY: P0
 GIT:
   addr: $REPO_PaddleNLP
   path: $ROOT_PATH/models_repo
@@ -361,7 +361,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/train_SST-2_single_$XPU.log
   
   -
-    priority: p0
+    priority: p2
     tag: linux_gpu2_SST-2
     env:
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
@@ -401,7 +401,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/train_QNLI_single_$XPU.log
   
   -
-    priority: p0
+    priority: p2
     tag: linux_gpu2_QNLI
     env:
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
@@ -441,7 +441,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/train_CoLA_single_$XPU.log
   
   -
-    priority: p0
+    priority: p2
     tag: linux_gpu2_CoLA
     env:
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
@@ -482,7 +482,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/train_MRPC_single_$XPU.log
   
   -
-    priority: p0
+    priority: p2
     tag: linux_gpu2_MRPC
     env:
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
@@ -522,7 +522,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/train_STS-B_single_$XPU.log
   
   -
-    priority: p0
+    priority: p2
     tag: linux_gpu2_STS-B
     env:
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
@@ -562,7 +562,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/train_QQP_single_$XPU.log
   
   -
-    priority: p0
+    priority: p2
     tag: linux_gpu2_QQP
     env:
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
@@ -602,7 +602,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/train_MNLI_single_$XPU.log
   
   -
-    priority: p0 #时间太久
+    priority: p2 #时间太久
     tag: linux_gpu2_MNLI
     env:
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
@@ -642,7 +642,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/train_RTE_single_$XPU.log
   
   -
-    priority: p0
+    priority: p2
     tag: linux_gpu2_RTE
     env:
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
