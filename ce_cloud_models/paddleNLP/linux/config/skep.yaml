@@ -29,11 +29,18 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 10.984482
+        kpi_base: 0.24024
         threshold: 0.01
         actived: True
         evaluation: "-"
         unit_repr: "s"
+      accu:
+        latest: True
+        kpi_base: 0.91083
+        threshold: 0.05
+        actived: True
+        evaluation: "+"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_single_$XPU.log
 
   -
@@ -47,7 +54,7 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 0.24201
+        kpi_base: 0.29442
         threshold: 0.05
         actived: True
         evaluation: "-"
