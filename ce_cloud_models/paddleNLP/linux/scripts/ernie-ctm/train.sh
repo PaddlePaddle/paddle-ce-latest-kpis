@@ -45,7 +45,7 @@ if [[ $2 == 'multi' ]];then #多卡
         --num_train_epochs 1 \
         --logging_steps 10 \
         --save_steps 10 \
-        --max_steps 100 \
+        --max_steps 10 \
         --output_dir ./tmp/ \
         --device $1 > $log_path/train_$2_$1.log 2>&1
 else #单卡
@@ -56,7 +56,7 @@ else #单卡
         --num_train_epochs 1 \
         --logging_steps 10 \
         --save_steps 10 \
-        --max_steps 100 \
+        --max_steps 30 \
         --output_dir ./tmp/ \
         --device $1 > $log_path/train_$2_$1.log 2>&1
     
