@@ -44,7 +44,8 @@ if [[ $1 == 'gpu' ]];then #GPU
     --save_steps 10 \
     --logging_steps 1 \
     --max_encoder_length 512 \
-    --max_pred_length 75 > $log_path/train_$3_$1.log 2>&1
+    --max_pred_length 75 \
+    --device $1 > $log_path/train_$3_$1.log 2>&1
     print_info $? train_$3_$1
 else #cpu
     python --log_dir log  run_pretrain.py --model_name_or_path $2 \
@@ -57,7 +58,8 @@ else #cpu
     --save_steps 10 \
     --logging_steps 1 \
     --max_encoder_length 512 \
-    --max_pred_length 75 > $log_path/train_$1.log 2>&1
+    --max_pred_length 75 \
+    --device $1 > $log_path/train_$1.log 2>&1
     print_info $? train_$1
 fi
 
