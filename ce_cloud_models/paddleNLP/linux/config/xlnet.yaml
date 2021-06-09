@@ -21,7 +21,7 @@ EXEC:
 FINETUNE:
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_SST-2
+    tag: linux_gpu1_SST-2
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -39,7 +39,7 @@ FINETUNE:
 
   - #可以有多步
     priority: p9
-    tag: linux_finetune_gpu1_CoLA
+    tag: linux_gpu1_CoLA
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -57,7 +57,7 @@ FINETUNE:
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_MRPC
+    tag: linux_gpu1_MRPC
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -82,7 +82,7 @@ FINETUNE:
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_STS-B
+    tag: linux_gpu1_STS-B
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -91,14 +91,14 @@ FINETUNE:
     kpis: #kpi指标
       pearson:
         latest: True
-        kpi_base: 0.34083571853619427
+        kpi_base: 0.34081
         threshold: 0.01
         actived: True
         evaluation: "+"
         unit_repr: "s"
       spearman:
         latest: True
-        kpi_base: 0.36727046367576166
+        kpi_base: 0.36726
         threshold: 0.01
         actived: True
         evaluation: "+"
@@ -107,7 +107,7 @@ FINETUNE:
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_QNLI
+    tag: linux_gpu1_QNLI
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -116,7 +116,7 @@ FINETUNE:
     kpis: #kpi指标
       acc:
         latest: True
-        kpi_base: 0.5253523704924035
+        kpi_base: 0.52462
         threshold: 0.01
         actived: True
         evaluation: "+"
@@ -125,7 +125,7 @@ FINETUNE:
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_QQP
+    tag: linux_gpu1_QQP
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -150,7 +150,7 @@ FINETUNE:
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_MNLI
+    tag: linux_gpu1_MNLI
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -168,7 +168,7 @@ FINETUNE:
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_RTE
+    tag: linux_gpu1_RTE
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -186,7 +186,7 @@ FINETUNE:
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_WNLI
+    tag: linux_gpu1_WNLI
     run:
       -
         path: $ROOT_PATH/$model_scripts_path

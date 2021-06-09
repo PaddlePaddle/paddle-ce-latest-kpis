@@ -41,8 +41,9 @@ python -u ./run_du.py \
     --batch_size 16 \
     --learning_rate 5e-5 \
     --num_train_epochs 4 \
-    --logging_steps 1000 \
-    --save_steps 1000 \
+    --logging_steps 10 \
+    --save_steps 10 \
+    --max_steps 100 \
     --warmup_proportion 0.1 \
     --weight_decay 0.01 \
     --output_dir ./tmp/dureader/ \

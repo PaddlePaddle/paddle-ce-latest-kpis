@@ -33,8 +33,9 @@ if [[ ${MULTI} == "single" ]]; then
         --batch_size 32 \
         --learning_rate 2e-5 \
         --num_train_epochs 1 \
-        --logging_steps 1 \
-        --save_steps 500 \
+        --logging_steps 10 \
+        --save_steps 10 \
+        --max_steps 100 \
         --output_dir ./tmp/msra_ner/ \
         --device ${DEVICE} >$log_path/train_${MULTI}_${DEVICE}.log 2>&1
 else
@@ -44,8 +45,9 @@ else
         --batch_size 32 \
         --learning_rate 2e-5 \
         --num_train_epochs 1 \
-        --logging_steps 1 \
-        --save_steps 500 \
+        --logging_steps 10 \
+        --save_steps 10 \
+        --max_steps 100 \
         --output_dir ./tmp/msra_ner/ \
         --device ${DEVICE} >$log_path/train_${MULTI}_${DEVICE}.log 2>&1
 fi

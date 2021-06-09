@@ -42,22 +42,22 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       precision:
         latest: True
-        kpi_base: 0.5098
-        threshold: 0.01
+        kpi_base: 0.51962
+        threshold: 0.02
         actived: True
         evaluation: "+"
         unit_repr: "s"
       recall:
         latest: True
-        kpi_base: 0.582
-        threshold: 0.01
+        kpi_base: 0.57922
+        threshold: 0.02
         actived: True
         evaluation: "+"
         unit_repr: "s"
       f1:
         latest: True
-        kpi_base: 0.5438
-        threshold: 0.01
+        kpi_base: 0.54758
+        threshold: 0.02
         actived: True
         evaluation: "+"
         unit_repr: "s"
@@ -74,22 +74,22 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       precision:
         latest: True
-        kpi_base: 0.5098
-        threshold: 0.01
+        kpi_base: 0.46210
+        threshold: 0.02
         actived: True
         evaluation: "+"
         unit_repr: "s"
       recall:
         latest: True
-        kpi_base: 0.582
-        threshold: 0.01
+        kpi_base: 0.53739
+        threshold: 0.02
         actived: True
         evaluation: "+"
         unit_repr: "s"
       f1:
         latest: True
-        kpi_base: 0.5438
-        threshold: 0.01
+        kpi_base: 0.49477
+        threshold: 0.02
         actived: True
         evaluation: "+"
         unit_repr: "s"
@@ -128,22 +128,22 @@ EVAL:
     kpis: #kpi指标
       precision:
         latest: True
-        kpi_base: 0.5098
-        threshold: 0.01
+        kpi_base: 0.37389
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"
       recall:
         latest: True
-        kpi_base: 0.582
-        threshold: 0.01
+        kpi_base: 0.44899
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"
       f1:
         latest: True
-        kpi_base: 0.5438
-        threshold: 0.01
+        kpi_base: 0.41631
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"

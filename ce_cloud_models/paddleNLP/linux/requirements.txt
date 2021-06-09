@@ -20,3 +20,5 @@ pgl >= 2.1
 nltk
 easydict
 multiprocess
+sklearn
+paddleslim

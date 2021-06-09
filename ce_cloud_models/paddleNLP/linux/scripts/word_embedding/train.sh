@@ -34,7 +34,7 @@ python train.py \
   --device=${DEVICE} \
   --lr=5e-4 \
   --batch_size=64 \
-  --epochs=20 \
+  --epochs=1 \
   --use_token_embedding=True \
   --vdl_dir='./vdl_dir' >$log_path/train_$2_${DEVICE}.log 2>&1
 
