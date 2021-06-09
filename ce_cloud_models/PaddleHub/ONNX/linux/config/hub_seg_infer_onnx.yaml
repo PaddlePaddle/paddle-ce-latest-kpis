@@ -1,0 +1,112 @@
+MODEL: "hub_seg_infer_onnx" # 模型名称
+PRIORITY: P0
+GIT:
+  addr: $REPO_PaddleHub
+  path: $ROOT_PATH/PaddleHub
+  branch: $NLP_BRANCH
+
+ENV:
+  PADDLE_ON_MODEL_CE: $PADDLE_ON_MODEL_CE
+
+VARIABLES:
+  model_scripts_path: scripts/hub_seg_infer_onnx/ #脚本的路径
+  model_log_path: log/hub_seg_infer_onnx
+
+EXEC:
+  exec_cases: [SETUP_HUB, SEG_INFER, SEG_LOAD_INFER]
+  exec_priority: [p0]
+  exec_tag: $EXEC_TAG
+
+#测试套
+SETUP_HUB:
+  -
+    priority: p0
+    tag: linux_setup_hub
+    run:
+      -
+        path: $ROOT_PATH/PaddleHub
+        cmd: python setup.py install
+
+SEG_INFER:
+  -
+    priority: p0
+    tag: linux_finetune_gpu1
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh hub_save_infer_onnx.sh 'infer' 'single_gpu' seg_save_infer_single_gpu
+    kpis:
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_seg_save_infer_single_gpu.log
+
+#SEG_ONNX:
+#  -
+#    priority: p0
+#    tag: linux_dy_gpu1
+#    env: #去掉，自动调度
+#      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+#
+#    run:
+#      -
+#        path: $ROOT_PATH/$model_scripts_path
+#        cmd: sh hub_save_infer_onnx.sh 'onnx' 'single_gpu' seg_save_onnx_single_gpu
+#    kpis:
+#      exit_code:
+#        latest: True
+#        kpi_base: 0
+#        threshold: 0
+#        actived: True
+#        evaluation: "-"
+#        unit_repr: None
+#    output: $ROOT_PATH/$model_log_path/S_seg_save_onnx_single_gpu.log
+
+SEG_LOAD_INFER:
+  -
+    priority: p0
+    tag: linux_dy_gpu1
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh hub_load_infer_onnx.sh 'infer' 'single_gpu' seg_load_infer_single_gpu
+    kpis:
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_seg_load_infer_single_gpu.log
+
+#SEG_LOAD_ONNX:
+#  -
+#    priority: p0
+#    tag: linux_dy_gpu1
+#    env: #去掉，自动调度
+#      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+#
+#    run:
+#      -
+#        path: $ROOT_PATH/$model_scripts_path
+#        cmd: sh hub_load_infer_onnx.sh 'onnx' 'single_gpu' seg_load_onnx_single_gpu
+#    kpis:
+#      exit_code:
+#        latest: True
+#        kpi_base: 0
+#        threshold: 0
+#        actived: True
+#        evaluation: "-"
+#        unit_repr: None
+#    output: $ROOT_PATH/$model_log_path/S_seg_load_onnx_single_gpu.log

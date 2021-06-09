@@ -1,0 +1,31 @@
+colorama
+colorlog
+easydict
+filelock
+flask >= 1.1.0
+gitpython
+numpy
+matplotlib
+opencv-python
+packaging
+paddle2onnx >= 0.5.1
+paddlenlp >= 2.0.0rc5
+Pillow
+pyyaml
+pyzmq
+rarfile
+tqdm
+visualdl >= 2.0.0
+# gunicorn not support windows
+gunicorn >= 19.10.0; sys_platform != "win32"
+
+shapely
+scikit-image==0.17.2
+imgaug==0.4.0
+pyclipper
+lmdb
+tqdm
+numpy
+visualdl
+python-Levenshtein
+opencv-contrib-python==4.2.0.32
