@@ -1,0 +1,88 @@
+MODEL: "hub_w2v_weibo_target_word_word_dim300" # 模型名称
+PRIORITY: P0
+GIT:
+  addr: $REPO_PaddleHub
+  path: $ROOT_PATH/PaddleHub
+  branch: $NLP_BRANCH
+
+ENV:
+  PADDLE_ON_MODEL_CE: $PADDLE_ON_MODEL_CE
+
+VARIABLES:
+  model_scripts_path: scripts/hub_w2v_weibo_target_word_word_dim300/ #脚本的路径
+  model_log_path: log/hub_w2v_weibo_target_word_word_dim300
+
+EXEC:
+  exec_cases: [SETUP_HUB, INSTALL, SENTA_PREDICT]
+  exec_priority: [p0]
+  exec_tag: $EXEC_TAG
+
+#测试套
+SETUP_HUB:
+  -
+    priority: p0
+    tag: linux_setup_hub
+    run:
+      -
+        path: $ROOT_PATH/PaddleHub
+        cmd: python setup.py install
+
+INSTALL:
+  -
+    priority: p0
+    tag: linux_install_module
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh hub_install.sh install
+    kpis:
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_install.log
+
+#SENTA_FINETUNE:
+#  -
+#    priority: p0
+#    tag: linux_finetune_gpu1
+#    env: #去掉，自动调度
+#      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+#
+#    run:
+#      -
+#        path: $ROOT_PATH/$model_scripts_path
+#        cmd: sh hub_finetune.sh 'senta' 'single_gpu' senta_finetune_single_gpu
+#    kpis:
+#      exit_code:
+#        latest: True
+#        kpi_base: 0
+#        threshold: 0
+#        actived: True
+#        evaluation: "-"
+#        unit_repr: None
+#    output: $ROOT_PATH/$model_log_path/S_senta_finetune_single_gpu.log
+
+SENTA_PREDICT:
+  -
+    priority: p0
+    tag: linux_dy_gpu1
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh hub_predict.sh 'senta' 'single_gpu' senta_predict_single_gpu
+    kpis:
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_senta_predict_single_gpu.log
