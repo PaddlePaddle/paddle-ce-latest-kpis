@@ -17,10 +17,14 @@ fi
 
 #访问RD程序
 cd $root_path/models_repo
-cd examples/language_model/gpt2
+cd examples/language_model/gpt
 
+python export_model.py --model_type=gpt \
+    --model_path=gpt2-medium-en\
+    --output_path=./infer_model/model
 
-python generate_sample.py > $log_path/infer.log 2>&1
+python deploy/python/inference.py --model_type gpt \
+    --model_path ./infer_model/model > $log_path/infer.log 2>&1
 
 print_info $? "infer"
 #cat $log_path/infer.log

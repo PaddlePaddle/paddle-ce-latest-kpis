@@ -13,7 +13,7 @@ VARIABLES:
   model_log_path: log/bert/
 
 EXEC:
-  exec_cases: [DATA_PROC, TRAIN, INFER]
+  exec_cases: [DATA_PROC, TRAIN, FINETUNE, INFER]
   exec_priority: [p0,p1]
   exec_tag: $EXEC_TAG
 
@@ -40,7 +40,7 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 11.921639
+        kpi_base: 11.228267
         threshold: 0.001
         actived: True
         evaluation: "-"
@@ -58,17 +58,18 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 11.921639
+        kpi_base: 11.228207
         threshold: 0.001
         actived: True
         evaluation: "-"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_multi_$XPU.log
 
+FINETUNE:
   # finetune
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_SST-2
+    tag: linux_gpu1_SST-2
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -86,7 +87,7 @@ TRAIN: # 训练步骤
   
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu2_SST-2
+    tag: linux_gpu2_SST-2
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -95,7 +96,7 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       acc:
         latest: True
-        kpi_base: 0.5860
+        kpi_base: 0.51491
         threshold: 0.01
         actived: True
         evaluation: "+"
@@ -104,7 +105,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_QNLI
+    tag: linux_gpu1_QNLI
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -122,7 +123,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu2_QNLI
+    tag: linux_gpu2_QNLI
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -131,7 +132,7 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       acc:
         latest: True
-        kpi_base: 0.6797
+        kpi_base: 0.69943
         threshold: 0.01
         actived: True
         evaluation: "+"
@@ -140,7 +141,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p9
-    tag: linux_finetune_gpu1_CoLA
+    tag: linux_gpu1_CoLA
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -158,7 +159,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p9
-    tag: linux_finetune_gpu2_CoLA
+    tag: linux_gpu2_CoLA
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -176,7 +177,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_MRPC
+    tag: linux_gpu1_MRPC
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -201,7 +202,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu2_MRPC
+    tag: linux_gpu2_MRPC
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -210,14 +211,14 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       f1:
         latest: True
-        kpi_base: 0.81287
+        kpi_base: 0.81168
         threshold: 0.01
         actived: True
         evaluation: "+"
         unit_repr: "s"
       acc:
         latest: True
-        kpi_base: 0.6863
+        kpi_base: 0.68382
         threshold: 0.01
         actived: True
         evaluation: "+"
@@ -226,7 +227,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_STS-B
+    tag: linux_gpu1_STS-B
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -235,14 +236,14 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       pearson:
         latest: True
-        kpi_base: 0.27724463321910015
+        kpi_base: 0.27724
         threshold: 0.01
         actived: True
         evaluation: "+"
         unit_repr: "s"
       spearman:
         latest: True
-        kpi_base: 0.19406690225195655
+        kpi_base: 0.19406
         threshold: 0.01
         actived: True
         evaluation: "+"
@@ -251,7 +252,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu2_STS-B
+    tag: linux_gpu2_STS-B
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -260,14 +261,14 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       pearson:
         latest: True
-        kpi_base: 0.27724463321910015
+        kpi_base: 0.27778
         threshold: 0.01
         actived: True
         evaluation: "+"
         unit_repr: "s"
       spearman:
         latest: True
-        kpi_base: 0.19406690225195655
+        kpi_base: 0.20867
         threshold: 0.01
         actived: True
         evaluation: "+"
@@ -276,7 +277,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_QQP
+    tag: linux_gpu1_QQP
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -294,7 +295,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu2_QQP
+    tag: linux_gpu2_QQP
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -303,7 +304,7 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       acc:
         latest: True
-        kpi_base: 0.631288647044274
+        kpi_base: 0.6549344546129112
         threshold: 0.001
         actived: True
         evaluation: "+"
@@ -311,7 +312,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/QQP-_multi_fine-tune.log
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_MNLI
+    tag: linux_gpu1_MNLI
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -320,7 +321,7 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       acc:
         latest: True
-        kpi_base: 0.3846
+        kpi_base: 0.38461538461538464
         threshold: 0.01
         actived: True
         evaluation: "+"
@@ -329,7 +330,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu2_MNLI
+    tag: linux_gpu2_MNLI
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -338,7 +339,7 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       acc:
         latest: True
-        kpi_base: 0.3846
+        kpi_base: 0.3933774834437086
         threshold: 0.01
         actived: True
         evaluation: "+"
@@ -347,7 +348,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1_RTE
+    tag: linux_gpu1_RTE
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -356,7 +357,7 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       acc:
         latest: True
-        kpi_base: 0.5776
+        kpi_base: 0.5776173285198556
         threshold: 0.01
         actived: True
         evaluation: "+"
@@ -365,7 +366,7 @@ TRAIN: # 训练步骤
 
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu2_RTE
+    tag: linux_gpu2_RTE
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
@@ -374,7 +375,7 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       acc:
         latest: True
-        kpi_base: 0.5776
+        kpi_base: 0.555956678700361
         threshold: 0.01
         actived: True
         evaluation: "+"
