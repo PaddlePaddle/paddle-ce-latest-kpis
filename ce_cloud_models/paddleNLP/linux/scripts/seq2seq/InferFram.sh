@@ -35,15 +35,15 @@ fi
 DEVICE=$1
 
 python export_model.py \
-     --num_layers 2 \
-     --hidden_size 512 \
-     --batch_size 128 \
-     --dropout 0.2 \
-     --init_scale  0.1 \
-     --max_grad_norm 5.0 \
-     --init_from_ckpt attention_models/final.pdparams \
-     --beam_size 10 \
-     --export_path ./Infer_model/model >$log_path/inferfram_${DEVICE}.log 2>&1
+    --num_layers 2 \
+    --hidden_size 512 \
+    --batch_size 128 \
+    --dropout 0.2 \
+    --init_scale  0.1 \
+    --max_grad_norm 5.0 \
+    --init_from_ckpt attention_models/final.pdparams \
+    --beam_size 10 \
+    --export_path ./Infer_model/model >$log_path/inferfram_${DEVICE}.log 2>&1
 
 print_info $? inferfram_${DEVICE}
 

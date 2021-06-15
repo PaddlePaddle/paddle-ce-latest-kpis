@@ -34,15 +34,15 @@ fi
 
 if [[ ${DEVICE} == "gpu" ]]; then
     python train.py \
-    --num_layers 2 \
-    --hidden_size 512 \
-    --batch_size 128 \
-    --max_epoch 1 \
-    --dropout 0.2 \
-    --init_scale  0.1 \
-    --max_grad_norm 5.0 \
-    --device ${DEVICE} \
-    --model_path ./attention_models >$log_path/train_${MULTI}_${DEVICE}.log 2>&1
+        --num_layers 2 \
+        --hidden_size 512 \
+        --batch_size 128 \
+        --max_epoch 1 \
+        --dropout 0.2 \
+        --init_scale  0.1 \
+        --max_grad_norm 5.0 \
+        --device ${DEVICE} \
+        --model_path ./attention_models >$log_path/train_${MULTI}_${DEVICE}.log 2>&1
 
     print_info $? train_${MULTI}_${DEVICE}
 
