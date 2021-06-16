@@ -16,4 +16,4 @@ tar xvf poetry.tar.gz
 
 # 裁剪数据集
 mv ./poetry/train.tsv  ./poetry/train_origin.tsv
-head -n 100 ./poetry/train_origin.tsv > ./poetry/train.tsv
+head -n 10 ./poetry/train_origin.tsv > ./poetry/train.tsv
