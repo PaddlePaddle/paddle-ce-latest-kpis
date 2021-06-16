@@ -12,7 +12,7 @@ VARIABLES:
 
 EXEC:
   exec_cases: [FINETUNE, TRAIN]
-  exec_priority: [p0,p1]
+  exec_priority: [p0, p1, p2]
   exec_tag: $EXEC_TAG
 
 
@@ -554,8 +554,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 1.245365
-        threshold: 0.001
+        kpi_base: 1.247937
+        threshold: 0.002
         actived: True
         evaluation: "-"
         unit_repr: "s"
@@ -575,7 +575,7 @@ TRAIN: # 训练步骤
       loss:
         latest: True
         kpi_base: 11.921639
-        threshold: 0.001
+        threshold: 0.002
         actived: True
         evaluation: "-"
         unit_repr: "s"
@@ -594,8 +594,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 1.219004
-        threshold: 0.001
+        kpi_base: 1.232601
+        threshold: 0.002
         actived: True
         evaluation: "-"
         unit_repr: "s"

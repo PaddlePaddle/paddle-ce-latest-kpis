@@ -35,16 +35,16 @@ fi
 }
 
 python predict.py \
-     --num_layers 2 \
-     --hidden_size 512 \
-     --batch_size 128 \
-     --dropout 0.2 \
-     --init_scale  0.1 \
-     --max_grad_norm 5.0 \
-     --init_from_ckpt attention_models/final \
-     --infer_output_file infer_output.txt \
-     --beam_size 10 \
-     --device ${DEVICE} >$log_path/infer_${DEVICE}.log 2>&1
+    --num_layers 2 \
+    --hidden_size 512 \
+    --batch_size 128 \
+    --dropout 0.2 \
+    --init_scale  0.1 \
+    --max_grad_norm 5.0 \
+    --init_from_ckpt attention_models/final \
+    --infer_output_file infer_output.txt \
+    --beam_size 10 \
+    --device ${DEVICE} >$log_path/infer_${DEVICE}.log 2>&1
 
 print_info $? infer_${DEVICE}
 
