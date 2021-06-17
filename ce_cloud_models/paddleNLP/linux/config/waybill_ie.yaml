@@ -65,7 +65,7 @@ TRAIN: # 训练步骤
 
   -
     priority: p0
-    tag: linux_gpu1_ernie_bigru_crf
+    tag: linux_gpu1_bigru_crf
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
 
@@ -97,4 +97,40 @@ TRAIN: # 训练步骤
         evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_gpu_bigru_crf.log
+
+  -
+    priority: p0
+    tag: linux_gpu1_ernie_crf
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash train.sh gpu ernie_crf 
+
+    kpis: #kpi指标
+      Precision:
+        latest: True
+        kpi_base: 0.885808
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+      Recall:
+        latest: True
+        kpi_base: 0.913373
+        threshold: 0.025
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+      F1:
+        latest: True
+        kpi_base: 0.899379
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_gpu_ernie_crf.log
+
 

@@ -31,6 +31,9 @@ then
 elif [[ ${MODEL} == "ernie" ]]
 then
     python run_ernie.py >$log_path/train_${DEVICE}_${MODEL}.log 2>&1
+elif [[ ${MODEL} == "ernie_crf" ]]
+then
+    python run_ernie_crf.py > $log_path/train_${DEVICE}_${MODEL}.log 2>&1
 fi
 
 #set http_proxy
