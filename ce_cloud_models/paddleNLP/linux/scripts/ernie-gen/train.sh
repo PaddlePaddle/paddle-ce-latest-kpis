@@ -38,7 +38,6 @@ if [[ $2 == 'multi' ]];then #多卡
         --batch_size 48  \
         --learning_rate 2e-5 \
         --num_epochs 1 \
-        --max_steps 100 \
         --logging_steps 10 \
         --save_steps 10 \
         --output_dir ./tmp/ \
@@ -51,7 +50,6 @@ else #单卡
         --batch_size 48  \
         --learning_rate 2e-5 \
         --num_epochs 1 \
-        --max_steps 100 \
         --logging_steps 10 \
         --save_steps 10 \
         --output_dir ./tmp/ \

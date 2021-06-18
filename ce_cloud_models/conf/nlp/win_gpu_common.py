@@ -52,10 +52,15 @@ msra_ner_BRANCH = BASE_BRANCH
 lexical_analysis_BRANCH = BASE_BRANCH
 distill_lstm_BRANCH = BASE_BRANCH
 TEXT_CLASSIFICATION_PRETRAINED_BRANCH = BASE_BRANCH
+DGU_BRANCH = BASE_BRANCH
 # linux gpu下， P0的任务要跑的标签 daily
 EXEC_PRIORITY = ["p0", "p1"]
 EXEC_CASES = ["DATA_PROC", "TRAIN", "INFER"]
 EXEC_TAG = [
     "win_st_gpu1", "win_st_gpu1_con", 
-    "win_dy_gpu1", "win_dy_gpu1_con"
+    "win_dy_gpu1", "win_dy_gpu1_con",
+    "win_download_data", "win_gpu1_SST-2",
+    "win_gpu1_MRPC", "win_gpu1_STS-B", "win_gpu1_QNLI",
+    "win_gpu1_QQP", "win_gpu1_MNLI", "win_gpu1_RTE", "win_gpu1_WNLI",
+    "win_dy_gpu1_batch", "win_dy_gpu1_hardest"
 ]
