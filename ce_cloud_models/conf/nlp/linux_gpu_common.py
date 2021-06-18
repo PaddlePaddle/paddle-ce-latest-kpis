@@ -67,7 +67,7 @@ EXEC_TAG = [
     "linux_gpu1_MRPC", "linux_gpu1_STS-B",
     "linux_gpu1_QQP", "linux_gpu1_MNLI",
     "linux_gpu1_RTE", "linux_finetune_gpu1", 
-    "linux_gpu1_ernie", "linux_gpu1_ernie_bigru_crf",
+    "linux_gpu1_ernie", "linux_gpu1_bigru_crf",
     "linux_gpu2_MNLI", "linux_gpu2_RTE",
     "linux_gpu2_QQP", "linux_gpu2_STS-B",
     "linux_gpu2_MRPC", "linux_gpu2_CoLA",
@@ -78,5 +78,5 @@ EXEC_TAG = [
     "linux_dy_mrda_gpu2", "linux_dy_mrda_gpu1", "linux_dy_swda_gpu2", "linux_dy_swda_gpu1",
     "linux_dy_24_gpu1", "linux_dy_24_gpu2", "linux_dy_32_gpu2", "linux_dy_trigger_gpu1", 
     "linux_dy_trigger_gpu2", "linux_dy_role_gpu1", "linux_dy_role_gpu2", "linux_dy_enum_gpu1", 
-    "linux_dy_enum_gpu2"
+    "linux_dy_enum_gpu2", "linux_gpu1_ernie_crf"
     ]

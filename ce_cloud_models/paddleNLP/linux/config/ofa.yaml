@@ -363,12 +363,10 @@ TRAIN: # 训练步骤
   -
     priority: p2
     tag: linux_gpu2_SST-2
-    env:
-      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash train.sh $XPU 'multi' SST-2
+        cmd: bash train.sh $XPU 'multi' SST-2 $SET_MULTI_CUDA
 
     kpis: #kpi指标
       loss:
@@ -403,12 +401,10 @@ TRAIN: # 训练步骤
   -
     priority: p2
     tag: linux_gpu2_QNLI
-    env:
-      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash train.sh $XPU 'multi' QNLI
+        cmd: bash train.sh $XPU 'multi' QNLI $SET_MULTI_CUDA
 
     kpis: #kpi指标
       loss:
@@ -443,12 +439,10 @@ TRAIN: # 训练步骤
   -
     priority: p2
     tag: linux_gpu2_CoLA
-    env:
-      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash train.sh $XPU 'multi' CoLA
+        cmd: bash train.sh $XPU 'multi' CoLA $SET_MULTI_CUDA
 
     kpis: #kpi指标
       loss:
@@ -484,12 +478,10 @@ TRAIN: # 训练步骤
   -
     priority: p2
     tag: linux_gpu2_MRPC
-    env:
-      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash train.sh $XPU 'multi' MRPC
+        cmd: bash train.sh $XPU 'multi' MRPC $SET_MULTI_CUDA
 
     kpis: #kpi指标
       loss:
@@ -524,12 +516,10 @@ TRAIN: # 训练步骤
   -
     priority: p2
     tag: linux_gpu2_STS-B
-    env:
-      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash train.sh $XPU 'multi' STS-B
+        cmd: bash train.sh $XPU 'multi' STS-B $SET_MULTI_CUDA
 
     kpis: #kpi指标
       loss:
@@ -564,12 +554,10 @@ TRAIN: # 训练步骤
   -
     priority: p2
     tag: linux_gpu2_QQP
-    env:
-      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash train.sh $XPU 'multi' QQP
+        cmd: bash train.sh $XPU 'multi' QQP $SET_MULTI_CUDA
 
     kpis: #kpi指标
       loss:
@@ -604,12 +592,10 @@ TRAIN: # 训练步骤
   -
     priority: p2 #时间太久
     tag: linux_gpu2_MNLI
-    env:
-      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash train.sh $XPU 'multi' MNLI
+        cmd: bash train.sh $XPU 'multi' MNLI $SET_MULTI_CUDA
 
     kpis: #kpi指标
       loss:
@@ -644,12 +630,10 @@ TRAIN: # 训练步骤
   -
     priority: p2
     tag: linux_gpu2_RTE
-    env:
-      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash train.sh $XPU 'multi' RTE
+        cmd: bash train.sh $XPU 'multi' RTE $SET_MULTI_CUDA
 
     kpis: #kpi指标
       loss:
