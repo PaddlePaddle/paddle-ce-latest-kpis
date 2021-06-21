@@ -161,24 +161,31 @@ python parse.py recall_offline recall_infer_result
 dnn_all(){
     cd ${repo_path}/models/rank/dnn
     model=demo_dnn_all
+    # dy_cpu
+    echo -e "\033[31m start _dy_train_cpu dnn_all \033[0m "
+    python -u ../../../tools/trainer.py -m config.yaml -o runner.use_gpu=False
+    print_info $? ${model}_dy_train_cpu
+    echo -e "\033[31m start _dy_infer_cpu dnn_all \033[0m "
+    python -u ../../../tools/infer.py -m config.yaml -o runner.use_gpu=False
+    print_info $? ${model}_dy_infer_cpu
+    rm -rf output
+
+    # st_cpu
+    echo -e "\033[31m start _st_train_cpu dnn_all \033[0m "
+    python -u ../../../tools/static_trainer.py -m config.yaml -o runner.use_gpu=False
+    print_info $? ${model}_st_train_cpu
+    echo -e "\033[31m start _st_infer_gpu1 dnn_all \033[0m "
+    python -u ../../../tools/static_infer.py -m config.yaml -o runner.use_gpu=False
+    print_info $? ${model}_st_infer_cpu
+    rm -rf output
+
     # dy_gpu1
-    sed -i "s/  use_gpu: False/  use_gpu: True/g" config.yaml
     echo -e "\033[31m start _dy_train_gpu1 dnn_all \033[0m "
     python -u ../../../tools/trainer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_dy_train_gpu1
     echo -e "\033[31m start _dy_infer_gpu1 dnn_all \033[0m "
     python -u ../../../tools/infer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_dy_infer_gpu1
-    rm -rf output
-    # dy_gpu2
-    echo -e "\033[31m start _dy_train_gpu2 dnn_all \033[0m "
-    python -m paddle.distributed.launch ../../../tools/trainer.py -m config.yaml -o runner.use_gpu=True runner.use_fleet=True
-    print_info $? ${model}_dy_train_gpu2
-    mv log ${model}_dy_train_gpu2_dist_logs
-    echo -e "\033[31m start _dy_infer_gpu2 dnn_all \033[0m "
-    python -m paddle.distributed.launch ../../../tools/infer.py -m config.yaml -o runner.use_gpu=True runner.use_fleet=True
-    print_info $? ${model}_dy_infer_gpu2
-    mv log ${model}_dy_infer_gpu2_dist_logs
     rm -rf output
 
     # st_gpu1
@@ -189,13 +196,26 @@ dnn_all(){
     python -u ../../../tools/static_infer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_st_infer_gpu1
     rm -rf output
+
+    # dy_gpu2
+    echo -e "\033[31m start _dy_train_gpu2 dnn_all \033[0m "
+    sed -i "s/  use_gpu: False/  use_gpu: True/g" config.yaml
+    fleetrun ../../../tools/trainer.py -m config.yaml -o runner.use_gpu=True
+    print_info $? ${model}_dy_train_gpu2
+    mv log ${model}_dy_train_gpu2_dist_logs
+    echo -e "\033[31m start _dy_infer_gpu2 dnn_all \033[0m "
+    fleetrun ../../../tools/infer.py -m config.yaml -o runner.use_gpu=True
+    print_info $? ${model}_dy_infer_gpu2
+    mv log ${model}_dy_infer_gpu2_dist_logs
+    rm -rf output
+
     # st_gpu2
     echo -e "\033[31m start _st_train_gpu2 dnn_all \033[0m "
-    python -m paddle.distributed.launch ../../../tools/static_trainer.py -m config.yaml -o runner.use_gpu=True runner.use_fleet=True
+    fleetrun ../../../tools/static_trainer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_st_train_gpu2
     mv log ${model}_st_train_gpu2_dist_logs
     echo -e "\033[31m start _st_infer_gpu2 dnn_all \033[0m "
-    python -m paddle.distributed.launch ../../../tools/static_infer.py -m config.yaml -o runner.use_gpu=True runner.use_fleet=True
+    fleetrun ../../../tools/static_infer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_st_infer_gpu2
     mv log ${model}_st_infer_gpu2_dist_logs
 
