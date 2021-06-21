@@ -52,23 +52,24 @@ multitask_mmoe_BRANCH = BASE_BRANCH
 
 recall_ncf_BRANCH = BASE_BRANCH
 recall_word2vec_BRANCH = BASE_BRANCH
-# linux gpu下 P0的任务要跑的标签 daily  PaddleRec_Py37_Linux_Cuda10.2_FuncTest_P0_D
-EXEC_PRIORITY = ["p0", "p1"]
-EXEC_CASES = ["DATA_PROC", "TRAIN", "INFER"]
-EXEC_TAG = [
-    # "linux_st_gpu1",
-    "linux_dy_gpu1",
-    "linux_down_data",
-]
 
-EXEC_TAG_LINUX_GPU2 = [
+EXEC_CASES = ["DATA_PROC", "TRAIN", "INFER"]
+
+daily = True
+if ( daily is True ):
+    # linux gpu下 P0的任务要跑的标签 daily  PaddleRec_Py37_Linux_Cuda10.2_FuncTest_P0_D
+    EXEC_PRIORITY = ["p0", "p1"]
+    EXEC_TAG = [
+    "linux_st_gpu1",
+    "linux_dy_gpu1",
     "linux_st_gpu2",
     "linux_dy_gpu2",
-    "linux_down_data",
-]
-EXEC_TAG_LINUX_ALL = [
-    "linux_st_gpu1", "linux_st_gpu2", "linux_st_cpu",
-    "linux_dy_gpu1", "linux_dy_gpu2", "linux_dy_cpu",
-    "linux_down_data",
-]
-
+    ]
+else:
+    # Linux  下的收敛性任务
+    EXEC_PRIORITY = ["p0"]
+    EXEC_TAG = [
+        "linux_st_gpu1_con", "linux_st_gpu2_con", "linux_st_cpu_con",
+        "linux_dy_gpu1_con", "linux_dy_gpu2_con", "linux_dy_cpu_con",
+        "linux_down_data",
+    ]

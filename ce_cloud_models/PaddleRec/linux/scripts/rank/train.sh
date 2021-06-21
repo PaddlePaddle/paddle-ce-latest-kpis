@@ -28,45 +28,137 @@ else
 fi
 }
 
-
 cd $code_path/
 echo -e "\033[32m `pwd` train \033[0m";
+sed -i "s/  epochs: 3/  epochs: 1/g" config.yaml
+sed -i "s/  infer_end_epoch: 3/  infer_end_epoch: 1/g" config.yaml
 
-sed -i "s/  epochs: 4/  epochs: 1/g" config_bigdata.yaml
-sed -i "s/  infer_end_epoch: 4/  infer_end_epoch: 1/g" config_bigdata.yaml
-
-rm -rf output
-
-if [ "$1" = "linux_dy_gpu1" ];then #单卡
-    sed -i "s/  use_gpu: False/  use_gpu: True/g" config_bigdata.yaml
-    python -u ../../../tools/trainer.py -m config_bigdata.yaml > ${log_path}/$2.log 2>&1
-    print_info $? $2
-elif [ "$1" = "linux_dy_gpu2" ];then #多卡
-    sed -i "s/  use_gpu: False/  use_gpu: True/g" config_bigdata.yaml
-    # 多卡的运行方式
-    python -m paddle.distributed.launch ../../../tools/trainer.py -m config_bigdata.yaml > ${log_path}/$2.log 2>&1
-    print_info $? $2
-    mv $code_path/log $log_path/$2_dist_log
-elif [ "$1" = "linux_dy_cpu" ];then
-    sed -i "s/  use_gpu: True/  use_gpu: False/g" config_bigdata.yaml
-    python -u ../../../tools/trainer.py -m config_bigdata.yaml > ${log_path}/$2.log 2>&1
-    print_info $? $2
-
-elif [ "$1" = "linux_st_gpu1" ];then #单卡
-    sed -i "s/  use_gpu: False/  use_gpu: True/g" config_bigdata.yaml
-    python -u ../../../tools/static_trainer.py -m config_bigdata.yaml > ${log_path}/$2.log 2>&1
-    print_info $? $2
-elif [ "$1" = "linux_st_gpu2" ];then #多卡
-    sed -i "s/  use_gpu: False/  use_gpu: True/g" config_bigdata.yaml
-    # 多卡的运行方式
-    python -ms paddle.distributed.launch ../../../tools/static_trainer.py -m config_bigdata.yaml > ${log_path}/$2.log 2>&1
-    print_info $? $2
-    mv $code_path/log $log_path/$2_dist_log
-
-elif [ "$1" = "linux_st_cpu" ];then
-    sed -i "s/  use_gpu: True/  use_gpu: False/g" config_bigdata.yaml
-    python -u ../../../tools/static_trainer.py -m config_bigdata.yaml > ${log_path}/$2.log 2>&1
-    print_info $? $2
-else
-    echo "$model_name train.sh  parameters error "
-fi
+case $1 in
+ linux_dy_gpu1)
+        echo "start.$2.$1."
+        rm -rf output
+        sed -i "s/  use_gpu: False/  use_gpu: True/g" config.yaml
+        python -u ../../../tools/trainer.py -m config.yaml > ${log_path}/$2_T.log 2>&1
+        print_info $? $2_T
+        python -u ../../../tools/infer.py -m config.yaml > ${log_path}/$2_I.log 2>&1
+        print_info $? $2_I
+        ;;
+ linux_dy_gpu1_con)
+        echo "start.$2.$1."
+        rm -rf output
+        sed -i "s/  use_gpu: False/  use_gpu: True/g" config_bigdata.yaml
+        python -u ../../../tools/trainer.py -m config_bigdata.yaml > ${log_path}/$2_T.log 2>&1
+        print_info $? $2_T
+        python -u ../../../tools/infer.py -m config_bigdata.yaml > ${log_path}/$2_I.log 2>&1
+        print_info $? $2_I
+        ;;
+ linux_dy_gpu2)
+        echo "start.$2.$1."
+        rm -rf output
+        sed -i "s/  use_gpu: False/  use_gpu: True/g" config.yaml
+        sed -i '/runner:/a\  use_fleet: True' config.yaml
+        # 多卡的运行方式
+        fleetrun ../../../tools/trainer.py -m config.yaml > ${log_path}/$2_T.log 2>&1
+        print_info $? $2_T
+        mv $code_path/log $log_path/$2_dist_train_log
+        fleetrun ../../../tools/infer.py -m config.yaml > ${log_path}/$2_I.log 2>&1
+        print_info $? $2_I
+        mv $code_path/log $log_path/$2_dist_infer_log
+        ;;
+ linux_dy_gpu2_con)
+        echo "start.$2.$1."
+        rm -rf output
+        sed -i "s/  use_gpu: False/  use_gpu: True/g" config_bigdata.yaml
+        sed -i '/runner:/a\  use_fleet: True' config.yaml
+        # 多卡的运行方式
+        fleetrun ../../../tools/trainer.py -m config_bigdata.yaml > ${log_path}/$2_T.log 2>&1
+        print_info $? $2_T
+        mv $code_path/log $log_path/$2_dist_train_log
+        fleetrun ../../../tools/infer.py -m config_bigdata.yaml > ${log_path}/$2_I.log 2>&1
+        print_info $? $2_I
+        mv $code_path/log $log_path/$2_dist_infer_log
+        ;;
+ linux_dy_cpu)
+        echo "start.$2.$1."
+        rm -rf output
+        sed -i "s/  use_gpu: True/  use_gpu: False/g" config.yaml
+        python -u ../../../tools/trainer.py -m config.yaml > ${log_path}/$2_T.log 2>&1
+        print_info $? $2_T
+        python -u ../../../tools/infer.py -m config.yaml > ${log_path}/$2_I.log 2>&1
+        print_info $? $2_I
+        ;;
+ linux_dy_cpu_con)
+        echo "start.$2.$1."
+        rm -rf output
+        sed -i "s/  use_gpu: True/  use_gpu: False/g" config_bigdata.yaml
+        python -u ../../../tools/trainer.py -m config_bigdata.yaml > ${log_path}/$2_T.log 2>&1
+        print_info $? $2_T
+        python -u ../../../tools/infer.py -m config_bigdata.yaml > ${log_path}/$2_I.log 2>&1
+        print_info $? $2_I
+        ;;
+ linux_st_gpu1)
+        echo "start.$2.$1."
+        rm -rf output
+        sed -i "s/  use_gpu: False/  use_gpu: True/g" config.yaml
+        python -u ../../../tools/static_trainer.py -m config.yaml > ${log_path}/$2_T.log 2>&1
+        print_info $? $2_T
+        python -u ../../../tools/static_infer.py -m config.yaml > ${log_path}/$2_I.log 2>&1
+        print_info $? $2_I
+        ;;
+ linux_st_gpu1_con)
+        echo "start.$2.$1."
+        rm -rf output
+        sed -i "s/  use_gpu: False/  use_gpu: True/g" config_bigdata.yaml
+        python -u ../../../tools/static_trainer.py -m config_bigdata.yaml > ${log_path}/$2_T.log 2>&1
+        print_info $? $2_T
+        python -u ../../../tools/static_infer.py -m config_bigdata.yaml > ${log_path}/$2_I.log 2>&1
+        print_info $? $2_I
+        ;;
+ linux_st_gpu2)
+        echo "start.$2.$1."
+        rm -rf output
+        sed -i "s/  use_gpu: False/  use_gpu: True/g" config.yaml
+        sed -i '/runner:/a\  use_fleet: True' config.yaml
+        # 多卡的运行方式
+        fleetrun ../../../tools/static_trainer.py -m config.yaml > ${log_path}/$2_T.log 2>&1
+        print_info $? $2_T
+        mv $code_path/log $log_path/$2_dist_train_log
+        fleetrun ../../../tools/static_infer.py -m config.yaml > ${log_path}/$2_I.log 2>&1
+        print_info $? $2_I
+        mv $code_path/log $log_path/$2_dist_infer_log
+        ;;
+ linux_st_gpu2_con)
+        echo "start.$2.$1."
+        rm -rf output
+        sed -i "s/  use_gpu: False/  use_gpu: True/g" config_bigdata.yaml
+        sed -i '/runner:/a\  use_fleet: True' config.yaml
+        # 多卡的运行方式
+        fleetrun ../../../tools/static_trainer.py -m config_bigdata.yaml > ${log_path}/$2_T.log 2>&1
+        print_info $? $2_T
+        mv $code_path/log $log_path/$2_dist_train_log
+        fleetrun ../../../tools/static_infer.py -m config_bigdata.yaml > ${log_path}/$2_I.log 2>&1
+        print_info $? $2_I
+        mv $code_path/log $log_path/$2_dist_infer_log
+        ;;
+ linux_st_cpu)
+        echo "start.$2.$1."
+        rm -rf output
+        sed -i "s/  use_gpu: True/  use_gpu: False/g" config.yaml
+        python -u ../../../tools/static_trainer.py -m config.yaml > ${log_path}/$2_T.log 2>&1
+        print_info $? $2_T
+        python -u ../../../tools/static_infer.py -m config.yaml > ${log_path}/$2_I.log 2>&1
+        print_info $? $2_I
+        ;;
+ linux_st_cpu_con)
+        echo "start.$2.$1."
+        rm -rf output
+        sed -i "s/  use_gpu: True/  use_gpu: False/g" config_bigdata.yaml
+        python -u ../../../tools/static_trainer.py -m config_bigdata.yaml > ${log_path}/$2_T.log 2>&1
+        print_info $? $2_T
+        python -u ../../../tools/static_infer.py -m config_bigdata.yaml > ${log_path}/$2_I.log 2>&1
+        print_info $? $2_I
+        ;;
+ *)
+        echo "Usage: $1 [linux_dy_gpu1|linux_dy_gpu1_con]"
+        ;;
+esac
