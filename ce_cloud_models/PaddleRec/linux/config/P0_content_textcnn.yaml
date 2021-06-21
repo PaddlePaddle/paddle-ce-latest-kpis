@@ -24,13 +24,43 @@ DATA_PROC:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh data_proc.sh down_senti_clas
-
+        cmd: sh data_proc.sh down_criteo
 
 TRAIN: # 训练步骤
   -
     tag: linux_dy_gpu1
     priority: p0
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh linux_dy_gpu1 content_textcnn_linux_dy_gpu1
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 0.7710104
+        threshold: 0.0
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_dy_gpu1_T.log
+
+    kpis: #kpi指标
+      auc:
+        latest: True
+        kpi_base: 0.929062
+        threshold: 0.0
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_dy_gpu1_I.log
+
+  -
+    tag: linux_dy_gpu1_con
+    priority: p1
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
 
@@ -47,7 +77,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_rank_textcnn_linux_dy_gpu1_con_T.log
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_dy_gpu1_con_T.log
     kpis: #kpi指标
       auc:
         latest: True
@@ -56,19 +86,50 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_rank_textcnn_linux_dy_gpu1_con_I.log
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_dy_gpu1_con_I.log
 
 
   -
     tag: linux_dy_gpu2
     priority: p0
     env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh linux_dy_gpu2 content_textcnn_linux_dy_gpu2
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 0.7710104
+        threshold: 0.0
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/content_textcnn_linux_dy_gpu2_dist_train_log/workerlog.0
+
+    kpis: #kpi指标
+      auc:
+        latest: True
+        kpi_base: 0.929062
+        threshold: 0.0
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/content_textcnn_linux_dy_gpu2_dist_infer_log/workerlog.0
+
+  -
+    tag: linux_dy_gpu2_con
+    priority: p1
+    env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
 
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh linux_dy_gpu2_con rank_textcnn_linux_dy_gpu2_con
+        cmd: sh train.sh linux_dy_gpu2_con content_textcnn_linux_dy_gpu2_con
 
     kpis: #kpi指标
       loss:
@@ -79,7 +140,7 @@ TRAIN: # 训练步骤
         evaluation: "+"
         unit_repr: None
 
-    output: $ROOT_PATH/$model_log_path/rrank_textcnn_linux_dy_gpu2_con_dist_train_log/workerlog.0
+    output: $ROOT_PATH/$model_log_path/rcontent_textcnn_linux_dy_gpu2_con_dist_train_log/workerlog.0
     kpis: #kpi指标
       auc:
         latest: True
@@ -88,7 +149,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/rank_textcnn_linux_dy_gpu2_con_dist_infer_log/workerlog.0
+    output: $ROOT_PATH/$model_log_path/content_textcnn_linux_dy_gpu2_con_dist_infer_log/workerlog.0
 
 
   -
@@ -97,7 +158,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh linux_dy_cpu_con rank_textcnn_linux_dy_cpu_con
+        cmd: sh train.sh linux_dy_cpu content_textcnn_linux_dy_cpu
 
     kpis: #kpi指标
       loss:
@@ -107,7 +168,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_rank_textcnn_linux_dy_cpu_con_T.log
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_dy_cpu_T.log
     kpis: #kpi指标
       auc:
         latest: True
@@ -116,7 +177,34 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_rank_textcnn_linux_dy_cpu_con_I.log
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_dy_cpu_I.log
+
+  -
+    tag: linux_dy_cpu_con
+    priority: p1   # dy_cpu
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh linux_dy_cpu_con content_textcnn_linux_dy_cpu_con
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 0.7710104
+        threshold: 0.0
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_dy_cpu_con_T.log
+    kpis: #kpi指标
+      auc:
+        latest: True
+        kpi_base: 0.929062
+        threshold: 0.0
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_dy_cpu_con_I.log
 
   -
     tag: linux_st_gpu1  # st_gpu1
@@ -127,7 +215,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh linux_st_gpu1_con rank_textcnn_linux_st_gpu1_con
+        cmd: sh train.sh linux_st_gpu1 content_textcnn_linux_st_gpu1
 
     kpis: #kpi指标
       loss:
@@ -137,7 +225,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_rank_textcnn_linux_st_gpu1_con_T.log
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_st_gpu1_T.log
     kpis: #kpi指标
       auc:
         latest: True
@@ -146,19 +234,80 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_rank_textcnn_linux_st_gpu1_con_I.log
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_st_gpu1_I.log
+
+  -
+    tag: linux_st_gpu1_con  # st_gpu1
+    priority: p1
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh linux_st_gpu1_con content_textcnn_linux_st_gpu1_con
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 0.7710104
+        threshold: 0.0
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_st_gpu1_con_T.log
+    kpis: #kpi指标
+      auc:
+        latest: True
+        kpi_base: 0.929062
+        threshold: 0.0
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_st_gpu1_con_I.log
 
 
   -
     tag: linux_st_gpu2  # st_gpu1
     priority: p0
     env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh linux_st_gpu2 content_textcnn_linux_st_gpu2
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 0.7710104
+        threshold: 0.0
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_st_gpu2_T.log
+    kpis: #kpi指标
+      auc:
+        latest: True
+        kpi_base: 0.929062
+        threshold: 0.0
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_st_gpu2_I.log
+
+
+  -
+    tag: linux_st_gpu2_con  # linux_st_gpu2_con
+    priority: p1
+    env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
 
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh linux_st_gpu1_con rank_textcnn_linux_st_gpu1_con
+        cmd: sh train.sh linux_st_gpu1_con content_textcnn_linux_st_gpu1_con
     kpis: #kpi指标
       loss:
         latest: True
@@ -168,7 +317,7 @@ TRAIN: # 训练步骤
         evaluation: "+"
         unit_repr: None
 
-    output: $ROOT_PATH/$model_log_path/rank_textcnn_linux_st_gpu2_con_dist_train_log/workerlog.0
+    output: $ROOT_PATH/$model_log_path/content_textcnn_linux_st_gpu2_con_dist_train_log/workerlog.0
     kpis: #kpi指标
       auc:
         latest: True
@@ -177,7 +326,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/rank_textcnn_linux_st_gpu2_con_dist_infer_log/workerlog.0
+    output: $ROOT_PATH/$model_log_path/content_textcnn_linux_st_gpu2_con_dist_infer_log/workerlog.0
 
 
 
@@ -187,7 +336,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh linux_st_cpu_con rank_textcnn_linux_st_cpu_con
+        cmd: sh train.sh linux_st_cpu content_textcnn_linux_st_cpu
 
     kpis: #kpi指标
       loss:
@@ -197,7 +346,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_rank_textcnn_linux_st_cpu_con_T.log
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_st_cpu_T.log
     kpis: #kpi指标
       auc:
         latest: True
@@ -206,4 +355,31 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_rank_textcnn_linux_st_cpu_con_I.log
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_st_cpu_I.log
+
+  -
+    tag: linux_st_cpu_con # st_cpu
+    priority: p1
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh linux_st_cpu_con content_textcnn_linux_st_cpu_con
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 0.7710104
+        threshold: 0.0
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_st_cpu_con_T.log
+    kpis: #kpi指标
+      auc:
+        latest: True
+        kpi_base: 0.929062
+        threshold: 0.0
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_content_textcnn_linux_st_cpu_con_I.log
