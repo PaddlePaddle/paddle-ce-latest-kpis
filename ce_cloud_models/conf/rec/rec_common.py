@@ -58,8 +58,10 @@ EXEC_CASES = ["DATA_PROC", "TRAIN", "INFER"]
 daily = True
 if ( daily is True ):
     # linux gpu下 P0的任务要跑的标签 daily  PaddleRec_Py37_Linux_Cuda10.2_FuncTest_P0_D
-    EXEC_PRIORITY = ["p0", "p1"]
+    EXEC_PRIORITY = ["p0"]
     EXEC_TAG = [
+    "linux_st_cpu",
+    "linux_dy_cpu",
     "linux_st_gpu1",
     "linux_dy_gpu1",
     "linux_st_gpu2",
