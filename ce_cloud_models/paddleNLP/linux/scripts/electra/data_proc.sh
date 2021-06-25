@@ -24,6 +24,8 @@ mkdir -p $code_path/BookCorpus/
 wget -P $code_path/BookCorpus https://paddlenlp.bj.bcebos.com/models/electra/train.data.txt
 #cp /home/xishengdai/train.data $code_path/BookCorpus/
 
+cd $code_path/BookCorpus
+mv train.data.txt train.data
 
 export http_proxy=$HTTPPROXY
 export https_proxy=$HTTPSPROXY
