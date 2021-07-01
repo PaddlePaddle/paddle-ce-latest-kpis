@@ -10,7 +10,6 @@ code_path=$cur_path/../../models_repo/examples/language_model/$model_name
 
 #获取数据逻辑
 mkdir -p $code_path/data/
-#wget -P $code_path http://10.21.226.155:8687/openwebtext.tar.xz
 
 #数据处理逻辑
 cd $code_path

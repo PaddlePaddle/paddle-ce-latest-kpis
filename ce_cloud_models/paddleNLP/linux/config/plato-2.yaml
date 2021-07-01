@@ -1,5 +1,5 @@
 MODEL: "plato-2" # 模型名
-PRIORITY: P1
+PRIORITY: P1_close #对话形式
 GIT:
   addr: $REPO_PaddleNLP
   path: $ROOT_PATH/models_repo

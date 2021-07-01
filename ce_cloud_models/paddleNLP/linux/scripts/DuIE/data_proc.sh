@@ -22,5 +22,5 @@ fi
 
 # 准备数据
 #配置目标数据存储路径
-rm -rf $data_path
-ln -s /workspace/task/datasets/DuIE  /workspace/task/models_repo/examples/information_extraction/DuIE/data
+
+cp -r /workspace/task/datasets/DuIE/*  /workspace/task/models_repo/examples/information_extraction/DuIE/data/

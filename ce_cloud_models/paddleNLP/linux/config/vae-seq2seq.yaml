@@ -20,7 +20,7 @@ EXEC:
 #测试套
 DATA_PROC:
   -
-    priority: p0
+    priority: p2 # 不用下载数据
     tag: linux_download_data
     run:
       -
