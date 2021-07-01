@@ -18,8 +18,6 @@ unset https_proxy
 
 cd $code_path
 #获取数据逻辑
-#wget http://10.9.189.6:8181/tfds/wiki40b/en/1.3.0/wiki_dataset/wiki.tar.gz
-#tar xvfz wiki.tar.gz
 mkdir -p $code_path/data
 wget -P $code_path/data https://paddlenlp.bj.bcebos.com/ce/data/bigbird/wiki.csv
 

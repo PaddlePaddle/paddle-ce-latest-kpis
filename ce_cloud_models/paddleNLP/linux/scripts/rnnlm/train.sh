@@ -27,7 +27,7 @@ DEVICE=$1
 
 
 python -m paddle.distributed.launch --gpus "$3" train.py \
-  --max_epoch 10 > $log_path/train_$2_$1.log 2>&1
+  --max_epoch 1 > $log_path/train_$2_$1.log 2>&1
 
 
 #set http_proxy

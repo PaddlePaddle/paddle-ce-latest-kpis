@@ -59,7 +59,7 @@ if [[ $3 == "batch" ]]; then
     python -u evaluate.py \
         --similar_text_pair "same_semantic.tsv" \
         --recall_result_file "./recall_batch_neg/recall_result.txt" \
-        --recall_num 50 > ${log_path}/eval_$3_$1.log 2>&1 &
+        --recall_num 50 > ${log_path}/eval_$3_$1.log 2>&1
     print_info $?  eval_$3_$1
 else
     # 先支持GPU
