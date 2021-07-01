@@ -4,7 +4,6 @@ mkdir logs
 if [ -d "logs_cpp" ];then rm -rf logs_cpp
 fi
 mkdir logs_cpp
-export CUDA_VISIBLE_DEVICES=0
 config_list='ppyolo_r50vd_dcn_1x_coco ppyolov2_r50vd_dcn_365e_coco yolov3_darknet53_270e_coco solov2_r50_fpn_1x_coco faster_rcnn_r50_fpn_1x_coco mask_rcnn_r50_1x_coco s2anet_conv_1x_dota ssd_mobilenet_v1_300_120e_voc ttfnet_darknet53_1x_coco fcos_r50_fpn_1x_coco'
 config_s2anet='s2anet_conv_1x_dota'
 mode_list='trt_fp32 trt_fp16 trt_int8 fluid'
@@ -105,7 +104,6 @@ sh scripts/build.sh
 cd ../..
 for config in ${config_list}
 do
-#dynamic_shape=False
 image=demo/000000570688.jpg
 if [[ -n `echo "${config_s2anet}" | grep -w "${config}"` ]];then
     image=demo/P0072__1.0__0___0.png
