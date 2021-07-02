@@ -459,13 +459,13 @@ DISTILL: # 训练步骤
         cmd: bash distill.sh $XPU 'single' SST-2
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 3.628232
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_SST-2_single_$XPU.log
   
   -
@@ -479,13 +479,13 @@ DISTILL: # 训练步骤
         cmd: bash distill.sh $XPU 'multi' SST-2
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 11.921639
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_SST-2_multi_$XPU.log
   
   -
@@ -499,13 +499,13 @@ DISTILL: # 训练步骤
         cmd: distill.bat $XPU SST-2
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 3.628232
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_SST-2_$XPU.log
 
   -
@@ -519,13 +519,13 @@ DISTILL: # 训练步骤
         cmd: bash distill.sh $XPU 'single' QNLI
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 0.570988
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_QNLI_single_$XPU.log
   
   -
@@ -539,13 +539,13 @@ DISTILL: # 训练步骤
         cmd: bash distill.sh $XPU 'multi' QNLI
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 11.921639
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_QNLI_multi_$XPU.log
   
   -
@@ -559,13 +559,13 @@ DISTILL: # 训练步骤
         cmd: distill.bat $XPU QNLI
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 0.570988
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_QNLI_$XPU.log
   
   -
@@ -579,13 +579,13 @@ DISTILL: # 训练步骤
         cmd: bash distill.sh $XPU 'single' CoLA
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 0.483352
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_CoLA_single_$XPU.log
   
   -
@@ -599,13 +599,13 @@ DISTILL: # 训练步骤
         cmd: bash distill.sh $XPU 'multi' CoLA
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 11.921639
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_CoLA_multi_$XPU.log
   
   -
@@ -619,13 +619,13 @@ DISTILL: # 训练步骤
         cmd: distill.bat $XPU CoLA
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 0.483352
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_CoLA_$XPU.log
   
 
@@ -640,13 +640,13 @@ DISTILL: # 训练步骤
         cmd: bash distill.sh $XPU 'single' MRPC
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 0.539261
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_MRPC_single_$XPU.log
   
   -
@@ -660,13 +660,13 @@ DISTILL: # 训练步骤
         cmd: bash distill.sh $XPU 'multi' MRPC
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 11.921639
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_MRPC_multi_$XPU.log
 
   -
@@ -680,13 +680,13 @@ DISTILL: # 训练步骤
         cmd: distill.bat $XPU MRPC
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 0.539261
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_MRPC_$XPU.log
   
   -
@@ -700,13 +700,13 @@ DISTILL: # 训练步骤
         cmd: bash distill.sh $XPU 'single' QQP
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 0.722749
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_QQP_single_$XPU.log
   
   -
@@ -720,13 +720,13 @@ DISTILL: # 训练步骤
         cmd: bash distill.sh $XPU 'multi' QQP
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 11.921639
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_QQP_multi_$XPU.log
   
   -
@@ -740,13 +740,13 @@ DISTILL: # 训练步骤
         cmd: distill.bat $XPU QQP
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 0.722749
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_QQP_$XPU.log
 
   -
@@ -760,13 +760,13 @@ DISTILL: # 训练步骤
         cmd: bash distill.sh $XPU 'single' MNLI
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 1.088021
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_MNLI_single_$XPU.log
   
   -
@@ -780,13 +780,13 @@ DISTILL: # 训练步骤
         cmd: bash distill.sh $XPU 'multi' MNLI
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 1.088021
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_MNLI_multi_$XPU.log
 
   -
@@ -800,13 +800,13 @@ DISTILL: # 训练步骤
         cmd: distill.bat $XPU MNLI
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 1.088021
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_MNLI_$XPU.log
 
   -
@@ -820,13 +820,13 @@ DISTILL: # 训练步骤
         cmd: bash distill.sh $XPU 'single' RTE
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 0.620562
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_RTE_single_$XPU.log
   
   -
@@ -840,13 +840,13 @@ DISTILL: # 训练步骤
         cmd: bash distill.sh $XPU 'multi' RTE
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 0.620562
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_RTE_multi_$XPU.log
   
   -
@@ -860,11 +860,11 @@ DISTILL: # 训练步骤
         cmd: distill.bat $XPU RTE
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 0.620562
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/distill_RTE_$XPU.log

@@ -31,6 +31,7 @@ MULTI=$2
 MODELTYPE=$3
 MODELNAME=$4
 TASKNAME=$5
+LR=$6
 
 if [[ ${TASKNAME} == 'CoLA' ]];then
     max_steps=100
@@ -50,7 +51,7 @@ python -u ./run_glue.py\
         --task_name ${TASKNAME} \
         --max_seq_length 128 \
         --batch_size 32  \
-        --learning_rate 1e-4 \
+        --learning_rate ${LR} \
         --num_train_epochs 1  \
         --logging_steps 1 \
         --save_steps 10\
