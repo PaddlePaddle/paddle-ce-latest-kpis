@@ -32,7 +32,7 @@ python task_distill.py \
     --batch_size 32   \
     --T 1 \
     --teacher_model_type bert \
-    --teacher_path $data_path/{$NAME}_ft_model_30.pdparams \
+    --teacher_path $data_path/${NAME}_ft_model_30.pdparams \
     --learning_rate 5e-5 \
     --num_train_epochs 1 \
     --logging_steps 10 \
