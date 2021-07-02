@@ -5,9 +5,6 @@ GIT:
   path: $ROOT_PATH/models_repo
   branch: $XLNET_BRANCH
 
-ENV:
-  PADDLE_ON_MODEL_CE: $PADDLE_ON_MODEL_CE
-
 VARIABLES:
   model_scripts_path: scripts/xlnet/ #脚本的路径
   model_log_path: log/xlnet/
@@ -25,7 +22,7 @@ FINETUNE:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh fine_tune.sh 'SST-2' $SET_CUDA
+        cmd: bash fine_tune.sh 'SST-2' $SET_CUDA
 
     kpis: #kpi指标
       acc:
@@ -36,6 +33,24 @@ FINETUNE:
         evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/SST-2-fine_tune.log
+  
+  - #可以有多步
+    priority: p0
+    tag: win_gpu1_SST-2
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: fine_tune.bat SST-2 $SET_CUDA
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 1.162564
+        threshold: 0.01
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/SST-2-fine_tune.log
 
   - #可以有多步
     priority: p9
@@ -43,7 +58,7 @@ FINETUNE:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh fine_tune.sh 'CoLA' $SET_CUDA
+        cmd: bash fine_tune.sh 'CoLA' $SET_CUDA
 
     kpis: #kpi指标
       mcc:
@@ -61,7 +76,7 @@ FINETUNE:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh fine_tune.sh 'MRPC' $SET_CUDA
+        cmd: bash fine_tune.sh 'MRPC' $SET_CUDA
 
     kpis: #kpi指标
       f1:
@@ -79,6 +94,25 @@ FINETUNE:
         evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/MRPC-fine_tune.log
+  
+  - #可以有多步
+    priority: p0
+    tag: win_gpu1_MRPC
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: fine_tune.bat MRPC $SET_CUDA
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 0.698684
+        threshold: 0.01
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/MRPC-fine_tune.log
+
 
   - #可以有多步
     priority: p0
@@ -86,22 +120,40 @@ FINETUNE:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh fine_tune.sh 'STS-B' $SET_CUDA
+        cmd: bash fine_tune.sh 'STS-B' $SET_CUDA
 
     kpis: #kpi指标
       pearson:
         latest: True
-        kpi_base: 0.34081
+        kpi_base: 0.34083571853619427
         threshold: 0.01
         actived: True
         evaluation: "+"
         unit_repr: "s"
       spearman:
         latest: True
-        kpi_base: 0.36726
+        kpi_base: 0.36727046367576166
         threshold: 0.01
         actived: True
         evaluation: "+"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/STS-B-fine_tune.log
+
+  - #可以有多步
+    priority: p0
+    tag: win_gpu1_STS-B
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: fine_tune.bat STS-B $SET_CUDA
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 1.937393
+        threshold: 0.01
+        actived: True
+        evaluation: "-"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/STS-B-fine_tune.log
 
@@ -111,15 +163,33 @@ FINETUNE:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh fine_tune.sh 'QNLI' $SET_CUDA
+        cmd: bash fine_tune.sh 'QNLI' $SET_CUDA
 
     kpis: #kpi指标
       acc:
         latest: True
-        kpi_base: 0.52462
+        kpi_base: 0.5253523704924035
         threshold: 0.01
         actived: True
         evaluation: "+"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/QNLI-fine_tune.log
+
+  - #可以有多步
+    priority: p0
+    tag: win_gpu1_QNLI
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: fine_tune.bat QNLI $SET_CUDA
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 0.675484
+        threshold: 0.01
+        actived: True
+        evaluation: "-"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/QNLI-fine_tune.log
 
@@ -129,7 +199,7 @@ FINETUNE:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh fine_tune.sh 'QQP' $SET_CUDA
+        cmd: bash fine_tune.sh 'QQP' $SET_CUDA
 
     kpis: #kpi指标
       acc:
@@ -147,6 +217,24 @@ FINETUNE:
         evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/QQP-fine_tune.log
+  
+  - #可以有多步
+    priority: p0
+    tag: win_gpu1_QQP
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: fine_tune.bat QQP $SET_CUDA
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 0.717061
+        threshold: 0.01
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/QQP-fine_tune.log
 
   - #可以有多步
     priority: p0
@@ -154,7 +242,7 @@ FINETUNE:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh fine_tune.sh 'MNLI' $SET_CUDA
+        cmd: bash fine_tune.sh 'MNLI' $SET_CUDA
 
     kpis: #kpi指标
       acc:
@@ -168,14 +256,51 @@ FINETUNE:
 
   - #可以有多步
     priority: p0
+    tag: win_gpu1_MNLI
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: fine_tune.bat MNLI $SET_CUDA
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 1.162564
+        threshold: 0.01
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/MNLI-fine_tune.log
+
+
+  - #可以有多步
+    priority: p0
     tag: linux_gpu1_RTE
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh fine_tune.sh 'RTE' $SET_CUDA
+        cmd: bash fine_tune.sh 'RTE' $SET_CUDA
 
     kpis: #kpi指标
       acc:
+        latest: True
+        kpi_base: 0.5342960288808665
+        threshold: 0.01
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/RTE-fine_tune.log
+  
+  - #可以有多步
+    priority: p0
+    tag: win_gpu1_RTE
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: fine_tune.bat RTE $SET_CUDA
+
+    kpis: #kpi指标
+      loss:
         latest: True
         kpi_base: 0.5342960288808665
         threshold: 0.01
@@ -190,10 +315,28 @@ FINETUNE:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh fine_tune.sh 'WNLI' $SET_CUDA
+        cmd: bash fine_tune.sh 'WNLI' $SET_CUDA
 
     kpis: #kpi指标
       acc:
+        latest: True
+        kpi_base: 0.4225352112676056
+        threshold: 0.1
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/WNLI-fine_tune.log
+
+  - #可以有多步
+    priority: p0
+    tag: win_gpu1_WNLI
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: fine_tune.bat WNLI $SET_CUDA
+
+    kpis: #kpi指标
+      loss:
         latest: True
         kpi_base: 0.4225352112676056
         threshold: 0.1

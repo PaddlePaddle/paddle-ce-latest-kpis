@@ -73,12 +73,12 @@ TRAIN: # 训练步骤
         cmd: train.bat $XPU bert bert-base-uncased SST-2 1e-4
 
     kpis: #kpi指标
-      acc:
+      loss:
         latest: True
-        kpi_base: 0.5091743119266054
+        kpi_base: 0.728795
         threshold: 0.01
         actived: True
-        evaluation: "+"
+        evaluation: "-"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_bert-base-uncased_SST-2_$XPU.log
 
