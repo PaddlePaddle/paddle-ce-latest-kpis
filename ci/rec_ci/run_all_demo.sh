@@ -76,10 +76,10 @@ for model in $(echo ${!dic[*]});do
 
     # dy_gpu2
     echo -e "\033[31m start _dy_train_gpu2 ${model}  \033[0m "
-    sed -i "s/  use_gpu: False/  use_gpu: True/g" config.yaml
+    sed -i '/runner:/a\  use_fleet: True' config.yaml
     fleetrun ../../../tools/trainer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${i}_${model}_dy_train_gpu2
-    mv log ${model}_dy_train_gpu2_dist_logs
+    mv log ${i}_${model}_dy_train_gpu2_dist_logs
     echo -e "\033[31m start _dy_infer_gpu2 ${model}  \033[0m "
     fleetrun ../../../tools/infer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${i}_${model}_dy_infer_gpu2
@@ -90,7 +90,7 @@ for model in $(echo ${!dic[*]});do
     echo -e "\033[31m start _st_train_gpu2 ${model}  \033[0m "
     fleetrun ../../../tools/static_trainer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${i}_${model}_st_train_gpu2
-    mv log ${model}_st_train_gpu2_dist_logs
+    mv log ${i}_${model}_st_train_gpu2_dist_logs
     echo -e "\033[31m start _st_infer_gpu2 ${model}  \033[0m "
     fleetrun ../../../tools/static_infer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${i}_${model}_st_infer_gpu2
@@ -240,7 +240,7 @@ dnn_all(){
 
     # dy_gpu2
     echo -e "\033[31m start _dy_train_gpu2 dnn_all \033[0m "
-    sed -i "s/  use_gpu: False/  use_gpu: True/g" config.yaml
+    sed -i '/runner:/a\  use_fleet: True' config.yaml
     fleetrun ../../../tools/trainer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_dy_train_gpu2
     mv log ${model}_dy_train_gpu2_dist_logs
@@ -352,7 +352,7 @@ export log_path=${repo_path}/demo_log
 demo19
 recall_demo word2vec
 recall_demo mind
-dnn_all
+#dnn_all
 }
 ################################################
 run_con(){
@@ -370,7 +370,7 @@ con_movie_recommand
 #word2vec con
 }
 ################################################
-#run_demo
+run_demo
 #run_con
 
 ################################################
