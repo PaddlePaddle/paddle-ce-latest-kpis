@@ -56,6 +56,7 @@ for model in $(echo ${!dic[*]});do
     python -u ../../../tools/static_infer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${i}_${model}_st_infer
     let i+=1
+
 done
 }
 
@@ -158,48 +159,48 @@ python -u static_infer.py -m recall/config.yaml
 python parse.py recall_offline recall_infer_result
 }
 
-dnn_all(){
-    cd ${repo_path}/models/rank/dnn
-    model=demo_dnn_all
+wide_deep_all(){
+    cd ${repo_path}/models/rank/wide_deep
+    model=demo_wide_deep_all
     # dy_cpu
-    echo -e "\033[31m start _dy_train_cpu dnn_all \033[0m "
+    echo -e "\033[31m start _dy_train_cpu demo_wide_deep_all \033[0m "
     python -u ../../../tools/trainer.py -m config.yaml -o runner.use_gpu=False
     print_info $? ${model}_dy_train_cpu
-    echo -e "\033[31m start _dy_infer_cpu dnn_all \033[0m "
+    echo -e "\033[31m start _dy_infer_cpu demo_wide_deep_all \033[0m "
     python -u ../../../tools/infer.py -m config.yaml -o runner.use_gpu=False
     print_info $? ${model}_dy_infer_cpu
     rm -rf output
 
     # st_cpu
-    echo -e "\033[31m start _st_train_cpu dnn_all \033[0m "
+    echo -e "\033[31m start _st_train_cpu demo_wide_deep_all \033[0m "
     python -u ../../../tools/static_trainer.py -m config.yaml -o runner.use_gpu=False
     print_info $? ${model}_st_train_cpu
-    echo -e "\033[31m start _st_infer_gpu1 dnn_all \033[0m "
+    echo -e "\033[31m start _st_infer_gpu1 demo_wide_deep_all \033[0m "
     python -u ../../../tools/static_infer.py -m config.yaml -o runner.use_gpu=False
     print_info $? ${model}_st_infer_cpu
     rm -rf output
 
     # dy_gpu1
-    echo -e "\033[31m start _dy_train_gpu1 dnn_all \033[0m "
+    echo -e "\033[31m start _dy_train_gpu1 demo_wide_deep_all \033[0m "
     python -u ../../../tools/trainer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_dy_train_gpu1
-    echo -e "\033[31m start _dy_infer_gpu1 dnn_all \033[0m "
+    echo -e "\033[31m start _dy_infer_gpu1 demo_wide_deep_all \033[0m "
     python -u ../../../tools/infer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_dy_infer_gpu1
     rm -rf output
 
     # st_gpu1
-    echo -e "\033[31m start _st_train_gpu1 dnn_all \033[0m "
+    echo -e "\033[31m start _st_train_gpu1 demo_wide_deep_all \033[0m "
     python -u ../../../tools/static_trainer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_st_train_gpu1
-    echo -e "\033[31m start _st_infer_gpu1 dnn_all \033[0m "
+    echo -e "\033[31m start _st_infer_gpu1 demo_wide_deep_all \033[0m "
     python -u ../../../tools/static_infer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_st_infer_gpu1
     rm -rf output
 
     # dy_gpu2
     echo -e "\033[31m start _dy_train_gpu2 dnn_all \033[0m "
-    sed -i "s/  use_gpu: False/  use_gpu: True/g" config.yaml
+    sed -i '/runner:/a\  use_fleet: True' config.yaml
     fleetrun ../../../tools/trainer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_dy_train_gpu2
     mv log ${model}_dy_train_gpu2_dist_logs
@@ -211,6 +212,7 @@ dnn_all(){
 
     # st_gpu2
     echo -e "\033[31m start _st_train_gpu2 dnn_all \033[0m "
+#    sed -i '/runner:/a\  use_fleet: True' config.yaml
     fleetrun ../../../tools/static_trainer.py -m config.yaml -o runner.use_gpu=True
     print_info $? ${model}_st_train_gpu2
     mv log ${model}_st_train_gpu2_dist_logs
@@ -311,7 +313,7 @@ export log_path=${repo_path}/demo_log
 demo19
 recall_demo word2vec
 recall_demo mind
-dnn_all
+wide_deep_all
 }
 ################################################
 run_con(){
