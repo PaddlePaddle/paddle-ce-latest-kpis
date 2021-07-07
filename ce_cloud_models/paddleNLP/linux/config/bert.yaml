@@ -1,5 +1,5 @@
 MODEL: "bert" # 模型名
-PRIORITY: P0
+PRIORITY: P0, Dy_con
 GIT:
   addr: $REPO_PaddleNLP
   path: $ROOT_PATH/models_repo
@@ -64,6 +64,25 @@ TRAIN: # 训练步骤
         evaluation: "-"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_multi_$XPU.log
+  
+  -
+    priority: p1
+    tag: linux_dy_gpu2_con
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash train.sh $XPU 'multi' $SET_MULTI_CUDA con
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 11.228207
+        threshold: 0.001
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_multi_$XPU.log
+
 
 FINETUNE:
   # finetune

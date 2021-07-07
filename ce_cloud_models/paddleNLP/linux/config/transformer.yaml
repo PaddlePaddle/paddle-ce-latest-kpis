@@ -1,5 +1,5 @@
 MODEL: "transformer" # 模型名
-PRIORITY: P0_delay
+PRIORITY: P0_delay, Dy_con
 GIT:
   addr: $REPO_PaddleNLP
   path: $ROOT_PATH/models_repo
@@ -57,6 +57,25 @@ TRAIN: # 训练步骤
       -
         path: $ROOT_PATH/$model_scripts_path
         cmd: sh train.sh 'multi' $XPU $SET_MULTI_CUDA
+
+    kpis: #kpi指标
+      ppl:
+        latest: True
+        kpi_base: 14.429425
+        threshold: 0.01
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/multi_cards_train.log
+  
+  -
+    priority: p1
+    tag: linux_dy_gpu2_con  # 多卡收敛
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash train.sh 'multi' $XPU $SET_MULTI_CUDA con
 
     kpis: #kpi指标
       ppl:

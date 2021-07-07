@@ -35,6 +35,14 @@ fi
 #访问RD程序
 cd $code_path
 
+if [[ $4 == 'con' ]]; then
+  NUM_STEPS=1000000
+  SAVE_STEPS=100000
+else
+  NUM_STEPS=100
+  SAVE_STEPS=10
+fi
+
 mkdir -p output_dir/${MULTI}
 
 if [[ ${MULTI} == "single" ]]; then
@@ -48,8 +56,8 @@ if [[ ${MULTI} == "single" ]]; then
         --ernie_config_file config/ernie_base_config.json \
         --learning_rate 1e-4 \
         --log_steps 1 \
-        --num_train_steps 100 \
-        --save_steps 10 \
+        --num_train_steps ${NUM_STEPS} \
+        --save_steps ${SAVE_STEPS} \
         --output_dir ./output_dir/${MULTI} \
         --use_recompute true \
         --use_sharding true \
@@ -70,8 +78,8 @@ else
         --ernie_config_file config/ernie_base_config.json \
         --learning_rate 1e-4 \
         --log_steps 1 \
-        --num_train_steps 100 \
-        --save_steps 10 \
+        --num_train_steps ${NUM_STEPS} \
+        --save_steps ${SAVE_STEPS} \
         --output_dir ./output_dir/${MULTI} \
         --use_recompute true \
         --use_sharding true \

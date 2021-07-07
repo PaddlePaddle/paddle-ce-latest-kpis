@@ -1,5 +1,5 @@
 MODEL: "stacl" # 模型名
-PRIORITY: P0_delay #时长问题，延迟打开
+PRIORITY: P0_delay, Dy_con #时长问题，延迟打开,Dy_con:以及收敛性的任务
 GIT:
   addr: $REPO_PaddleNLP
   path: $ROOT_PATH/models_repo
@@ -51,6 +51,25 @@ TRAIN: # 训练步骤
       -
         path: $ROOT_PATH/$model_scripts_path
         cmd: bash train.sh $XPU "multi" $SET_MULTI_CUDA
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 0.522773
+        threshold: 0.01
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_multi_$XPU.log
+  
+  -
+    priority: p0
+    tag: linux_dy_gpu2_con
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash train.sh $XPU "multi" $SET_MULTI_CUDA con
 
     kpis: #kpi指标
       loss:

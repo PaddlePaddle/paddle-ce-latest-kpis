@@ -26,9 +26,12 @@ rm -rf $code_path/log/workerlog.0
 
 #访问RD程序
 cd $code_path
-# 覆盖原来的参数
-sed -i 's/save_step: 10000/save_step: 100/g' config/transformer.yaml
-sed -i 's/epoch: 30/epoch: 1/g' config/transformer.yaml
+
+if [[ $4 != 'con' ]];then
+  # 天级别任务覆盖原来的参数，收敛性任务保留
+  sed -i 's/save_step: 10000/save_step: 100/g' config/transformer.yaml
+  sed -i 's/epoch: 30/epoch: 1/g' config/transformer.yaml
+fi
 
 python -m paddle.distributed.launch --gpus "$3" train.py \
   --config ./config/transformer.yaml > $log_path/train_$2_$1.log 2>&1

@@ -53,7 +53,7 @@ lexical_analysis_BRANCH = BASE_BRANCH
 distill_lstm_BRANCH = BASE_BRANCH
 TEXT_CLASSIFICATION_PRETRAINED_BRANCH = BASE_BRANCH
 DGU_BRANCH = BASE_BRANCH
-# linux gpu下， P0的任务要跑的标签 daily
+# windows GPU 任务要跑的标签
 EXEC_PRIORITY = ["p0", "p1"]
 EXEC_CASES = ["DATA_PROC", "TRAIN", "INFER"]
 EXEC_TAG = [
@@ -62,5 +62,8 @@ EXEC_TAG = [
     "win_download_data", "win_gpu1_SST-2",
     "win_gpu1_MRPC", "win_gpu1_STS-B", "win_gpu1_QNLI",
     "win_gpu1_QQP", "win_gpu1_MNLI", "win_gpu1_RTE", "win_gpu1_WNLI",
-    "win_dy_gpu1_batch", "win_dy_gpu1_hardest"
+    "win_dy_gpu1_batch", "win_dy_gpu1_hardest", "win_gpu1_CoLA",
+    "win_dy_gpu1_iflytek", "win_dy_gpu1_tnews", "win_dy_gpu1_eprstmt",
+    "win_dy_gpu1_bustm", "win_dy_gpu1_ocnli", "win_dy_gpu1_csl",
+    "win_dy_gpu1_csldcp", "win_dy_gpu1_cluewsc", "win_dy_gpu1_chid"
 ]
