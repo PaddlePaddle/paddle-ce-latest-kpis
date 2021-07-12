@@ -1,4 +1,3 @@
-#mkdir logs
 if [ -d "logs" ];then rm -rf logs
 fi
 mkdir logs
