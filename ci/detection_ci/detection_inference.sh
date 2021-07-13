@@ -4,6 +4,9 @@ mkdir logs
 if [ -d "logs_cpp" ];then rm -rf logs_cpp
 fi
 mkdir logs_cpp
+#machine type
+MACHINE_TYPE=`uname -m`
+echo "MACHINE_TYPE: "${MACHINE_TYPE}
 config_list='ppyolo_r50vd_dcn_1x_coco ppyolov2_r50vd_dcn_365e_coco yolov3_darknet53_270e_coco solov2_r50_fpn_1x_coco faster_rcnn_r50_fpn_1x_coco mask_rcnn_r50_1x_coco s2anet_conv_1x_dota ssd_mobilenet_v1_300_120e_voc ttfnet_darknet53_1x_coco fcos_r50_fpn_1x_coco'
 config_s2anet='s2anet_conv_1x_dota'
 mode_list='trt_fp32 trt_fp16 trt_int8 fluid'
@@ -97,9 +100,17 @@ mv paddle_inference_install_dir paddle_inference
 sed -i "s|/path/to/paddle_inference|../paddle_inference|g" scripts/build.sh
 sed -i "s|WITH_GPU=OFF|WITH_GPU=ON|g" scripts/build.sh
 sed -i "s|WITH_TENSORRT=OFF|WITH_TENSORRT=ON|g" scripts/build.sh
-sed -i "s|TENSORRT_LIB_DIR=/path/to/tensorrt/lib|TENSORRT_LIB_DIR=/usr/local/TensorRT6-cuda10.1-cudnn7/lib|g" scripts/build.sh
 sed -i "s|CUDA_LIB=/path/to/cuda/lib|CUDA_LIB=/usr/local/cuda/lib64|g" scripts/build.sh
+if [[ "$MACHINE_TYPE" == "aarch64" ]]
+then
+sed -i "s|WITH_MKL=ON|WITH_MKL=OFF|g" scripts/build.sh
+sed -i "s|TENSORRT_INC_DIR=/path/to/tensorrt/include|TENSORRT_INC_DIR=/usr/include/aarch64-linux-gnu|g" scripts/build.sh
+sed -i "s|TENSORRT_LIB_DIR=/path/to/tensorrt/lib|TENSORRT_LIB_DIR=/usr/lib/aarch64-linux-gnu|g" scripts/build.sh
+sed -i "s|CUDNN_LIB=/path/to/cudnn/lib|CUDNN_LIB=/usr/lib/aarch64-linux-gnu|g" scripts/build.sh
+else
+sed -i "s|TENSORRT_LIB_DIR=/path/to/tensorrt/lib|TENSORRT_LIB_DIR=/usr/local/TensorRT6-cuda10.1-cudnn7/lib|g" scripts/build.sh
 sed -i "s|CUDNN_LIB=/path/to/cudnn/lib|CUDNN_LIB=/usr/lib/x86_64-linux-gnu|g" scripts/build.sh
+fi
 sh scripts/build.sh
 cd ../..
 for config in ${config_list}
