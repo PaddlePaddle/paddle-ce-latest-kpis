@@ -41,7 +41,8 @@ develop)
   unset http_proxy
   unset https_proxy
 #  python -m pip install paddlepaddle-gpu==2.1.0.dev0.post110 -f https://paddlepaddle.org.cn/whl/cu110/mkl/develop.html
-  python -m pip install paddlepaddle-gpu==0.0.0.post102 -f https://paddlepaddle.org.cn/whl/cu102/mkl/develop.html
+#  python -m pip install paddlepaddle-gpu==0.0.0.post102 -f https://paddlepaddle.org.cn/whl/cu102/mkl/develop.html
+  python -m pip install paddlepaddle-gpu==0.0.0.post102 -f https://www.paddlepaddle.org.cn/whl/linux/gpu/develop.html
   export http_proxy=$3;
   export https_proxy=$3;
   ;;
