@@ -1,0 +1,12 @@
+yolov3/yolov3_darknet53_270e_coco.yml
+ppyolo/ppyolov2_r50vd_dcn_365e_coco.yml
+solov2/solov2_r50_fpn_1x_coco.yml
+faster_rcnn/faster_rcnn_r50_fpn_1x_coco.yml
+mask_rcnn/mask_rcnn_r50_1x_coco.yml
+dota/s2anet_conv_1x_dota.yml
+ssd/ssd_mobilenet_v1_300_120e_voc.yml
+ttfnet/ttfnet_darknet53_1x_coco.yml
+fcos/fcos_r50_fpn_1x_coco.yml
+cascade_rcnn/cascade_rcnn_r50_fpn_1x_coco.yml
+keypoint/hrnet/hrnet_w32_256x192.yml
+mot/fairmot/fairmot_dla34_30e_1088x608.yml
