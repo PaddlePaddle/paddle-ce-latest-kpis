@@ -16,7 +16,7 @@ image=demo/000000570688.jpg
 if [[ -n `echo "${config_s2anet}" | grep -w "${config}"` ]];then
     image=demo/P0072__1.0__0___0.png
 fi
-model=`cat model_list | grep ${config}`
+model=`cat model_list_inference | grep ${config}`
 python tools/export_model.py \
        -c configs/${model} \
        --output_dir=inference_model \
