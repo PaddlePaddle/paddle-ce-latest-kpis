@@ -312,8 +312,8 @@ mkdir ${repo_path}/demo_log
 export log_path=${repo_path}/demo_log
 demo19
 recall_demo word2vec
-#recall_demo mind
-wide_deep_all
+recall_demo mind
+#wide_deep_all
 }
 ################################################
 run_con(){
