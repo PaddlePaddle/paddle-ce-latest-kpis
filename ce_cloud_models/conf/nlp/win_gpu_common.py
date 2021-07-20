@@ -65,5 +65,6 @@ EXEC_TAG = [
     "win_dy_gpu1_batch", "win_dy_gpu1_hardest", "win_gpu1_CoLA",
     "win_dy_gpu1_iflytek", "win_dy_gpu1_tnews", "win_dy_gpu1_eprstmt",
     "win_dy_gpu1_bustm", "win_dy_gpu1_ocnli", "win_dy_gpu1_csl",
-    "win_dy_gpu1_csldcp", "win_dy_gpu1_cluewsc", "win_dy_gpu1_chid"
+    "win_dy_gpu1_csldcp", "win_dy_gpu1_cluewsc", "win_dy_gpu1_chid",
+    "win_dy_gpu1_trigger", "win_dy_gpu1_role", "win_dy_gpu1_enum",
 ]
