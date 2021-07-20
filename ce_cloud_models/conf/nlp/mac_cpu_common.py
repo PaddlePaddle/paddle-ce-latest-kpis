@@ -53,9 +53,12 @@ msra_ner_BRANCH = BASE_BRANCH
 lexical_analysis_BRANCH = BASE_BRANCH
 distill_lstm_BRANCH = BASE_BRANCH
 TEXT_CLASSIFICATION_PRETRAINED_BRANCH = BASE_BRANCH
+DGU_BRANCH = BASE_BRANCH
 # linux gpu下， P0的任务要跑的标签 daily
 EXEC_PRIORITY = ["p0", "p1"]
 EXEC_CASES = ["DATA_PROC", "TRAIN", "INFER"]
 EXEC_TAG = [
-    "mac_st_cpu", "mac_dy_cpu_con"
+    "mac_st_cpu", "mac_dy_cpu",
+    # 自定义的标签
+    "mac_download_data"
 ]
