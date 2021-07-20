@@ -1,6 +1,6 @@
 #!/bin/bash
 ####################################
-#export CUDA_VISIBLE_DEVICES=2
+export CUDA_VISIBLE_DEVICES=0
 export all_data=/paddle/all_data/rec
 #运行目录 PaddleRec/
 export repo_path=$PWD
@@ -200,12 +200,12 @@ wide_deep_all(){
 
     # dy_gpu2
     echo -e "\033[31m start _dy_train_gpu2 dnn_all \033[0m "
-    sed -i '/runner:/a\  use_fleet: True' config.yaml
-    fleetrun ../../../tools/trainer.py -m config.yaml -o runner.use_gpu=True
+    # sed -i '/runner:/a\  use_fleet: True' config.yaml
+    fleetrun ../../../tools/trainer.py -m config.yaml -o runner.use_gpu=True runner.use_fleet=true
     print_info $? ${model}_dy_train_gpu2
     mv log ${model}_dy_train_gpu2_dist_logs
     echo -e "\033[31m start _dy_infer_gpu2 dnn_all \033[0m "
-    fleetrun ../../../tools/infer.py -m config.yaml -o runner.use_gpu=True
+    fleetrun ../../../tools/infer.py -m config.yaml -o runner.use_gpu=True runner.use_fleet=true
     print_info $? ${model}_dy_infer_gpu2
     mv log ${model}_dy_infer_gpu2_dist_logs
     rm -rf output
@@ -213,11 +213,11 @@ wide_deep_all(){
     # st_gpu2
     echo -e "\033[31m start _st_train_gpu2 dnn_all \033[0m "
 #    sed -i '/runner:/a\  use_fleet: True' config.yaml
-    fleetrun ../../../tools/static_trainer.py -m config.yaml -o runner.use_gpu=True
+    fleetrun ../../../tools/static_trainer.py -m config.yaml -o runner.use_gpu=True runner.use_fleet=true
     print_info $? ${model}_st_train_gpu2
     mv log ${model}_st_train_gpu2_dist_logs
     echo -e "\033[31m start _st_infer_gpu2 dnn_all \033[0m "
-    fleetrun ../../../tools/static_infer.py -m config.yaml -o runner.use_gpu=True
+    fleetrun ../../../tools/static_infer.py -m config.yaml -o runner.use_gpu=True runner.use_fleet=true
     print_info $? ${model}_st_infer_gpu2
     mv log ${model}_st_infer_gpu2_dist_logs
 
