@@ -14,7 +14,7 @@ VARIABLES:
   model_log_path: log/electra/
 
 EXEC:
-  exec_cases: [DATA_PROC,TRAIN,INFER]
+  exec_cases: [DATA_PROC,TRAIN, FINETUNE, INFER]
   exec_priority: [p0, p1]
   exec_tag: $EXEC_TAG
 
@@ -73,10 +73,10 @@ TRAIN: # 训练步骤
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/multi_cards_train.log
 
-  #finetune
+FINETUNE:
   - #可以有多步
     priority: p0
-    tag: linux_finetune_gpu1
+    tag: linux_dy_gpu1
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_CUDA
     run:
