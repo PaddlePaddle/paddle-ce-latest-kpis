@@ -75,7 +75,7 @@ python -u ../../../tools/trainer.py -m ${yaml_mode}.yaml -o runner.use_gpu=False
 print_info $? ${model}_dy_train
 
 echo -e "\033[31m start dy infer 16 ${model} \n \033[0m "
-python -u infer.py -m ${yaml_mode}.yaml
+python -u infer.py -m ${yaml_mode}.yaml -o runner.use_gpu=False
 print_info $? ${model}_dy_infer
 
 rm -rf output_model_*
@@ -87,7 +87,7 @@ print_info $? ${model}_st_train
 
 # 静态图预测
 echo -e "\033[31m start st infer 16 ${model} \n \033[0m "
-python -u static_infer.py -m ${yaml_mode}.yaml
+python -u static_infer.py -m ${yaml_mode}.yaml -o runner.use_gpu=False
 print_info $? ${model}_st_infer
 
 }
@@ -107,7 +107,7 @@ python -u ../../../tools/trainer.py -m ${yaml_mode}.yaml -o runner.use_gpu=False
 print_info $? ${model}_dy_train
 
 echo -e "\033[31m start dy infer 20 ${model} \n \033[0m "
-python -u infer.py -m ${yaml_mode}.yaml
+python -u infer.py -m ${yaml_mode}.yaml -o runner.use_gpu=False
 print_info $? ${model}_dy_infer
 
 rm -rf output_model_*
@@ -119,7 +119,7 @@ print_info $? ${model}_st_train
 
 # 静态图预测
 echo -e "\033[31m start st infer 20 ${model} \n \033[0m "
-python -u static_infer.py -m ${yaml_mode}.yaml
+python -u static_infer.py -m ${yaml_mode}.yaml -o runner.use_gpu=False
 print_info $? ${model}_st_infer
 
 }
@@ -312,7 +312,7 @@ mkdir ${repo_path}/demo_log
 export log_path=${repo_path}/demo_log
 demo19
 recall_demo word2vec
-recall_demo mind
+#recall_demo mind
 #wide_deep_all
 }
 ################################################
