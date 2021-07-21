@@ -23,7 +23,7 @@ DATA_PROC:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh data_proc.sh
+        cmd: bash data_proc.sh
 
 TRAIN: # 训练步骤
   -
@@ -32,7 +32,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'single' $SET_CUDA udc
+        cmd: bash train.sh $XPU 'single' $SET_CUDA udc
 
     kpis: #kpi指标
       loss:
@@ -57,7 +57,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'multi' $SET_MULTI_CUDA udc
+        cmd: bash train.sh $XPU 'multi' $SET_MULTI_CUDA udc
 
     kpis: #kpi指标
       loss:
@@ -82,7 +82,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'single' $SET_CUDA dstc2
+        cmd: bash train.sh $XPU 'single' $SET_CUDA dstc2
 
     kpis: #kpi指标
       loss:
@@ -107,7 +107,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'multi' $SET_MULTI_CUDA dstc2
+        cmd: bash train.sh $XPU 'multi' $SET_MULTI_CUDA dstc2
 
     kpis: #kpi指标
       loss:
@@ -132,7 +132,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'single' $SET_CUDA atis_slot
+        cmd: bash train.sh $XPU 'single' $SET_CUDA atis_slot
 
     kpis: #kpi指标
       loss:
@@ -157,7 +157,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'multi' $SET_MULTI_CUDA atis_slot
+        cmd: bash train.sh $XPU 'multi' $SET_MULTI_CUDA atis_slot
 
     kpis: #kpi指标
       loss:
@@ -182,7 +182,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'single' $SET_CUDA atis_intent
+        cmd: bash train.sh $XPU 'single' $SET_CUDA atis_intent
 
     kpis: #kpi指标
       loss:
@@ -207,7 +207,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'multi' $SET_MULTI_CUDA atis_intent
+        cmd: bash train.sh $XPU 'multi' $SET_MULTI_CUDA atis_intent
 
     kpis: #kpi指标
       loss:
@@ -232,7 +232,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'single' $SET_CUDA mrda
+        cmd: bash train.sh $XPU 'single' $SET_CUDA mrda
 
     kpis: #kpi指标
       loss:
@@ -257,7 +257,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'multi' $SET_MULTI_CUDA mrda
+        cmd: bash train.sh $XPU 'multi' $SET_MULTI_CUDA mrda
 
     kpis: #kpi指标
       loss:
@@ -282,7 +282,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'single' $SET_CUDA swda
+        cmd: bash train.sh $XPU 'single' $SET_CUDA swda
 
     kpis: #kpi指标
       loss:
@@ -307,7 +307,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'multi' $SET_MULTI_CUDA swda
+        cmd: bash train.sh $XPU 'multi' $SET_MULTI_CUDA swda
 
     kpis: #kpi指标
       loss:

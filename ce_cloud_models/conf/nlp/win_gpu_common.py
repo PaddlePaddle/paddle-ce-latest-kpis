@@ -67,4 +67,5 @@ EXEC_TAG = [
     "win_dy_gpu1_bustm", "win_dy_gpu1_ocnli", "win_dy_gpu1_csl",
     "win_dy_gpu1_csldcp", "win_dy_gpu1_cluewsc", "win_dy_gpu1_chid",
     "win_dy_gpu1_trigger", "win_dy_gpu1_role", "win_dy_gpu1_enum",
+    "win_dy_gpu1_ernie", "win_dy_gpu1_ernie_crf", "win_dy_gpu1_bigru_crf"
 ]

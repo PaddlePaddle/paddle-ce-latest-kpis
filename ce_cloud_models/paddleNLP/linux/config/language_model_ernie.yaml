@@ -24,13 +24,6 @@ DATA_PROC:
       -
         path: $ROOT_PATH/$model_scripts_path
         cmd: bash data_proc.sh
-  -
-    priority: p0
-    tag: win_download_data
-    run:
-      -
-        path: $ROOT_PATH/$model_scripts_path
-        cmd: data_proc.bat
 
 TRAIN: # 训练步骤
   -
@@ -47,7 +40,7 @@ TRAIN: # 训练步骤
         kpi_base: 0.522773
         threshold: 0.01
         actived: True
-        evaluation: "+"
+        evaluation: "-"
         unit_repr: "s"
       acc:
         latest: True
@@ -79,7 +72,7 @@ TRAIN: # 训练步骤
         kpi_base: 0.522773
         threshold: 0.01
         actived: True
-        evaluation: "+"
+        evaluation: "-"
         unit_repr: "s"
       acc:
         latest: True

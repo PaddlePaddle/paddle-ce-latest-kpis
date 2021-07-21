@@ -44,7 +44,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'bigbird-base-uncased' 'single' $SET_CUDA
+        cmd: bash train.sh $XPU 'bigbird-base-uncased' 'single' $SET_CUDA
 
     kpis: #kpi指标
       loss:
@@ -62,7 +62,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'bigbird-base-uncased' 'multi' $SET_MULTI_CUDA
+        cmd: bash train.sh $XPU 'bigbird-base-uncased' 'multi' $SET_MULTI_CUDA
 
     kpis: #kpi指标
       loss:
@@ -73,7 +73,7 @@ TRAIN: # 训练步骤
         evaluation: "-"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_multi_$XPU.log
-  
+
   -
     priority: p1
     tag: mac_dy_cpu # mac的case
@@ -99,7 +99,7 @@ FINETUNE:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh finetune.sh
+        cmd: bash finetune.sh
 
     kpis: #kpi指标
       loss:
