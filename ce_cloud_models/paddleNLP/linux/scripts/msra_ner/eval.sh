@@ -35,7 +35,7 @@ python -u ./eval.py \
     --max_seq_length 128 \
     --batch_size 32 \
     --device ${DEVICE} \
-    --init_checkpoint_path tmp/msra_ner/model_100.pdparams > $log_path/eval_${DEVICE}.log 2>&1
+    --init_checkpoint_path tmp/msra_ner/model_500.pdparams > $log_path/eval_${DEVICE}.log 2>&1
 
 cat $log_path/eval_${DEVICE}.log
 

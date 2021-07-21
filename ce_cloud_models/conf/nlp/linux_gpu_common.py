@@ -53,14 +53,12 @@ lexical_analysis_BRANCH = BASE_BRANCH
 distill_lstm_BRANCH = BASE_BRANCH
 TEXT_CLASSIFICATION_PRETRAINED_BRANCH = BASE_BRANCH
 DGU_BRANCH = BASE_BRANCH
-# linux gpu下， P0的任务要跑的标签 daily
+# daily P0任务要跑的标签
 EXEC_PRIORITY = ["p0", "p1"]
 EXEC_CASES = ["DATA_PROC", "TRAIN", "INFER"]
 EXEC_TAG = [
     "linux_st_gpu1", "linux_st_gpu2",
     "linux_dy_gpu1", "linux_dy_gpu2",
-    "linux_st_gpu1_con", "linux_st_gpu2_con",
-    "linux_dy_gpu1_con", "linux_dy_gpu2_con",
     # 补充一些自定义标签
     "linux_download_data", "linux_gpu1_SST-2", 
     "linux_gpu1_QNLI", "linux_gpu1_CoLA",
@@ -78,5 +76,12 @@ EXEC_TAG = [
     "linux_dy_mrda_gpu2", "linux_dy_mrda_gpu1", "linux_dy_swda_gpu2", "linux_dy_swda_gpu1",
     "linux_dy_24_gpu1", "linux_dy_24_gpu2", "linux_dy_32_gpu2", "linux_dy_trigger_gpu1", 
     "linux_dy_trigger_gpu2", "linux_dy_role_gpu1", "linux_dy_role_gpu2", "linux_dy_enum_gpu1", 
-    "linux_dy_enum_gpu2", "linux_gpu1_ernie_crf"
+    "linux_dy_enum_gpu2", "linux_gpu1_ernie_crf", "linux_dy_gpu1_batch", "linux_dy_gpu2_batch",
+    "linux_dy_gpu1_hardest", "linux_dy_gpu2_hardest", "linux_dy_gpu1_iflytek",
+    "linux_dy_gpu1_tnews", "linux_dy_gpu1_eprstmt", "linux_dy_gpu1_bustm",
+    "linux_dy_gpu1_ocnli", "linux_dy_gpu1_csl", "linux_dy_gpu1_csldcp",
+    "linux_dy_gpu1_cluewsc", "linux_dy_gpu1_chid", "linux_dy_gpu1_point-wise",
+    "linux_dy_gpu1_pair-wise", "linux_dy_gpu2_point-wise", "linux_dy_gpu2_pair-wise",
+    "linux_dy_gpu1_chnsenticorp", "linux_dy_gpu2_chnsenticorp", "linux_dy_gpu1_sst-2",
+    "linux_dy_gpu2_sst-2", "linux_dy_gpu1_qqp", "linux_dy_gpu2_qqp"
     ]

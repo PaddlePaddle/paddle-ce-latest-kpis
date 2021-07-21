@@ -1,5 +1,5 @@
 MODEL: "plato-2" # 模型名
-PRIORITY: P1_close #对话形式
+PRIORITY: P1
 GIT:
   addr: $REPO_PaddleNLP
   path: $ROOT_PATH/models_repo
@@ -12,7 +12,7 @@ VARIABLES:
 
 EXEC:
   exec_cases: [DATA_PROC, TRAIN]
-  exec_priority: [p0,p1]
+  exec_priority: [p0]
   exec_tag: $EXEC_TAG
 
 #测试套
@@ -23,7 +23,7 @@ DATA_PROC:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh data_proc.sh
+        cmd: bash data_proc.sh
 
 TRAIN: # 训练步骤
   -
@@ -34,16 +34,16 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh 24_train.sh $XPU 'single'
+        cmd: bash 24_train.sh $XPU 'single'
 
-    kpis: #kpi指标
-      loss:
+    kpis:
+      exit_code:
         latest: True
-        kpi_base: 11.921639
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_24_single_$XPU.log
   
   -
@@ -54,27 +54,27 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh 24_train.sh $XPU 'multi' 
+        cmd: bash 24_train.sh $XPU 'multi' 
 
-    kpis: #kpi指标
-      loss:
+    kpis:
+      exit_code:
         latest: True
-        kpi_base: 11.921639
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_24_multi_$XPU.log
 
   -
-    priority: p0
+    priority: p1
     tag: linux_dy_32_gpu2
     env:
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh 32_train.sh $XPU 'multi' 
+        cmd: bash 32_train.sh $XPU 'multi' 
 
     kpis: #kpi指标
       loss:

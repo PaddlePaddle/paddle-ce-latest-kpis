@@ -1,5 +1,5 @@
 MODEL: "language_model_ernie" # 模型名
-PRIORITY: P1
+PRIORITY: P1_delay, Dy_con # P1没办法控制时长，Dy_con:收敛性
 GIT:
   addr: $REPO_PaddleNLP
   path: $ROOT_PATH/models_repo
@@ -99,12 +99,12 @@ TRAIN: # 训练步骤
 
   -
     priority: p0
-    tag: win_dy_gpu1
+    tag: linux_dy_gpu2_con
 
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: train.bat $XPU $SET_CUDA
+        cmd: bash train.sh $XPU "multi" $SET_MULTI_CUDA con
 
     kpis: #kpi指标
       loss:
@@ -112,7 +112,7 @@ TRAIN: # 训练步骤
         kpi_base: 0.522773
         threshold: 0.01
         actived: True
-        evaluation: "+"
+        evaluation: "-"
         unit_repr: "s"
       acc:
         latest: True
@@ -128,5 +128,5 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_$XPU.log
+    output: $ROOT_PATH/$model_log_path/train_multi_$XPU.log
 

@@ -25,12 +25,12 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'single'
+        cmd: bash train.sh $XPU 'single'
 
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 11.921639
+        kpi_base: 36.2783
         threshold: 0.001
         actived: True
         evaluation: "-"
@@ -45,12 +45,12 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'multi'
+        cmd: bash train.sh $XPU 'multi'
 
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 11.921639
+        kpi_base: 29.4583
         threshold: 0.001
         actived: True
         evaluation: "-"
@@ -66,7 +66,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh infer.sh $XPU
+        cmd: bash infer.sh $XPU
     kpis:
       exit_code:
         latest: True

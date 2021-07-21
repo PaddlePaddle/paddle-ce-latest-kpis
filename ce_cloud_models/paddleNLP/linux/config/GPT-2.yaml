@@ -26,6 +26,14 @@ DATA_PROC:
       -
         path: $ROOT_PATH/$model_scripts_path
         cmd: bash data_proc.sh
+  
+  -
+    priority: p0
+    tag: mac_download_data
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash data_proc.sh
 
 TRAIN: # 训练步骤
   -

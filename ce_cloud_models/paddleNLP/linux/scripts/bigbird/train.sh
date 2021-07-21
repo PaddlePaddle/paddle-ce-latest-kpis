@@ -34,7 +34,8 @@ fi
 }
 
 if [[ $1 == 'gpu' ]];then #GPU
-    python -m paddle.distributed.launch --gpus "$4" --log_dir log  run_pretrain.py --model_name_or_path $2 \
+    python -m paddle.distributed.launch --gpus "$4" --log_dir log  run_pretrain.py \
+    --model_name_or_path $2 \
     --input_dir "./data" \
     --output_dir "output_multi" \
     --batch_size 4 \
@@ -48,9 +49,9 @@ if [[ $1 == 'gpu' ]];then #GPU
     --device $1 > $log_path/train_$3_$1.log 2>&1
     print_info $? train_$3_$1
 else #cpu
-    python --log_dir log  run_pretrain.py --model_name_or_path $2 \
+    python run_pretrain.py --model_name_or_path $2 \
     --input_dir "./data" \
-    --output_dir "output" \
+    --output_dir "cpu_output" \
     --batch_size 4 \
     --weight_decay 0.01 \
     --learning_rate 1e-5 \
@@ -59,8 +60,8 @@ else #cpu
     --logging_steps 1 \
     --max_encoder_length 512 \
     --max_pred_length 75 \
-    --device $1 > $log_path/train_$1.log 2>&1
-    print_info $? train_$1
+    --device $1 > $log_path/train_$3_$1.log 2>&1
+    print_info $? train_$3_$1
 fi
 
 export http_proxy=$HTTPPROXY

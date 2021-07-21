@@ -29,6 +29,17 @@ if [ $1 -ne 0 ];then
 fi
 }
 
+if [[ $4 == 'con' ]];then
+  # 收敛：
+  MAXSTEP=1000000
+  SAVE_STEP=20000
+  EPOCHS=3
+else
+  MAXSTEP=3
+  SAVE_STEP=1
+  EPOCHS=1
+fi
+
 if [[ $1 == 'gpu' ]];then #GPU
     python -m paddle.distributed.launch --gpus "$3"  run_pretrain.py \
     --model_type bert \
@@ -39,35 +50,35 @@ if [[ $1 == 'gpu' ]];then #GPU
     --weight_decay 1e-2 \
     --adam_epsilon 1e-6 \
     --warmup_steps 10000 \
-    --num_train_epochs 1 \
+    --num_train_epochs ${EPOCHS} \
     --input_dir data/ \
     --output_dir pretrained_models_multi/ \
     --logging_steps 1 \
-    --save_steps 1 \
-    --max_steps 3 \
+    --save_steps ${SAVE_STEP} \
+    --max_steps ${MAXSTEP} \
     --device $1 \
     --use_amp False > $log_path/train_$2_$1.log 2>&1
     print_info $? train_$2_$1
 
 else # cpu
-    python -m paddle.distributed.launch  run_pretrain.py \
-    --model_type bert \
-    --model_name_or_path bert-base-uncased \
-    --max_predictions_per_seq 20 \
-    --batch_size 32   \
-    --learning_rate 1e-4 \
-    --weight_decay 1e-2 \
-    --adam_epsilon 1e-6 \
-    --warmup_steps 10000 \
-    --num_train_epochs 3 \
-    --input_dir data/ \
-    --output_dir pretrained_models/ \
-    --logging_steps 1 \
-    --save_steps 1 \
-    --max_steps 3 \
-    --device $1 \
-    --use_amp False > $log_path/train_$1.log 2>&1
-    print_info $? train_$1
+    python run_pretrain.py \
+        --model_type bert \
+        --model_name_or_path bert-base-uncased \
+        --max_predictions_per_seq 20 \
+        --batch_size 32   \
+        --learning_rate 1e-4 \
+        --weight_decay 1e-2 \
+        --adam_epsilon 1e-6 \
+        --warmup_steps 10000 \
+        --num_train_epochs 1 \
+        --input_dir data/ \
+        --output_dir pretrained_models/ \
+        --logging_steps 1 \
+        --save_steps 1 \
+        --max_steps 3 \
+        --device $1 \
+        --use_amp False > $log_path/train_$2_$1.log 2>&1
+    print_info $? train_$2_$1
 fi
 
 export http_proxy=$HTTPPROXY
