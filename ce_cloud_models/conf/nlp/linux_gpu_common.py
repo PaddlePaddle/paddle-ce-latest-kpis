@@ -80,5 +80,8 @@ EXEC_TAG = [
     "linux_dy_gpu1_hardest", "linux_dy_gpu2_hardest", "linux_dy_gpu1_iflytek",
     "linux_dy_gpu1_tnews", "linux_dy_gpu1_eprstmt", "linux_dy_gpu1_bustm",
     "linux_dy_gpu1_ocnli", "linux_dy_gpu1_csl", "linux_dy_gpu1_csldcp",
-    "linux_dy_gpu1_cluewsc", "linux_dy_gpu1_chid"
+    "linux_dy_gpu1_cluewsc", "linux_dy_gpu1_chid", "linux_dy_gpu1_point-wise",
+    "linux_dy_gpu1_pair-wise", "linux_dy_gpu2_point-wise", "linux_dy_gpu2_pair-wise",
+    "linux_dy_gpu1_chnsenticorp", "linux_dy_gpu2_chnsenticorp", "linux_dy_gpu1_sst-2",
+    "linux_dy_gpu2_sst-2", "linux_dy_gpu1_qqp", "linux_dy_gpu2_qqp"
     ]

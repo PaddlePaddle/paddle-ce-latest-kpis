@@ -5,8 +5,6 @@ GIT:
   path: $ROOT_PATH/models_repo
   branch: $msra_ner_BRANCH
 
-ENV:
-  PADDLE_ON_MODEL_CE: $PADDLE_ON_MODEL_CE
 
 VARIABLES:
   model_scripts_path: scripts/msra_ner/ #脚本的路径
@@ -25,7 +23,7 @@ DATA_PROC:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh data_proc.sh
+        cmd: bash data_proc.sh
 
 TRAIN: # 训练步骤
   -
@@ -37,26 +35,26 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU single
+        cmd: bash train.sh $XPU single
 
     kpis: #kpi指标
       precision:
         latest: True
-        kpi_base: 0.860087
+        kpi_base: 0.523947
         threshold: 0.02
         actived: True
         evaluation: "+"
         unit_repr: "s"
       recall:
         latest: True
-        kpi_base: 0.890344
+        kpi_base: 0.61003
         threshold: 0.02
         actived: True
         evaluation: "+"
         unit_repr: "s"
       f1:
         latest: True
-        kpi_base: 0.874954
+        kpi_base: 0.563721
         threshold: 0.02
         actived: True
         evaluation: "+"
@@ -69,7 +67,42 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU multi $SET_MULTI_CUDA
+        cmd: bash train.sh $XPU multi $SET_MULTI_CUDA
+
+    kpis: #kpi指标
+      precision:
+        latest: True
+        kpi_base: 0.602226
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+      recall:
+        latest: True
+        kpi_base: 0.658121
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+      f1:
+        latest: True
+        kpi_base: 0.628934
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_multi_$XPU.log
+
+  -
+    priority: p0
+    tag: win_dy_gpu1
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: train.bat $XPU
 
     kpis: #kpi指标
       precision:
@@ -93,10 +126,10 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_multi_$XPU.log
+    output: $ROOT_PATH/$model_log_path/train_$XPU.log
 
 INFER:
-  - 
+  -
     priority: p0
     tag: linux_dy_gpu1
     env: #去掉，自动调度
@@ -104,7 +137,26 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh infer.sh $XPU 
+        cmd: bash infer.sh $XPU 
+    kpis:
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/infer_$XPU.log
+
+  -
+    priority: p0
+    tag: win_dy_gpu1
+    env: #去掉，自动调度
+        CUDA_VISIBLE_DEVICES: $SET_CUDA
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: infer.bat $XPU
     kpis:
       exit_code:
         latest: True
@@ -124,7 +176,40 @@ EVAL:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh eval.sh $XPU
+        cmd: bash eval.sh $XPU
+    kpis: #kpi指标
+      precision:
+        latest: True
+        kpi_base: 0.602226
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+      recall:
+        latest: True
+        kpi_base: 0.658121
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+      f1:
+        latest: True
+        kpi_base: 0.628934
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/eval_$XPU.log
+
+  - #可以有多步
+    priority: p1
+    tag: win_dy_gpu1
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: eval.bat $XPU
     kpis: #kpi指标
       precision:
         latest: True

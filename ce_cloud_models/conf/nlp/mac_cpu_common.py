@@ -60,5 +60,6 @@ EXEC_CASES = ["DATA_PROC", "TRAIN", "INFER"]
 EXEC_TAG = [
     "mac_st_cpu", "mac_dy_cpu",
     # 自定义的标签
-    "mac_download_data"
+    "mac_download_data", "mac_dy_cpu_chnsenticorp",
+    "mac_dy_cpu_sst-2", "mac_dy_cpu_qqp"
 ]
