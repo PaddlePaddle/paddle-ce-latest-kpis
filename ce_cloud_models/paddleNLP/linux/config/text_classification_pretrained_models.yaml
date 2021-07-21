@@ -5,9 +5,6 @@ GIT:
   path: $ROOT_PATH/models_repo
   branch: $TEXT_CLASSIFICATION_PRETRAINED_BRANCH
 
-ENV:
-  PADDLE_ON_MODEL_CE: $PADDLE_ON_MODEL_CE
-
 VARIABLES:
   model_scripts_path: scripts/text_classification_pretrained/ #脚本的路径
   model_log_path: log/text_classification_pretrained/
@@ -28,7 +25,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU "single" 
+        cmd: bash train.sh $XPU "single" 
 
     kpis: #kpi指标
       loss:
@@ -56,7 +53,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU "multi" 
+        cmd: bash train.sh $XPU "multi" 
 
     kpis: #kpi指标
       loss:
@@ -82,7 +79,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU
+        cmd: bash train.sh $XPU
 
     kpis: #kpi指标
       loss:
@@ -101,6 +98,34 @@ TRAIN: # 训练步骤
         evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_$XPU.log
+  
+  -
+    priority: p0
+    tag: "win_dy_gpu1"
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: train.bat $XPU
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 0.19153
+        threshold: 0.01
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+      accu:
+        latest: True
+        kpi_base: 0.93083
+        threshold: 0.01
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_$XPU.log
 
 INFER:
   -
@@ -112,7 +137,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh infer.sh $XPU "single"
+        cmd: bash infer.sh $XPU "single"
     kpis:
       exit_code:
         latest: True
@@ -133,7 +158,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh infer.sh $XPU "multi" 
+        cmd: bash infer.sh $XPU "multi" 
     kpis:
       exit_code:
         latest: True
@@ -143,5 +168,25 @@ INFER:
         evaluation: "-"
         unit_repr: None
     output: $ROOT_PATH/$model_log_path/infer_multi_$XPU.log
+  
+  -
+    priority: p0
+    tag: "win_dy_gpu1"
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: infer.bat $XPU
+    kpis:
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None 
+    output: $ROOT_PATH/$model_log_path/infer_$XPU.log
     
 

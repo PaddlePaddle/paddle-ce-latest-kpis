@@ -25,7 +25,7 @@ DATA_PROC:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh data_proc.sh
+        cmd: bash data_proc.sh
 
 TRAIN: # 训练步骤
   -
@@ -34,30 +34,30 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh finetune.sh $XPU single $SET_CUDA
+        cmd: bash finetune.sh $XPU single $SET_CUDA
 
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 0.958432
+        kpi_base: 4.199223
         threshold: 0.01
         actived: True
         evaluation: "-"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/finetune_single_$XPU.log
   -
-    priority: p0
+    priority: p1
     tag: linux_dy_gpu2
 
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh finetune.sh $XPU multi $SET_MULTI_CUDA
+        cmd: bash finetune.sh $XPU multi $SET_MULTI_CUDA
 
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 1.153762
+        kpi_base: 4.686818
         threshold: 0.01
         actived: True
         evaluation: "-"

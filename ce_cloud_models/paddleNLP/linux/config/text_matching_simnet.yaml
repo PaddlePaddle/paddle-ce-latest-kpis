@@ -5,9 +5,6 @@ GIT:
   path: $ROOT_PATH/models_repo
   branch: $text_matching_simnet_BRANCH
 
-ENV:
-  PADDLE_ON_MODEL_CE: $PADDLE_ON_MODEL_CE
-
 VARIABLES:
   model_scripts_path: scripts/text_matching_simnet/ #脚本的路径
   model_log_path: log/text_matching_simnet/
@@ -25,7 +22,7 @@ DATA_PROC:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh data_proc.sh
+        cmd: bash data_proc.sh
 
 TRAIN: # 训练步骤
   -
@@ -35,7 +32,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU single $SET_CUDA 
+        cmd: bash train.sh $XPU single $SET_CUDA 
 
     kpis: #kpi指标
       acc:
@@ -54,7 +51,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU multi $SET_MULTI_CUDA
+        cmd: bash train.sh $XPU multi $SET_MULTI_CUDA
 
     kpis: #kpi指标
       acc:
@@ -75,7 +72,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh infer.sh $XPU 
+        cmd: bash infer.sh $XPU 
     kpis:
       exit_code:
         latest: True

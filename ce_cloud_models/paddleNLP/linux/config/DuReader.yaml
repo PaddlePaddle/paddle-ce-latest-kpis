@@ -1,5 +1,5 @@
 MODEL: "DuReader" # 模型名
-PRIORITY: P1_close # 模型被合并
+PRIORITY: P1_close  #关闭
 GIT:
   addr: $REPO_PaddleNLP
   path: $ROOT_PATH/models_repo
@@ -27,7 +27,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh finetune.sh $XPU single
+        cmd: bash finetune.sh $XPU single
 
     kpis: #kpi指标
       loss:
@@ -47,7 +47,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh finetune.sh $XPU multi
+        cmd: bash finetune.sh $XPU multi
 
     kpis: #kpi指标
       loss:

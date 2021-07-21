@@ -16,9 +16,10 @@ echo "$model_name 模型训练阶段"
 root_path=$cur_path/../../
 code_path=$cur_path/../../models_repo/examples/text_matching/sentence_transformers/
 log_path=$root_path/log/$model_name/
-mkdir -p $log_path
-#临时环境更改
-cd $root_path/models_repo
+
+if [ ! -d $log_path ]; then
+  mkdir -p $log_path
+fi
 
 #访问RD程序
 cd $code_path

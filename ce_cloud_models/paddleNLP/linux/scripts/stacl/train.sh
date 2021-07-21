@@ -26,7 +26,7 @@ rm -rf $code_path/log/workerlog.0
 
 #访问RD程序
 cd $code_path
-
+# 覆盖原来的参数
 if [[ $4 != 'con' ]];then
   # 天级别任务覆盖原来的参数，收敛性任务保留
   sed -i 's/save_step: 10000/save_step: 100/g' config/transformer.yaml

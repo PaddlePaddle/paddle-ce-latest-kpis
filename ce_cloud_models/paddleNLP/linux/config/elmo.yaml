@@ -23,7 +23,7 @@ DATA_PROC:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh data_proc.sh
+        cmd: bash data_proc.sh
 
 TRAIN: # 训练步骤
   -
@@ -32,7 +32,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'single' $SET_CUDA
+        cmd: bash train.sh $XPU 'single' $SET_CUDA
 
     kpis: #kpi指标
       loss:
@@ -50,7 +50,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'multi' $SET_MULTI_CUDA
+        cmd: bash train.sh $XPU 'multi' $SET_MULTI_CUDA
 
     kpis: #kpi指标
       loss:
