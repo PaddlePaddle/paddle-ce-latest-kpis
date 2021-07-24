@@ -28,7 +28,7 @@ mkdir -p ./output/$4
 python -u -m paddle.distributed.launch --gpus $3 predict.py \
     --task_name $4 \
     --device $1 \
-    --init_from_ckpt "./checkpoints/$4/$2/model_10/model_state.pdparams" \
+    --init_from_ckpt "./checkpoints/$4/$2/model_$5/model_state.pdparams" \
     --output_dir "./output/$4" \
     --batch_size 16 \
     --max_seq_length 512 > $log_path/infer_$4_$2_$1.log 2>&1

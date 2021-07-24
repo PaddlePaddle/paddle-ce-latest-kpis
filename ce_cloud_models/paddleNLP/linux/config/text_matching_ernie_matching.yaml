@@ -69,7 +69,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash train.sh $XPU 'single' $SET_CUDA pair-wiset
+        cmd: bash train.sh $XPU 'single' $SET_CUDA pair-wise
 
     kpis: #kpi指标
       loss:

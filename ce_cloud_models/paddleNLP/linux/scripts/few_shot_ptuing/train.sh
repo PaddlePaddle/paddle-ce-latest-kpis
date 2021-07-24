@@ -32,5 +32,5 @@ cd $code_path
       --batch_size 32 \
       --learning_rate 5E-5 \
       --epochs 1 \
-      --save_steps 10 \
+      --save_steps 20 \
       --max_seq_length 512 > ${log_path}/train_$4_$2_$1.log 2>&1

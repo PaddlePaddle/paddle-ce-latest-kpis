@@ -36,7 +36,7 @@ fi
 
 python predict.py \
   --device ${DEVICE}\
-  --params_path checkpoints/model_5000/model_state.pdparams > $log_path/infer_${DEVICE}.log 2>&1
+  --params_path checkpoints/model_1000/model_state.pdparams > $log_path/infer_${DEVICE}.log 2>&1
 
 print_info $? infer_${DEVICE}
 

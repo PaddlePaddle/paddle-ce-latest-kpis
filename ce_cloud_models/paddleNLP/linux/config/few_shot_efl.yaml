@@ -28,12 +28,12 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU 'single' $SET_CUDA iflytek
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 36.878
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_iflytek_single_$XPU.log
 
@@ -47,12 +47,12 @@ TRAIN: # 训练步骤
         cmd: train.bat $XPU $SET_CUDA iflytek
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 36.878
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_iflytek_$XPU.log
   
@@ -65,12 +65,12 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU 'single' $SET_CUDA tnews
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 50.547
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_tnews_single_$XPU.log
 
@@ -83,12 +83,12 @@ TRAIN: # 训练步骤
         cmd: train.bat $XPU $SET_CUDA tnews
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 50.547
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_tnews_$XPU.log
   
@@ -101,12 +101,12 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU 'single' $SET_CUDA eprstmt
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 53.115
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_eprstmt_single_$XPU.log
 
@@ -119,12 +119,12 @@ TRAIN: # 训练步骤
         cmd: train.bat $XPU $SET_CUDA eprstmt
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 53.115
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_eprstmt_$XPU.log
 
@@ -137,12 +137,12 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU 'single' $SET_CUDA bustm
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 54.176
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_bustm_single_$XPU.log
 
@@ -155,12 +155,12 @@ TRAIN: # 训练步骤
         cmd: train.bat $XPU $SET_CUDA bustm
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 54.176
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_bustm_$XPU.log
 
@@ -173,12 +173,12 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU 'single' $SET_CUDA ocnli
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 33.254
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_ocnli_single_$XPU.log
 
@@ -191,12 +191,12 @@ TRAIN: # 训练步骤
         cmd: train.bat $XPU $SET_CUDA ocnli
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 33.254
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_ocnli_$XPU.log
 
@@ -209,12 +209,12 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU 'single' $SET_CUDA csl
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 49.295
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_csl_single_$XPU.log
 
@@ -227,12 +227,12 @@ TRAIN: # 训练步骤
         cmd: train.bat $XPU $SET_CUDA csl
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 49.295
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_csl_$XPU.log
 
@@ -245,12 +245,12 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU 'single' $SET_CUDA csldcp
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 38.117
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_csldcp_single_$XPU.log
 
@@ -263,12 +263,12 @@ TRAIN: # 训练步骤
         cmd: train.bat $XPU $SET_CUDA csldcp
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 38.117
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_csldcp_$XPU.log
   
@@ -281,12 +281,12 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU 'single' $SET_CUDA cluewsc
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 52.664
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_cluewsc_single_$XPU.log
 
@@ -299,12 +299,12 @@ TRAIN: # 训练步骤
         cmd: train.bat $XPU $SET_CUDA cluewsc
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 52.664
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_cluewsc_$XPU.log
 
@@ -317,12 +317,12 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU 'single' $SET_CUDA chid
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 17.083
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_chid_single_$XPU.log
 
@@ -335,12 +335,12 @@ TRAIN: # 训练步骤
         cmd: train.bat $XPU $SET_CUDA chid
 
     kpis: #kpi指标
-      loss:
+      dev_accuracy:
         latest: True
-        kpi_base: 79.329269
+        kpi_base: 17.083
         threshold: 0.01
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_chid_$XPU.log
 
@@ -352,7 +352,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA iflytek
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA iflytek 20
     kpis:
       exit_code:
         latest: True
@@ -369,7 +369,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA iflytek
+        cmd: infer.bat $XPU $SET_CUDA iflytek 20
     kpis:
       exit_code:
         latest: True
@@ -386,7 +386,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA tnews
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA tnews 20
     kpis:
       exit_code:
         latest: True
@@ -403,7 +403,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA tnews
+        cmd: infer.bat $XPU $SET_CUDA tnews 20
     kpis:
       exit_code:
         latest: True
@@ -420,7 +420,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA eprstmt
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA eprstmt 4
     kpis:
       exit_code:
         latest: True
@@ -437,7 +437,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA eprstmt
+        cmd: infer.bat $XPU $SET_CUDA eprstmt 4
     kpis:
       exit_code:
         latest: True
@@ -454,7 +454,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA bustm
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA bustm 4
     kpis:
       exit_code:
         latest: True
@@ -471,7 +471,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA bustm
+        cmd: infer.bat $XPU $SET_CUDA bustm 4
     kpis:
       exit_code:
         latest: True
@@ -488,7 +488,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA ocnli
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA ocnli 4
     kpis:
       exit_code:
         latest: True
@@ -505,7 +505,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA ocnli
+        cmd: infer.bat $XPU $SET_CUDA ocnli 4
     kpis:
       exit_code:
         latest: True
@@ -522,7 +522,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA csl
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA csl 4
     kpis:
       exit_code:
         latest: True
@@ -539,7 +539,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA csl
+        cmd: infer.bat $XPU $SET_CUDA csl 4
     kpis:
       exit_code:
         latest: True
@@ -557,7 +557,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA csldcp
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA csldcp 20
     kpis:
       exit_code:
         latest: True
@@ -574,7 +574,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA csldcp
+        cmd: infer.bat $XPU $SET_CUDA csldcp 20
     kpis:
       exit_code:
         latest: True
@@ -591,7 +591,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA cluewsc
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA cluewsc 4
     kpis:
       exit_code:
         latest: True
@@ -608,7 +608,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA cluewsc
+        cmd: infer.bat $XPU $SET_CUDA cluewsc 4
     kpis:
       exit_code:
         latest: True
@@ -625,7 +625,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA chid
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA chid 20
     kpis:
       exit_code:
         latest: True
@@ -642,7 +642,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA chid
+        cmd: infer.bat $XPU $SET_CUDA chid 20
     kpis:
       exit_code:
         latest: True

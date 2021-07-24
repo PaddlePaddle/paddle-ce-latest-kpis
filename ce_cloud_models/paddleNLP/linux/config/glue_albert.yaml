@@ -27,7 +27,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'single' 'albert' 'albert-base-v2' 'SST-2' 1e-5
+        cmd: bash train.sh $XPU 'single' 'albert' 'albert-base-v2' 'SST-2' 1e-5
 
     kpis: #kpi指标
       acc:
@@ -48,7 +48,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'multi' 'albert' 'albert-base-v2' 'SST-2' 1e-5
+        cmd: bash train.sh $XPU 'multi' 'albert' 'albert-base-v2' 'SST-2' 1e-5
 
     kpis: #kpi指标
       acc:
@@ -91,7 +91,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'single' 'albert' 'albert-base-v2' 'MNLI' 3e-5
+        cmd: bash train.sh $XPU 'single' 'albert' 'albert-base-v2' 'MNLI' 3e-5
 
     kpis: #kpi指标
       acc:
@@ -112,7 +112,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU 'multi' 'albert' 'albert-base-v2' 'MNLI' 3e-5
+        cmd: bash train.sh $XPU 'multi' 'albert' 'albert-base-v2' 'MNLI' 3e-5
 
     kpis: #kpi指标
       acc:
