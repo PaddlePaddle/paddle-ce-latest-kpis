@@ -29,7 +29,7 @@ cd $code_path
       --device $1 \
       --p_embedding_num 1 \
       --save_dir "checkpoints/$4/$2" \
-      --batch_size 32 \
+      --batch_size 8 \
       --learning_rate 5E-5 \
       --epochs 1 \
       --save_steps 20 \
