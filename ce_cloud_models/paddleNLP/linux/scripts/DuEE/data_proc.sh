@@ -39,4 +39,4 @@ ln -s /workspace/task/datasets/DuEE  /workspace/task/models_repo/examples/inform
 cd $code_path
 # 覆盖bug
 sed -i 's/title \= doc\[\"title\"\]/title \= doc\.get\(\"title\", \"\"\)/g'  ./duee_fin_data_prepare.py
-sh run_duee_fin.sh data_prepare
+bash run_duee_fin.sh data_prepare

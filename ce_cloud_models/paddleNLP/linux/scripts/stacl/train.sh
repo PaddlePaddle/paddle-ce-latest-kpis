@@ -29,7 +29,9 @@ cd $code_path
 # 覆盖原来的参数
 if [[ $4 != 'con' ]];then
   # 天级别任务覆盖原来的参数，收敛性任务保留
-  sed -i 's/save_step: 10000/save_step: 100/g' config/transformer.yaml
+  sed -i 's/save_step: 10000/save_step: 10/g' config/transformer.yaml
+  sed -i "s/print_step: 100/print_step: 10/g" config/transformer.yaml
+  sed -i "s/max_iter: None/max_iter: 100/g" config/transformer.yaml
   sed -i 's/epoch: 30/epoch: 1/g' config/transformer.yaml
 fi
 

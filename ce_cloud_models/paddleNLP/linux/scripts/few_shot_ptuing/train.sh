@@ -29,8 +29,8 @@ cd $code_path
       --device $1 \
       --p_embedding_num 1 \
       --save_dir "checkpoints/$4/$2" \
-      --batch_size 32 \
+      --batch_size 8 \
       --learning_rate 5E-5 \
       --epochs 1 \
-      --save_steps 10 \
+      --save_steps 20 \
       --max_seq_length 512 > ${log_path}/train_$4_$2_$1.log 2>&1

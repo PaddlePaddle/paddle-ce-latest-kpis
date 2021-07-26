@@ -30,3 +30,6 @@ if [[ $1 == "gpu" ]]; then
      --num_layers 24\
      --init_from_ckpt ./24L.pdparams > $log_path/train_24_$2_$1.log 2>&1
 fi
+
+# 训练完毕删除数据
+rm -rf 24L.pdparams
