@@ -9,6 +9,6 @@ code_path=$cur_path/../../models_repo/examples/information_extraction/waybill_ie
 #临时环境更改
 cd $root_path/models_repo && ls
 cd $code_path
-python download.py --data_dir ./
+python download.py --data_dir ./waybill_ie
 #获取数据&模型逻辑
 #数据处理逻辑

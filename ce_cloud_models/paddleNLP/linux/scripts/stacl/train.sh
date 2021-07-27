@@ -33,6 +33,7 @@ if [[ $4 != 'con' ]];then
   sed -i "s/print_step: 100/print_step: 10/g" config/transformer.yaml
   sed -i "s/max_iter: None/max_iter: 100/g" config/transformer.yaml
   sed -i 's/epoch: 30/epoch: 1/g' config/transformer.yaml
+  sed -i "s/batch_size: 4096/batch_size: 500/g" config/transformer.yaml
   sed -i 's/init_from_params: \"trained_models\/step_final\/\"/init_from_params: \"trained_models\/step_10\/\"/g' config/transformer.yaml
 fi
 
