@@ -1,5 +1,5 @@
 MODEL: "slim_st_dist_res50_v1" # 模型名
-PRIORITY: P0
+PRIORITY: P0,Pre_Test
 GIT:
   addr: $REPO_PaddleSlim
   path: $ROOT_PATH/PaddleSlim
@@ -14,7 +14,7 @@ VARIABLES:
 
 EXEC:
   exec_cases: [DATA_PROC,TRAIN]
-  exec_priority: [p0]
+  exec_priority: $EXEC_PRIORITY
   exec_tag: $EXEC_TAG
 #测试套
 DATA_PROC:
@@ -24,7 +24,7 @@ DATA_PROC:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh data_proc.sh
+        cmd: sh data_proc.sh demo
 
 TRAIN: # 训练步骤
   -
@@ -81,9 +81,37 @@ TRAIN: # 训练步骤
         evaluation: "+"
         unit_repr: None
     output: $ROOT_PATH/$model_log_path/S_slim_st_dist_res50_v1_linux_st_gpu2.log
+
+  -
+    tag: linux_st_con_gpu2
+    priority: p0
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
+
+    run:
+      - path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh linux_st_con_gpu2 slim_st_dist_res50_v1_linux_st_con_gpu2
+
+    kpis: #kpi指标
+      acc_top1:
+        latest: True
+        kpi_base: 0.723705
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+      acc_top5:
+        latest: True
+        kpi_base: 0.903113
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+      output: $ROOT_PATH/$model_log_path/S_slim_st_dist_res50_v1_linux_st_con_gpu2.log
+
   -
     tag: linux_st_cpu
-    priority: p0
+    priority: p2
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
 

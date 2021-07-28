@@ -1,5 +1,5 @@
 MODEL: "slim_dy_quant_v1" # 模型名
-PRIORITY: P0
+PRIORITY: P0,Pre_Test
 GIT:
   addr: $REPO_PaddleSlim
   path: $ROOT_PATH/PaddleSlim
@@ -14,7 +14,7 @@ VARIABLES:
 
 EXEC:
   exec_cases: [DATA_PROC,TRAIN,INFER]
-  exec_priority: [p0]
+  exec_priority: $EXEC_PRIORITY
   exec_tag: $EXEC_TAG
 
 #测试套
@@ -25,7 +25,7 @@ DATA_PROC:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh data_proc.sh
+        cmd: sh data_proc.sh demo
 
 TRAIN: # 训练步骤
   -
@@ -42,14 +42,14 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       acc_top1:
         latest: True
-        kpi_base: 0.697867
+        kpi_base: 0.708668
         threshold: 0.02
         actived: True
         evaluation: "+"
         unit_repr: None
       acc_top5:
         latest: True
-        kpi_base: 0.899639
+        kpi_base: 0.896563
         threshold: 0.02
         actived: True
         evaluation: "+"
@@ -67,25 +67,51 @@ TRAIN: # 训练步骤
         cmd: sh train.sh linux_dy_gpu2 quant_v1_linux_dy_gpu2
 
     kpis: #kpi指标
-      loss:
+      acc_top1:
         latest: True
-        kpi_base: 7.376870
-        threshold: 0.01
+        kpi_base: 0.697867
+        threshold: 0.02
         actived: True
-        evaluation: "-"
-        unit_repr: "s"
-      speed:
+        evaluation: "+"
+        unit_repr: None
+      acc_top5:
         latest: True
-        kpi_base: 1.99
-        threshold: 0.01
+        kpi_base: 0.899639
+        threshold: 0.02
         actived: True
-        evaluation: "-"
-        unit_repr: "s"
+        evaluation: "+"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/quant_v1_linux_dy_gpu2_dist_log/workerlog.0
 
   -
-    tag: linux_dy_cpu
+    tag: linux_dy_con_gpu2
     priority: p0
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
+
+    run:
+      - path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh linux_dy_con_gpu2 quant_v1_linux_dy_con_gpu2
+
+    kpis: #kpi指标
+      acc_top1:
+        latest: True
+        kpi_base: 0.697867
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+      acc_top5:
+        latest: True
+        kpi_base: 0.899639
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/quant_v1_linux_dy_gpu2_dist_log/workerlog.0
+  -
+    tag: linux_dy_cpu
+    priority: p2
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
 
@@ -95,18 +121,18 @@ TRAIN: # 训练步骤
         cmd: sh train.sh linux_dy_cpu quant_v1_linux_dy_cpu
 
     kpis: #kpi指标
-      loss:
+      acc_top1:
         latest: True
-        kpi_base: 7.376870
-        threshold: 0.01
+        kpi_base: 0.697867
+        threshold: 0.02
         actived: True
-        evaluation: "-"
-        unit_repr: "s"
-      speed:
+        evaluation: "+"
+        unit_repr: None
+      acc_top5:
         latest: True
-        kpi_base: 1.99
-        threshold: 0.01
+        kpi_base: 0.899639
+        threshold: 0.02
         actived: True
-        evaluation: "-"
-        unit_repr: "s"
+        evaluation: "+"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/S_quant_v1_linux_dy_cpu.log

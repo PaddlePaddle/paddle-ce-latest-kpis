@@ -41,6 +41,10 @@ elif [ "$1" = "linux_st_gpu2" ];then #单卡
     python distill.py --num_epochs 1 --save_inference True > ${log_path}/$2.log 2>&1
     print_info $? $2
 
+elif [ "$1" = "linux_st_con_gpu2" ];then #多卡 收敛
+    python distill.py --num_epochs 1  > ${log_path}/$2.log 2>&1
+    print_info $? $2
+
 elif [ "$1" = "linux_st_cpu" ];then #单卡
     python distill.py --num_epochs 1 --save_inference True --use_gpu False > ${log_path}/$2.log 2>&1
     print_info $? $2

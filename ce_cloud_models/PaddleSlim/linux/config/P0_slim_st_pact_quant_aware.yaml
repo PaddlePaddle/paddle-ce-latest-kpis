@@ -1,5 +1,5 @@
 MODEL: "slim_st_pact_quant_aware" # 模型名
-PRIORITY: P1
+PRIORITY: P0
 GIT:
   addr: $REPO_PaddleSlim
   path: $ROOT_PATH/PaddleSlim
@@ -14,8 +14,8 @@ VARIABLES:
 
 EXEC:
   exec_cases: [DATA_PROC,TRAIN]
-  exec_priority: [p0]
-  exec_tag: [linux_down_data,linux_st_pact_quant_aware_no_pact,linux_st_pact_quant_aware_use_pact]
+  exec_priority: $EXEC_PRIORITY
+  exec_tag: $EXEC_TAG
 
 #测试套
 DATA_PROC:
@@ -25,12 +25,12 @@ DATA_PROC:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh data_proc.sh
+        cmd: sh data_proc.sh demo
 
 TRAIN: # 训练步骤
   -
     priority: p0
-    tag: linux_st_pact_quant_aware_no_pact
+    tag: linux_st_gpu1
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
 
@@ -47,11 +47,11 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/slim_st_pact_quant_aware_no_pact.log
+    output: $ROOT_PATH/$model_log_path/S_slim_st_pact_quant_aware_no_pact.log
 
   -
     priority: p0
-    tag: linux_st_pact_quant_aware_use_pact
+    tag: linux_st_gpu2
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
 
@@ -67,12 +67,30 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/slim_st_pact_quant_aware_use_pact.log
-
+    output: $ROOT_PATH/$model_log_path/S_slim_st_pact_quant_aware_use_pact.log
 
   -
     priority: p0
-    tag: linux_st_pact_quant_aware_load
+    tag: linux_st_con_gpu2
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
+
+    run:
+      - path: $ROOT_PATH/$model_scripts_path
+        cmd: sh train.sh use_pact slim_st_pact_quant_aware_use_pact_gpu2
+    kpis: #kpi指标
+      acc:
+        latest: True
+        kpi_base: 0.751678
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/S_slim_st_pact_quant_aware_use_pact_gpu2.log
+
+  -
+    priority: p0
+    tag: linux_st_gpu1
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
 
@@ -88,4 +106,4 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/slim_st_pact_quant_aware_load.log
+    output: $ROOT_PATH/$model_log_path/S_slim_st_pact_quant_aware_load.log
