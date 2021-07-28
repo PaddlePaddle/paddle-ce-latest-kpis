@@ -103,7 +103,7 @@ if daily:
     "linux_down_data",
     ]
 else:
-# linux下 P0的收敛性任务,month
+# linux下 P0的收敛性任务, month
     EXEC_PRIORITY = ["p0", "p1"]
     EXEC_CASES = ["DATA_PROC", "TRAIN", "INFER"]
     EXEC_TAG = [
