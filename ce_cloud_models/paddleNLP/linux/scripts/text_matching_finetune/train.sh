@@ -26,6 +26,8 @@ cd $code_path
 
 DEVICE=$1
 
+# 控制保存模型
+sed -i "s/if global_step % 100 == 0 and rank == 0:/if global_step % 1000 == 0 and rank == 0:/g" train.py
 
 python -m paddle.distributed.launch --gpus $3 train.py \
   --device ${DEVICE} \

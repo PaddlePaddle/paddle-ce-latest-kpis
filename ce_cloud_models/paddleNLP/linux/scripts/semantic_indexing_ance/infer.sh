@@ -40,7 +40,7 @@ cd $code_path
 if [[ $3 == "batch" ]]; then
     python -u -m paddle.distributed.launch --gpus "$2" predict.py \
         --device $1 \
-        --params_path "./checkpoints_batch_neg_single/model_100/model_state.pdparams" \
+        --params_path "./checkpoints_batch_neg_single/model_1000/model_state.pdparams" \
         --output_emb_size 256 \
         --batch_size 128 \
         --max_seq_length 64 \
@@ -49,7 +49,7 @@ if [[ $3 == "batch" ]]; then
 else
     python -u -m paddle.distributed.launch --gpus "$2" predict.py \
         --device $1 \
-        --params_path "./checkpoints_hardest_neg_single/model_100/model_state.pdparams" \
+        --params_path "./checkpoints_hardest_neg_single/model_1000/model_state.pdparams" \
         --output_emb_size 256\
         --batch_size 128 \
         --max_seq_length 64 \

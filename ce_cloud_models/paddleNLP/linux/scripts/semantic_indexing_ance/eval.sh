@@ -46,7 +46,7 @@ if [[ $3 == "batch" ]]; then
         --device $1 \
         --recall_result_dir "recall_batch_neg" \
         --recall_result_file "recall_result.txt" \
-        --params_path "checkpoints_batch_neg_single/model_100/model_state.pdparams" \
+        --params_path "checkpoints_batch_neg_single/model_1000/model_state.pdparams" \
         --hnsw_m 100 \
         --hnsw_ef 100 \
         --batch_size 128 \
@@ -68,7 +68,7 @@ else
         --device $1 \
         --recall_result_dir "recall_hardest_neg" \
         --recall_result_file "recall_result.txt" \
-        --params_path "checkpoints_hardest_neg_single/model_100/model_state.pdparams" \
+        --params_path "checkpoints_hardest_neg_single/model_1000/model_state.pdparams" \
         --hnsw_m 100 \
         --hnsw_ef 100 \
         --batch_size 128 \
