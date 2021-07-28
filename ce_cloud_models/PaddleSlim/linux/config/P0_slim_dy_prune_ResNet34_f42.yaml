@@ -53,7 +53,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_prune_r34_f42_linux_dy_gpu1.log
+    output: $ROOT_PATH/$model_log_path/prune_r34_f42_linux_dy_gpu1.log
 
   -
     tag: linux_dy_gpu2
@@ -125,7 +125,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_prune_r34_f42_linux_dy_cpu.log
+    output: $ROOT_PATH/$model_log_path/prune_r34_f42_linux_dy_cpu.log
 
   - tag: linux_dy_con_gpu2
     priority: p0
@@ -179,7 +179,7 @@ EVAL:
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_prune_r34_f42_eval_linux_dy_gpu1.log
+    output: $ROOT_PATH/$model_log_path/prune_r34_f42_eval_linux_dy_gpu1.log
 
   - #可以有多步
     tag: linux_dy_gpu2
@@ -190,6 +190,22 @@ EVAL:
       -
         path: $ROOT_PATH/$model_scripts_path
         cmd: sh eval.sh linux_dy_gpu2 prune_r34_f42_eval_linux_dy_gpu2
+    kpis: #kpi指标
+      acc_top1:
+        latest: True
+        kpi_base: 0.5152
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+      acc_top5:
+        latest: True
+        kpi_base: 0.7611
+        threshold: 0.02
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+      output: $ROOT_PATH/$model_log_path/prune_r34_f42_eval_linux_dy_gpu2.log
 
 
   - #可以有多步
@@ -221,5 +237,5 @@ EXPORT:
         actived: True
         evaluation: "-"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_prune_r34_f42_export_linux_dy.log
+    output: $ROOT_PATH/$model_log_path/prune_r34_f42_export_linux_dy.log
 

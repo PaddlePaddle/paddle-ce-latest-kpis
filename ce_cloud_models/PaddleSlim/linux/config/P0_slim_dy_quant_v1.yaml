@@ -54,7 +54,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_quant_v1_linux_dy_gpu1.log
+    output: $ROOT_PATH/$model_log_path/quant_v1_linux_dy_gpu1.log
   -
     tag: linux_dy_gpu2
     priority: p0
@@ -135,4 +135,4 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_quant_v1_linux_dy_cpu.log
+    output: $ROOT_PATH/$model_log_path/quant_v1_linux_dy_cpu.log

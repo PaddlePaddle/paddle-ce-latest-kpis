@@ -53,7 +53,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_dist_res50_v1_linux_st_gpu1.log
+    output: $ROOT_PATH/$model_log_path/slim_st_dist_res50_v1_linux_st_gpu1.log
   -
     tag: linux_st_gpu2
     priority: p0
@@ -80,7 +80,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_dist_res50_v1_linux_st_gpu2.log
+    output: $ROOT_PATH/$model_log_path/slim_st_dist_res50_v1_linux_st_gpu2.log
 
   -
     tag: linux_st_con_gpu2
@@ -107,7 +107,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-      output: $ROOT_PATH/$model_log_path/S_slim_st_dist_res50_v1_linux_st_con_gpu2.log
+      output: $ROOT_PATH/$model_log_path/slim_st_dist_res50_v1_linux_st_con_gpu2.log
 
   -
     tag: linux_st_cpu
@@ -135,5 +135,5 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_dist_res50_v1_linux_st_cpu.log
+    output: $ROOT_PATH/$model_log_path/slim_st_dist_res50_v1_linux_st_cpu.log
 

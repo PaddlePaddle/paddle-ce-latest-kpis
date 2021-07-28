@@ -47,7 +47,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_pact_quant_aware_no_pact.log
+    output: $ROOT_PATH/$model_log_path/slim_st_pact_quant_aware_no_pact.log
 
   -
     priority: p0
@@ -67,7 +67,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_pact_quant_aware_use_pact.log
+    output: $ROOT_PATH/$model_log_path/slim_st_pact_quant_aware_use_pact.log
 
   -
     priority: p0
@@ -86,7 +86,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_pact_quant_aware_use_pact_gpu2.log
+    output: $ROOT_PATH/$model_log_path/slim_st_pact_quant_aware_use_pact_gpu2.log
 
   -
     priority: p0
@@ -106,4 +106,4 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_pact_quant_aware_load.log
+    output: $ROOT_PATH/$model_log_path/slim_st_pact_quant_aware_load.log
