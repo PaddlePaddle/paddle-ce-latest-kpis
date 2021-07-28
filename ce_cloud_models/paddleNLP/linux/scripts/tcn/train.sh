@@ -28,7 +28,7 @@ if [ $1 == 'gpu' ];then #GPU
     python train.py --data_path time_series_covid19_confirmed_global.csv \
                 --epochs 1 \
                 --batch_size 32 \
-                --use_gpu > $log_path/train_$2_$1.log 2>&1
+                --use_gpu True > $log_path/train_$2_$1.log 2>&1
 
 # elif [[ $1 == 'recv' ]];then
 # recv
@@ -36,7 +36,8 @@ if [ $1 == 'gpu' ];then #GPU
 else #CPU
     python train.py --data_path time_series_covid19_confirmed_global.csv \
                 --epochs 1 \
-                --batch_size 32 > $log_path/train_$1.log 2>&1
+                --batch_size 32 \
+                --use_gpu False > $log_path/train_$1.log 2>&1
 fi
 export http_proxy=$HTTPPROXY
 export https_proxy=$HTTPSPROXY

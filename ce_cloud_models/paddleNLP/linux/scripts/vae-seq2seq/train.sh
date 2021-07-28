@@ -35,7 +35,7 @@ if [[ ${MULTI} == "multi" ]]; then
         --model_path ptb_model \
         --device ${DEVICE} \
         --max_epoch 1 >$log_path/train_${MULTI}_${DEVICE}.log 2>&1
-else # 单卡
+else # 单卡或cpu
     python train.py \
         --batch_size 32 \
         --init_scale 0.1 \
