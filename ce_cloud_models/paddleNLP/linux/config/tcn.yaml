@@ -24,6 +24,14 @@ DATA_PROC:
         path: $ROOT_PATH/$model_scripts_path
         cmd: bash data_proc.sh
 
+  -
+    priority: p0
+    tag: mac_download_data
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash data_proc.sh
+
 TRAIN: # 训练步骤
   -
     priority: p0
@@ -87,6 +95,25 @@ TRAIN: # 训练步骤
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_recover.log
 
+  -
+    priority: p0
+    tag: mac_dy_cpu
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash train.sh $XPU
+
+    kpis: #kpi指标
+      loss:
+        latest: True
+        kpi_base: 7.376870
+        threshold: 0.01
+        actived: True
+        evaluation: "-"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_$XPU.log
+
+
 INFER:
   - 
     priority: p0
@@ -106,4 +133,22 @@ INFER:
         evaluation: "-"
         unit_repr: None
     output: $ROOT_PATH/$model_log_path/infer_$XPU.log
+
+  -
+    priority: p0
+    tag: mac_dy_cpu
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash infer.sh $XPU
+    kpis:
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/infer_$XPU.log
+
 

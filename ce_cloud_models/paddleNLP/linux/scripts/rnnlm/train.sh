@@ -16,7 +16,9 @@ echo "$model_name 模型训练阶段"
 root_path=$cur_path/../../
 code_path=$cur_path/../../models_repo/examples/language_model/rnnlm/
 log_path=$root_path/log/$model_name/
-mkdir -p $log_path
+if [ ! -d $log_path ]; then
+  mkdir -p $log_path
+fi
 #临时环境更改
 cd $root_path/models_repo
 
@@ -25,10 +27,12 @@ cd $code_path
 
 DEVICE=$1
 
-
-python -m paddle.distributed.launch --gpus "$3" train.py \
-  --max_epoch 1 > $log_path/train_$2_$1.log 2>&1
-
+if [[ ${DEVICE} == "gpu" ]]; then
+    python -m paddle.distributed.launch --gpus "$3" train.py \
+      --max_epoch 1 > $log_path/train_$2_$1.log 2>&1
+else
+    python train.py \
+      --max_epoch 1 > $log_path/train_$1.log 2>&1
 
 #set http_proxy
 export http_proxy=$HTTPPROXY

@@ -25,6 +25,21 @@ DATA_PROC:
         path: $ROOT_PATH/$model_scripts_path
         cmd: bash data_proc.sh
 
+  -
+    priority: p0
+    tag: mac_download_data
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash data_proc.sh
+  -
+    priority: p0
+    tag: win_download_data
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: data_proc.bat
+
 TRAIN: # 训练步骤
   -
     priority: p0
@@ -65,6 +80,62 @@ TRAIN: # 训练步骤
         evaluation: "-"
         unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_24_multi_$XPU.log
+
+  -
+    priority: p0
+    tag: mac_dy_cpu_24
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash 24_train.sh $XPU
+
+    kpis:
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/train_24_$XPU.log
+
+  -
+    priority: p0
+    tag: win_dy_gpu1_24
+    env:
+      CUDA_VISIBLE_DEVICES: $SET_CUDA
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash 24_train.sh $XPU
+
+    kpis:
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/train_24_$XPU.log
+
+  -
+    priority: p0
+    tag: win_dy_cpu_24
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash 24_train.sh $XPU
+
+    kpis:
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/train_24_$XPU.log
 
   -
     priority: p1

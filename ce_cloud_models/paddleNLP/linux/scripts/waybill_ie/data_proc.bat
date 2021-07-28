@@ -2,4 +2,4 @@
 cd ../..
 cd models_repo\examples\information_extraction\waybill_ie\
 
-python download.py --data_dir ./
+python download.py --data_dir ./waybill_ie

@@ -5,8 +5,6 @@ GIT:
   path: $ROOT_PATH/models_repo
   branch: $word_embedding_BRANCH
 
-ENV:
-  PADDLE_ON_MODEL_CE: $PADDLE_ON_MODEL_CE
 
 VARIABLES:
   model_scripts_path: scripts/word_embedding/ #脚本的路径
@@ -25,7 +23,15 @@ DATA_PROC:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh data_proc.sh
+        cmd: bash data_proc.sh
+
+  -
+    priority: p0
+    tag: mac_download_data
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash data_proc.sh
 
 TRAIN: # 训练步骤
   -
@@ -37,7 +43,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU single
+        cmd: bash train.sh $XPU single
 
     kpis: #kpi指标
       acc:
@@ -58,7 +64,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh $XPU multi
+        cmd: bash train.sh $XPU multi
 
     kpis: #kpi指标
       acc:
@@ -69,4 +75,22 @@ TRAIN: # 训练步骤
         evaluation: "+"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/train_multi_$XPU.log
+
+  -
+    priority: p0
+    tag: mac_dy_cpu
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash train.sh $XPU single
+
+    kpis: #kpi指标
+      acc:
+        latest: True
+        kpi_base: 0.8017
+        threshold: 0.01
+        actived: True
+        evaluation: "+"
+        unit_repr: "s"
+    output: $ROOT_PATH/$model_log_path/train_single_$XPU.log
 
