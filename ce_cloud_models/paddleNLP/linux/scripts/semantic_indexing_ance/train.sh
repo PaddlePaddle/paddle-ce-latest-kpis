@@ -45,7 +45,7 @@ if [[ $4 == "batch" ]]; then
         --learning_rate 5E-5 \
         --epochs 1 \
         --output_emb_size 256 \
-        --save_steps 100 \
+        --save_steps 1000 \
         --max_seq_length 64 \
         --margin 0.2 \
         --train_set_file semantic_pair_train.tsv > ${log_path}/train_$4_$2_$1.log 2>&1
@@ -57,7 +57,7 @@ else
         --learning_rate 5E-5 \
         --epochs 1 \
         --output_emb_size 256 \
-        --save_steps 100 \
+        --save_steps 1000 \
         --max_seq_length 64 \
         --margin 0.2 \
         --train_set_file semantic_pair_train.tsv > ${log_path}/train_$4_$2_$1.log 2>&1
