@@ -26,6 +26,7 @@ else
 fi
 }
 
+
 cd $code_path
 python export_model.py \
 --checkpoint=./fpgm_resnet34_025_120_models/final \

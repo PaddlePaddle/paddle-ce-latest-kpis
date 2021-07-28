@@ -14,7 +14,7 @@ VARIABLES:
 
 EXEC:
   exec_cases: [DATA_PROC,TRAIN,EVAL,EXPORT]
-  exec_priority: [p0]
+  exec_priority: $EXEC_PRIORITY
   exec_tag: $EXEC_TAG
 
 
@@ -37,18 +37,18 @@ TRAIN: # 训练步骤
         threshold: 0.02
         actived: True
         evaluation: "+"
-        unit_repr: "s"
+        unit_repr: None
       acc_top5:
         latest: True
         kpi_base: 0.79541
         threshold: 0.02
         actived: True
         evaluation: "+"
-        unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/S_slim_st_sa_nas_linux_st_gpu1.log
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_st_sa_nas_linux_st_gpu1.log
 
   -
-    priority: p1
+    priority: p0
     tag: linux_st_gpu2
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置
@@ -59,21 +59,21 @@ TRAIN: # 训练步骤
         cmd: sh train.sh linux_st_gpu2 slim_st_sa_nas_linux_st_gpu2
 
     kpis: #kpi指标
-      loss:
+      acc_top1:
         latest: True
-        kpi_base: 7.376870
-        threshold: 0.01
+        kpi_base: 0.39765
+        threshold: 0.02
         actived: True
-        evaluation: "-"
-        unit_repr: "s"
-      speed:
+        evaluation: "+"
+        unit_repr: None
+      acc_top5:
         latest: True
-        kpi_base: 1.99
-        threshold: 0.01
+        kpi_base: 0.79541
+        threshold: 0.02
         actived: True
-        evaluation: "-"
-        unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/slim_st_sa_nas_linux_st_gpu2_dist_log/workerlog.0
+        evaluation: "+"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_st_sa_nas_linux_st_gpu2.log
 
   -
     priority: p2
@@ -98,6 +98,6 @@ TRAIN: # 训练步骤
         threshold: 0.01
         actived: True
         evaluation: "-"
-        unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/S_slim_st_sa_nas_linux_st_cpu.log
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_st_sa_nas_linux_st_cpu.log
 

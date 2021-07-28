@@ -20,12 +20,11 @@ mkdir -p $log_path
 print_info(){
 if [ $1 -ne 0 ];then
     cat ${log_path}/$2.log
-    mv ${log_path}/$2.log ${log_path}/F_$2.log
     echo -e "\033[31m ${log_path}/F_$2 \033[0m"
+    echo "exit_code: 1.0" >>${log_path}/$2.log
 else
-#    cat ${log_path}/$2.log
-    mv ${log_path}/$2.log ${log_path}/S_$2.log
     echo -e "\033[32m ${log_path}/S_$2 \033[0m"
+    echo "exit_code: 0.0" >>${log_path}/$2.log
 fi
 }
 
@@ -38,13 +37,9 @@ if [ "$1" = "linux_st_gpu1" ];then #单卡
     python sa_nas_mobilenetv2.py --search_steps 1 --port 8881 > ${log_path}/$2.log 2>&1
     print_info $? $2
 elif [ "$1" = "linux_st_gpu2" ];then #多卡
-    python quant_post.py --model_path ./inference_model/MobileNet \
-    --save_path ./quant_model_train/MobileNet \
-    --model_filename model \
-    --params_filename weights > ${log_path}/$2.log 2>&1
+    python sa_nas_mobilenetv2.py --search_steps 1 --port 8881 > ${log_path}/$2.log 2>&1
     print_info $? $2
 elif [ "$1" = "linux_st_cpu" ];then #CPU
-    python eval.py --model_path ./inference_model/MobileNet \
-    --model_name model --params_name weights  > ${log_path}/$2.log 2>&1
+    python sa_nas_mobilenetv2.py --search_steps 1 --port 8881 --use_gpu False > ${log_path}/$2.log 2>&1
     print_info $? $2
 fi

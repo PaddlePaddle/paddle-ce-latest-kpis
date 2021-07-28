@@ -20,13 +20,13 @@ mkdir -p $log_path
 print_info(){
 if [ $1 -ne 0 ];then
     cat ${log_path}/$2.log
-    mv ${log_path}/$2.log ${log_path}/F_$2.log
     echo -e "\033[31m ${log_path}/F_$2 \033[0m"
+    echo "exit_code: 1.0" >>${log_path}/$2.log
 else
-#    cat ${log_path}/$2.log
-    mv ${log_path}/$2.log ${log_path}/S_$2.log
-    tail -1 ${log_path}/S_$2.log|grep epoch |grep top1 |awk -F ' ' '{print"top1:" $6"\ttop5:"$8}' | tr -d ',' >>${log_path}/S_$2.log
     echo -e "\033[32m ${log_path}/S_$2 \033[0m"
+    tail -1 ${log_path}/S_$2.log|grep epoch |grep top1 |awk -F ' ' '{print"top1:" $6"\ttop5:"$8}' | tr -d \
+        ',' >>${log_path}/S_$2.log
+    echo "exit_code: 0.0" >>${log_path}/$2.log
 fi
 }
 
@@ -39,6 +39,10 @@ if [ "$1" = "linux_st_gpu1" ];then #单卡
 
 elif [ "$1" = "linux_st_gpu2" ];then #单卡
     python distill.py --num_epochs 1 --save_inference True > ${log_path}/$2.log 2>&1
+    print_info $? $2
+
+elif [ "$1" = "linux_st_con_gpu2" ];then #多卡 收敛
+    python distill.py --num_epochs 1  > ${log_path}/$2.log 2>&1
     print_info $? $2
 
 elif [ "$1" = "linux_st_cpu" ];then #单卡
