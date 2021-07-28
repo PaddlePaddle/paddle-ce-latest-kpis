@@ -352,7 +352,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA iflytek 20
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA iflytek 100
     kpis:
       exit_code:
         latest: True
@@ -369,7 +369,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA iflytek 20
+        cmd: infer.bat $XPU $SET_CUDA iflytek 100
     kpis:
       exit_code:
         latest: True
@@ -386,7 +386,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA tnews 20
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA tnews 100
     kpis:
       exit_code:
         latest: True
@@ -403,7 +403,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA tnews 20
+        cmd: infer.bat $XPU $SET_CUDA tnews 100
     kpis:
       exit_code:
         latest: True
@@ -437,7 +437,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA eprstmt 4
+        cmd: infer.bat $XPU $SET_CUDA eprstmt 16
     kpis:
       exit_code:
         latest: True
@@ -471,7 +471,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA bustm 4
+        cmd: infer.bat $XPU $SET_CUDA bustm 16
     kpis:
       exit_code:
         latest: True
@@ -505,7 +505,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA ocnli 4
+        cmd: infer.bat $XPU $SET_CUDA ocnli 16
     kpis:
       exit_code:
         latest: True
@@ -539,7 +539,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA csl 4
+        cmd: infer.bat $XPU $SET_CUDA csl 16
     kpis:
       exit_code:
         latest: True
@@ -557,7 +557,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA csldcp 20
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA csldcp 100
     kpis:
       exit_code:
         latest: True
@@ -574,7 +574,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA csldcp 20
+        cmd: infer.bat $XPU $SET_CUDA csldcp 100
     kpis:
       exit_code:
         latest: True
@@ -608,7 +608,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA cluewsc 4
+        cmd: infer.bat $XPU $SET_CUDA cluewsc 16
     kpis:
       exit_code:
         latest: True
@@ -625,7 +625,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA chid 20
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA chid 100
     kpis:
       exit_code:
         latest: True
@@ -642,7 +642,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA chid 20
+        cmd: infer.bat $XPU $SET_CUDA chid 100
     kpis:
       exit_code:
         latest: True
