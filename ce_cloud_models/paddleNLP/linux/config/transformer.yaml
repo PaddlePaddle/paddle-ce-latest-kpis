@@ -1,5 +1,5 @@
 MODEL: "transformer" # 模型名
-PRIORITY: P0_delay, Dy_con
+PRIORITY: P0, Dy_con
 GIT:
   addr: $REPO_PaddleNLP
   path: $ROOT_PATH/models_repo
