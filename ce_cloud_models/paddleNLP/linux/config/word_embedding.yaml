@@ -5,6 +5,8 @@ GIT:
   path: $ROOT_PATH/models_repo
   branch: $word_embedding_BRANCH
 
+ENV:
+  PADDLE_ON_MODEL_CE: $PADDLE_ON_MODEL_CE
 
 VARIABLES:
   model_scripts_path: scripts/word_embedding/ #脚本的路径

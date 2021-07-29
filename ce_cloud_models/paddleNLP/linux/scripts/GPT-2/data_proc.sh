@@ -7,6 +7,8 @@ echo "$model_name 模型数据预处理阶段"
 root_path=$cur_path/../../
 code_path=$cur_path/../../models_repo/examples/language_model/gpt/
 modle_path=$cur_path/../../models_repo/
+#初始化一下visualdl
+python init.py
 #获取数据逻辑
 #清除之前下载的脚本
 rm -rf $code_path/raw_data
