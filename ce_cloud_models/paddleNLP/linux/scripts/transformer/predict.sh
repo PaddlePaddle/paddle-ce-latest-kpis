@@ -15,22 +15,6 @@ fi
 
 #访问RD程序
 cd $code_path
-cd configs
-#修改yaml中的参数
-sed "s/save_step: 10000/save_step: 100/g" transformer.base.yaml > transformer.base.yaml.tmp
-sed "s/print_step: 100/print_step: 10/g" transformer.base.yaml.tmp > transformer.base.yaml.tmp1
-sed "s/epoch: 30/epoch: 1/g" transformer.base.yaml.tmp1 > transformer.base.yaml.tmp2
-
-rm transformer.base.yaml transformer.base.yaml.tmp1
-
-#判断CPU还是GPU
-if [ $1 == "cpu" ]; then
-    sed "s/use_gpu: True/use_gpu: False/g" transformer.base.yaml.tmp2 > transformer.base.yaml
-else
-    mv transformer.base.yaml.tmp2 transformer.base.yaml
-fi
-
-cd ..
 
 #使用动态图预测
 python predict.py --config ./configs/transformer.base.yaml > $log_path/origin_predict.log

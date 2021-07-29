@@ -29,9 +29,11 @@ cd $code_path
 
 if [[ $4 != 'con' ]];then
     # 非收敛任务,修改yaml中的参数
-    sed -i "s/save_step: 10000/save_step: 100/g" configs/transformer.base.yaml
+    sed -i "s/save_step: 10000/save_step: 10/g" configs/transformer.base.yaml
     sed -i "s/print_step: 100/print_step: 10/g" configs/transformer.base.yaml
     sed -i "s/epoch: 30/epoch: 1/g" configs/transformer.base.yaml
+    sed -i "s/max_iter: None/max_iter: 30/g" configs/transformer.base.yaml
+    sed -i 's/init_from_params: \".\/trained_models\/step_final\/\"/init_from_params: \".\/trained_models\/step_30\/\"/g' configs/transformer.base.yaml
 
 fi
 
