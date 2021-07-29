@@ -23,8 +23,8 @@ if [ $1 -ne 0 ];then
     echo "exit_code: 1.0" >>${log_path}/$2.log
 else
     echo -e "\033[32m ${log_path}/S_$2 \033[0m"
-    tail -1 ${log_path}/S_$2.log|grep epoch |grep top1 |awk -F ' ' \
-        '{print"\ntop1:" $6"\ttop5:"$8}' | tr -d ',' >> ${log_path}/S_$2.log
+    tail -1 ${log_path}/$2.log|grep epoch |grep top1 |awk -F ' ' \
+        '{print"\ntop1:" $6"\ttop5:"$8}' | tr -d ',' >> ${log_path}/$2.log
     echo "exit_code: 0.0" >>${log_path}/$2.log
 fi
 echo $2 log as below
