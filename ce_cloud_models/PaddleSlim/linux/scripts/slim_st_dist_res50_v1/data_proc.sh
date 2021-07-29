@@ -22,6 +22,7 @@ elif [ "$1" = "all" ];then   # 全量数据集
     if [ ! -d "data" ];then
         mkdir data && cd data;
         ln -s /home/data/cfs/models_ce/ILSVRC2012_data_demo/ILSVRC2012 ILSVRC2012;
+        ls
     fi
 fi
 
