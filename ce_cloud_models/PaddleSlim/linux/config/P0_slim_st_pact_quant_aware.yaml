@@ -99,11 +99,11 @@ TRAIN: # 训练步骤
         path: $ROOT_PATH/$model_scripts_path
         cmd: sh train.sh load slim_st_pact_quant_aware_load
     kpis: #kpi指标
-      exit_code:
+      acc:
         latest: True
-        kpi_base: 0
-        threshold: 0
+        kpi_base: 0.751678
+        threshold: 0.02
         actived: True
-        evaluation: "-"
+        evaluation: "+"
         unit_repr: None
     output: $ROOT_PATH/$model_log_path/slim_st_pact_quant_aware_load.log

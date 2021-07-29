@@ -66,14 +66,14 @@ TRAIN: # 训练步骤
         cmd: sh train.sh linux_st_gpu2 slim_st_dist_res50_v1_linux_st_gpu2
 
     kpis: #kpi指标
-      acc_top1:
+      top1:
         latest: True
         kpi_base: 0.711678
         threshold: 0.02
         actived: True
         evaluation: "+"
         unit_repr: None
-      acc_top5:
+      top5:
         latest: True
         kpi_base: 0.903657
         threshold: 0.02
