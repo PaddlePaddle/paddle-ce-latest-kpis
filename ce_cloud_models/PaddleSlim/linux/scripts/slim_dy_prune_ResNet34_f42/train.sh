@@ -22,13 +22,14 @@ python setup.py install
 #访问RD程序
 print_info(){
 if [ $1 -ne 0 ];then
-    cat ${log_path}/$2.log
     echo -e "\033[31m ${log_path}/F_$2 \033[0m"
     echo "exit_code: 1.0" >>${log_path}/$2.log
 else
     echo -e "\033[32m ${log_path}/S_$2 \033[0m"
     echo "exit_code: 0.0" >>${log_path}/$2.log
 fi
+echo $2 log as below
+cat ${log_path}/$2.log
 }
 
 cd $code_path
