@@ -24,11 +24,10 @@ fi
 cd $code_path
 if [[ $1 == "gpu" ]]; then
   python predict.py --data_path time_series_covid19_confirmed_global.csv \
-      --use_gpu True > $log_path/infer_$1.log 2>&1
+      --use_gpu > $log_path/infer_$1.log 2>&1
   print_info $? infer_$1
 else
-  python predict.py --data_path time_series_covid19_confirmed_global.csv \
-      --use_gpu False > $log_path/infer_$1.log 2>&1
+  python predict.py --data_path time_series_covid19_confirmed_global.csv > $log_path/infer_$1.log 2>&1
   print_info $? infer_$1
 fi
 

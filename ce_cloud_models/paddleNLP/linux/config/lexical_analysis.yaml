@@ -38,6 +38,14 @@ DATA_PROC:
       -
         path: $ROOT_PATH/$model_scripts_path
         cmd: bash data_proc.sh
+  -
+    priority: p0
+    tag: win_download_data_cpu
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: data_proc.bat True
+
 
 TRAIN: # 训练步骤
   -

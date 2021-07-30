@@ -58,5 +58,5 @@ EXEC_PRIORITY = ["p0", "p1"]
 EXEC_CASES = ["DATA_PROC", "TRAIN", "INFER"]
 EXEC_TAG = [
     "win_st_cpu", "win_dy_cpu",
-    "win_dy_cpu_24", "win_download_data"
+    "win_dy_cpu_24", "win_download_data_cpu"
 ]

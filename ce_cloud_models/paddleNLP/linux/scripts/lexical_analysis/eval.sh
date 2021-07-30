@@ -40,7 +40,8 @@ if [[ ${DEVICE} == "gpu" ]]; then
 else
     python eval.py --data_dir ./lexical_analysis_dataset_tiny \
         --init_checkpoint ./save_dir/model_100.pdparams \
-        --batch_size 32 > $log_path/eval_${DEVICE}.log 2>&1
+        --batch_size 32 \
+        --device ${DEVICE} > $log_path/eval_${DEVICE}.log 2>&1
     print_info $? eval_${DEVICE}
 fi
 
