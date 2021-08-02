@@ -40,10 +40,17 @@ TRAIN: # 训练步骤
         cmd: sh train.sh no_pact slim_st_pact_quant_aware_no_pact
 
     kpis: #kpi指标
-      acc:
+      acc_top1:
         latest: True
-        kpi_base: 0.751678
-        threshold: 0.02
+        kpi_base: 0.753237
+        threshold: 0.03
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+      acc_top5:
+        latest: True
+        kpi_base: 0.926730
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
@@ -60,10 +67,17 @@ TRAIN: # 训练步骤
         path: $ROOT_PATH/$model_scripts_path
         cmd: sh train.sh use_pact slim_st_pact_quant_aware_use_pact
     kpis: #kpi指标
-      acc:
+      acc_top1:
         latest: True
-        kpi_base: 0.751678
-        threshold: 0.02
+        kpi_base: 0.768302
+        threshold: 0.03
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+      acc_top5:
+        latest: True
+        kpi_base: 0.934823
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
@@ -99,10 +113,17 @@ TRAIN: # 训练步骤
         path: $ROOT_PATH/$model_scripts_path
         cmd: sh train.sh load slim_st_pact_quant_aware_load
     kpis: #kpi指标
-      acc:
+      acc_top1:
         latest: True
-        kpi_base: 0.751678
-        threshold: 0.02
+        kpi_base: 0.770061
+        threshold: 0.03
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+      acc_top5:
+        latest: True
+        kpi_base: 0.935382
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None

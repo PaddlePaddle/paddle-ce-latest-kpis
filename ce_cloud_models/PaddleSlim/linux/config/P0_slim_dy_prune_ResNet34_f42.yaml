@@ -69,34 +69,18 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       acc_top1:
         latest: True
-        kpi_base: 0.5208
-        threshold: 0.02
+        kpi_base: 0.5108
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
       acc_top5:
         latest: True
-        kpi_base: 0.7676
-        threshold: 0.02
+        kpi_base: 0.7576
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
-
-#    kpis: #kpi指标
-#      loss:
-#        latest: True
-#        kpi_base: 7.376870
-#        threshold: 0.01
-#        actived: True
-#        evaluation: "-"
-#        unit_repr: None
-#      speed:
-#        latest: True
-#        kpi_base: 1.99
-#        threshold: 0.01
-#        actived: True
-#        evaluation: "-"
-#        unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/prune_r34_f42_linux_dy_gpu2_dist_log/workerlog.0
 
   -
@@ -114,18 +98,18 @@ TRAIN: # 训练步骤
       acc_top1:
         latest: True
         kpi_base: 0.5208
-        threshold: 0.02
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
       acc_top5:
         latest: True
         kpi_base: 0.7676
-        threshold: 0.02
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/prune_r34_f42_linux_dy_cpu.log
+      output: $ROOT_PATH/$model_log_path/prune_r34_f42_linux_dy_cpu.log
 
   - tag: linux_dy_con_gpu2
     priority: p0
@@ -167,15 +151,15 @@ EVAL:
     kpis: #kpi指标
       acc_top1:
         latest: True
-        kpi_base: 0.5152
-        threshold: 0.02
+        kpi_base: 0.5052
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
       acc_top5:
         latest: True
-        kpi_base: 0.7611
-        threshold: 0.02
+        kpi_base: 0.7511
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
@@ -193,15 +177,15 @@ EVAL:
     kpis: #kpi指标
       acc_top1:
         latest: True
-        kpi_base: 0.5152
-        threshold: 0.02
+        kpi_base: 0.5052
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
       acc_top5:
         latest: True
-        kpi_base: 0.7611
-        threshold: 0.02
+        kpi_base: 0.7511
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
@@ -217,6 +201,22 @@ EVAL:
       -
         path: $ROOT_PATH/$model_scripts_path
         cmd: sh eval.sh linux_dy_cpu prune_r34_f42_eval_linux_dy_cpu
+    kpis: #kpi指标
+      acc_top1:
+        latest: True
+        kpi_base: 0.5052
+        threshold: 0.03
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+      acc_top5:
+        latest: True
+        kpi_base: 0.7511
+        threshold: 0.03
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+      output: $ROOT_PATH/$model_log_path/prune_r34_f42_eval_linux_dy_cpu.log
 
 
 EXPORT:

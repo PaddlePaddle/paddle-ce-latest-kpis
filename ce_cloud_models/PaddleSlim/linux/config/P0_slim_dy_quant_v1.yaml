@@ -42,15 +42,15 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       acc_top1:
         latest: True
-        kpi_base: 0.708668
-        threshold: 0.02
+        kpi_base: 0.718668
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
       acc_top5:
         latest: True
         kpi_base: 0.896563
-        threshold: 0.02
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
