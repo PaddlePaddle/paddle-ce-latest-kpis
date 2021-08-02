@@ -24,6 +24,8 @@ elif [ "$1" = "all" ];then   # 全量数据集
         ln -s /home/data/cfs/models_ce/ILSVRC2012_data_demo/ILSVRC2012 ILSVRC2012;
         pwd
         ls
+        echo "查看磁盘使用情况"
+        df -lh
     fi
 fi
 
