@@ -30,7 +30,7 @@ DATA_PROC:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash data_proc.sh
+        cmd: bash data_proc_mac.sh
 
 TRAIN: # 训练步骤
   -
