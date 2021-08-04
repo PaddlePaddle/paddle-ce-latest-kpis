@@ -150,11 +150,11 @@ FINETUNE:
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 1.937393
-        threshold: 0.01
+        kpi_base: 2.36975
+        threshold: 0.05
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/STS-B-fine_tune.log
 
   - #可以有多步
@@ -186,11 +186,11 @@ FINETUNE:
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 0.675484
-        threshold: 0.01
+        kpi_base: 0.809029
+        threshold: 0.05
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/QNLI-fine_tune.log
 
   - #可以有多步

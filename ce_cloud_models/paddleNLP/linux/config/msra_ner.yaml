@@ -149,7 +149,7 @@ INFER:
     output: $ROOT_PATH/$model_log_path/infer_$XPU.log
 
   -
-    priority: p0
+    priority: p2 # 显卡不足，关闭
     tag: win_dy_gpu1
     env: #去掉，自动调度
         CUDA_VISIBLE_DEVICES: $SET_CUDA
@@ -202,7 +202,7 @@ EVAL:
     output: $ROOT_PATH/$model_log_path/eval_$XPU.log
 
   - #可以有多步
-    priority: p1
+    priority: p2  # 显卡不足，先关闭
     tag: win_dy_gpu1
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_CUDA

@@ -22,6 +22,15 @@ if [ ! -d $log_path ]; then
   mkdir -p $log_path
 fi
 
+print_info(){
+if [ $1 -ne 0 ];then
+    cat ${log_path}/$2.log
+    echo "exit_code: 1.0" >> ${log_path}/$2.log
+else
+    echo "exit_code: 0.0" >> ${log_path}/$2.log
+fi
+}
+
 cd $code_path
 mkdir -p ./output/$4
 
@@ -32,3 +41,5 @@ python -u -m paddle.distributed.launch --gpus $3 predict.py \
     --output_dir "./output/$4" \
     --batch_size 8 \
     --max_seq_length 512 > $log_path/infer_$4_$2_$1.log 2>&1
+
+print_info $? infer_$4_$2_$1

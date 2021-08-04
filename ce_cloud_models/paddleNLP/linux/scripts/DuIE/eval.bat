@@ -11,3 +11,4 @@ if %ERRORLEVEL% == 1 (
     echo "exit_code: 1.0" >> %logpath%/eval_%1.log
 ) else (
     echo "exit_code: 0.0" >> %logpath%/eval_%1.log
+)

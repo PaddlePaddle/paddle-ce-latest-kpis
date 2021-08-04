@@ -51,7 +51,7 @@ TRAIN: # 训练步骤
         threshold: 0.01
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_trigger_single_$XPU.log
   -
     priority: p0
@@ -69,7 +69,7 @@ TRAIN: # 训练步骤
         threshold: 0.01
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
 
     output: $ROOT_PATH/$model_log_path/train_trigger_multi_$XPU.log
 
@@ -88,7 +88,7 @@ TRAIN: # 训练步骤
         threshold: 0.01
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_trigger_$XPU.log
 
   -
@@ -106,7 +106,7 @@ TRAIN: # 训练步骤
         threshold: 0.01
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_role_single_$XPU.log
   -
     priority: p0
@@ -124,7 +124,7 @@ TRAIN: # 训练步骤
         threshold: 0.01
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
 
     output: $ROOT_PATH/$model_log_path/train_role_multi_$XPU.log
 
@@ -143,7 +143,7 @@ TRAIN: # 训练步骤
         threshold: 0.01
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_role_$XPU.log
   
   -
@@ -155,10 +155,10 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU enum single $SET_CUDA
 
     kpis: #kpi指标
-      exit_code:
+      loss:
         latest: True
-        kpi_base: 0
-        threshold: 0
+        kpi_base: 1.134540
+        threshold: 0.05
         actived: True
         evaluation: "-"
         unit_repr: None
@@ -173,10 +173,10 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU enum multi $SET_MULTI_CUDA
 
     kpis: #kpi指标
-      exit_code:
+      loss:
         latest: True
-        kpi_base: 0
-        threshold: 0
+        kpi_base: 0.636208
+        threshold: 0.05
         actived: True
         evaluation: "-"
         unit_repr: None
@@ -192,10 +192,10 @@ TRAIN: # 训练步骤
         cmd: train.bat $XPU enum $SET_CUDA
 
     kpis: #kpi指标
-      exit_code:
+      loss:
         latest: True
-        kpi_base: 0
-        threshold: 0
+        kpi_base: 1.158387
+        threshold: 0.05
         actived: True
         evaluation: "-"
         unit_repr: None
