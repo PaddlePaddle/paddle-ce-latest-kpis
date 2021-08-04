@@ -69,7 +69,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/train_multi_$XPU.log
 
   -
-    priority: p0
+    priority: p2  # 显卡不足，关闭
     tag: win_dy_gpu1
     run:
       -

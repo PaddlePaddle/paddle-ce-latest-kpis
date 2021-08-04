@@ -150,17 +150,31 @@ TRAIN: # 训练步骤
         cmd: train.bat $XPU bigru_crf 
 
     kpis: #kpi指标
-      acc:
+      Precision:
         latest: True
-        kpi_base: 0.5091743119266054
-        threshold: 0.01
+        kpi_base: 0.888707
+        threshold: 0.05
         actived: True
         evaluation: "+"
-        unit_repr: "s"
+        unit_repr: None
+      Recall:
+        latest: True
+        kpi_base: 0.913373
+        threshold: 0.05
+        actived: True
+        evaluation: "+"
+        unit_repr: None
+      F1:
+        latest: True
+        kpi_base: 0.900871
+        threshold: 0.05
+        actived: True
+        evaluation: "+"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_bigru_crf_$XPU.log
   
   -
-    priority: p0
+    priority: p2 # 显卡不足，关闭
     tag: win_dy_gpu1_ernie
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
@@ -181,7 +195,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/train_ernie_$XPU.log
 
   -
-    priority: p0
+    priority: p2 # 显卡不足，关闭
     tag: win_dy_gpu1_ernie_crf
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置

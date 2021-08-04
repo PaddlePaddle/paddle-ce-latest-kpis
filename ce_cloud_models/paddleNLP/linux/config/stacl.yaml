@@ -1,5 +1,5 @@
 MODEL: "stacl" # 模型名
-PRIORITY: P0_delay, Dy_con # P0天级别（目前时长长，先关闭）以及收敛性的任务
+PRIORITY: P0_delay, Dy_con # 数据集不能公开，改成P1以及收敛性的任务
 GIT:
   addr: $REPO_PaddleNLP
   path: $ROOT_PATH/models_repo
@@ -99,11 +99,11 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 0.522773
-        threshold: 0.01
+        kpi_base: 9.182283
+        threshold: 0.05
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_$XPU.log
 
 INFER:

@@ -79,11 +79,11 @@ FINETUNE: # 训练步骤
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 0.647920
-        threshold: 0.001
+        kpi_base: 0.66988
+        threshold: 0.01
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/finetune_SST-2_$XPU.log
 
   -

@@ -129,25 +129,25 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       precision:
         latest: True
-        kpi_base: 0.522773
-        threshold: 0.01
+        kpi_base: 0.181353
+        threshold: 0.05
         actived: True
         evaluation: "+"
-        unit_repr: "s"
+        unit_repr: None
       recall:
         latest: True
-        kpi_base: 0.572782
-        threshold: 0.01
+        kpi_base: 0.26255
+        threshold: 0.05
         actived: True
         evaluation: "+"
-        unit_repr: "s"
+        unit_repr: None
       f1:
         latest: True
-        kpi_base: 0.546637
-        threshold: 0.01
+        kpi_base: 0.214526
+        threshold: 0.05
         actived: True
         evaluation: "+"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_$XPU.log
 
   -
@@ -333,25 +333,25 @@ EVAL:
     kpis: #kpi指标
       precision:
         latest: True
-        kpi_base: 0.367204
-        threshold: 0.01
+        kpi_base: 0.181353
+        threshold: 0.05
         actived: True
         evaluation: "+"
-        unit_repr: "s"
+        unit_repr: None
       recall:
         latest: True
-        kpi_base: 0.466904
-        threshold: 0.01
+        kpi_base: 0.26255
+        threshold: 0.05
         actived: True
         evaluation: "+"
-        unit_repr: "s"
+        unit_repr: None
       f1:
         latest: True
-        kpi_base: 0.411096
-        threshold: 0.01
+        kpi_base: 0.214526
+        threshold: 0.05
         actived: True
         evaluation: "+"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/eval_$XPU.log
 
   - #可以有多步
