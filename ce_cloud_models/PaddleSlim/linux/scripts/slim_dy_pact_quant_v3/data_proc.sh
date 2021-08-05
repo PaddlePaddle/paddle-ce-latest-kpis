@@ -21,8 +21,7 @@ if [ "$1" = "demo" ];then   # 小数据集
 elif [ "$1" = "all" ];then   # 全量数据集
     if [ ! -d "data" ];then
         mkdir data && cd data;
-        ln -s /ssd2/ce_data/ILSVRC2012 ILSVRC2012;
-        ls;
+        ln -s ${data_path} ILSVRC2012
     fi
 fi
 
