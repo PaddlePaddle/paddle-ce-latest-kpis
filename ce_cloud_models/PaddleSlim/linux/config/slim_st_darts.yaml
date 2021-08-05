@@ -38,7 +38,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_darts_linux_st_gpu1.log
+    output: $ROOT_PATH/$model_log_path/slim_st_darts_linux_st_gpu1.log
 
   -
     priority: p0
@@ -59,7 +59,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_darts_linux_st_gpu2_log
+    output: $ROOT_PATH/$model_log_path/slim_st_darts_linux_st_gpu2.log
 
   -
     priority: p2
@@ -87,7 +87,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_darts_linux_st_cpu.log
+    output: $ROOT_PATH/$model_log_path/slim_st_darts_linux_st_cpu.log
 
 SEARCH: # 训练步骤
   -
@@ -116,7 +116,14 @@ SEARCH: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_darts_search_linux_st_gpu1.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_st_darts_search_linux_st_gpu1.log
 
   -
     priority: p0
@@ -144,7 +151,14 @@ SEARCH: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_darts_search_linux_st_gpu2.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_st_darts_search_linux_st_gpu2.log
 
   -
     priority: p2
@@ -172,5 +186,12 @@ SEARCH: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_darts_search_linux_st_cpu.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_st_darts_search_linux_st_cpu.log
 

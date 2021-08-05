@@ -1,5 +1,5 @@
 MODEL: "slim_dy_prune_ResNet34_f42" # 模型名
-PRIORITY: P0,Pre_Test
+PRIORITY: P0,PreTest
 GIT:
   addr: $REPO_PaddleSlim
   path: $ROOT_PATH/PaddleSlim
@@ -42,16 +42,23 @@ TRAIN: # 训练步骤
       acc_top1:
         latest: True
         kpi_base: 0.5152
-        threshold: 0.02
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
       acc_top5:
         latest: True
         kpi_base: 0.7611
-        threshold: 0.02
+        threshold: 0.03
         actived: True
         evaluation: "+"
+        unit_repr: None
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
         unit_repr: None
     output: $ROOT_PATH/$model_log_path/prune_r34_f42_linux_dy_gpu1.log
 
@@ -81,6 +88,13 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/prune_r34_f42_linux_dy_gpu2_dist_log/workerlog.0
 
   -
@@ -109,7 +123,14 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-      output: $ROOT_PATH/$model_log_path/prune_r34_f42_linux_dy_cpu.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/prune_r34_f42_linux_dy_cpu.log
 
   - tag: linux_dy_con_gpu2
     priority: p0
@@ -124,16 +145,23 @@ TRAIN: # 训练步骤
       acc_top1:
         latest: True
         kpi_base: 0.5208
-        threshold: 0.02
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
       acc_top5:
         latest: True
         kpi_base: 0.7676
-        threshold: 0.02
+        threshold: 0.03
         actived: True
         evaluation: "+"
+        unit_repr: None
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
         unit_repr: None
     output: $ROOT_PATH/$model_log_path/prune_r34_f42_linux_dy_gpu2_distr_log/workerlog.0
 
@@ -163,17 +191,25 @@ EVAL:
         actived: True
         evaluation: "+"
         unit_repr: None
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/prune_r34_f42_eval_linux_dy_gpu1.log
 
   - #可以有多步
     tag: linux_dy_gpu2
-    priority: p0
+    priority: p2
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
         cmd: sh eval.sh linux_dy_gpu2 prune_r34_f42_eval_linux_dy_gpu2
+
     kpis: #kpi指标
       acc_top1:
         latest: True
@@ -189,7 +225,14 @@ EVAL:
         actived: True
         evaluation: "+"
         unit_repr: None
-      output: $ROOT_PATH/$model_log_path/prune_r34_f42_eval_linux_dy_gpu2.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/prune_r34_f42_eval_linux_dy_gpu2.log
 
 
   - #可以有多步
@@ -201,6 +244,7 @@ EVAL:
       -
         path: $ROOT_PATH/$model_scripts_path
         cmd: sh eval.sh linux_dy_cpu prune_r34_f42_eval_linux_dy_cpu
+
     kpis: #kpi指标
       acc_top1:
         latest: True
@@ -216,7 +260,14 @@ EVAL:
         actived: True
         evaluation: "+"
         unit_repr: None
-      output: $ROOT_PATH/$model_log_path/prune_r34_f42_eval_linux_dy_cpu.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/prune_r34_f42_eval_linux_dy_cpu.log
 
 
 EXPORT:

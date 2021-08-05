@@ -54,7 +54,14 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_pact_quant_v3_linux_dy_gpu1.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/pact_quant_v3_linux_dy_gpu1.log
   -
     tag: linux_dy_gpu2
     priority: p0
@@ -80,6 +87,13 @@ TRAIN: # 训练步骤
         threshold: 0.02
         actived: True
         evaluation: "+"
+        unit_repr: None
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
         unit_repr: None
     output: $ROOT_PATH/$model_log_path/pact_quant_v3_linux_dy_gpu2_dist_log/workerlog.0
 
@@ -109,4 +123,11 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_pact_quant_v3_linux_dy_cpu.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/pact_quant_v3_linux_dy_cpu.log

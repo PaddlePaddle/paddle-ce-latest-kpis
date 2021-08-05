@@ -46,7 +46,7 @@ EXPORT: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_quant_post_export_model.log
+    output: $ROOT_PATH/$model_log_path/slim_st_quant_post_export_model.log
 
 TRAIN: # 训练步骤
   -
@@ -68,17 +68,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_quant_post_linux_st_quant_post.log
-
-  - tag: linux_st_gpu1
-    priority: p0
-    env: #去掉，自动调度
-      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
-
-    run:
-      - path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh quant_post_bc slim_st_quant_post_linux_st_quant_post
-    output: $ROOT_PATH/$model_log_path/S_slim_st_quant_post_linux_st_quant_post.log
+    output: $ROOT_PATH/$model_log_path/slim_st_quant_post_linux_st_quant_post.log
 
 EVAL1: # 训练步骤
   -
@@ -107,7 +97,14 @@ EVAL1: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_quant_post_linux_st_eval1.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_st_quant_post_linux_st_eval1.log
 
 
 EVAL2: # 训练步骤
@@ -137,4 +134,11 @@ EVAL2: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_quant_post_linux_st_eval2.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_st_quant_post_linux_st_eval2.log

@@ -30,24 +30,46 @@ fi
 }
 
 cd $code_path
-echo -e "\033[32m `pwd` eval \033[0m";
+echo -e "\033[32m `pwd` train \033[0m";
 
 if [ "$1" = "linux_st_gpu1" ];then #单卡
-    python eval.py --model "MobileNet" \
+    python train.py \
+    --model ResNet50 \
+    --pruned_ratio 0.31 \
     --data "imagenet" \
-    --model_path "./models/infer_models/0"  > ${log_path}/$2.log 2>&1
+    --test_period=5 \
+    --save_inference True \
+    --pretrained_model ../pretrain/ResNet50_pretrained/ \
+    --model_path="./output/resnet50_models" \
+    --num_epochs 1 \
+    --batch_size 128 > ${log_path}/$2.log 2>&1
     print_info $? $2
 
 elif [ "$1" = "linux_st_gpu2" ];then #单卡
-    python eval.py --model "MobileNet" \
+    python train.py \
+    --model ResNet50 \
+    --pruned_ratio 0.31 \
     --data "imagenet" \
-    --model_path "./models/infer_models/0" > ${log_path}/$2.log 2>&1
+    --test_period=5 \
+    --save_inference True \
+    --pretrained_model ../pretrain/ResNet50_pretrained/ \
+    --model_path="./output/resnet50_models" \
+    --num_epochs 1 \
+    --batch_size 128 > ${log_path}/$2.log 2>&1
     print_info $? $2
 
 elif [ "$1" = "linux_st_cpu" ];then #单卡
-    python eval.py --model "MobileNet" \
+    python train.py \
+    --model ResNet50 \
+    --pruned_ratio 0.31 \
     --data "imagenet" \
-    --model_path "./models/infer_models/0" \
+    --test_period=5 \
+    --save_inference True \
+    --pretrained_model ../pretrain/ResNet50_pretrained/ \
+    --num_epochs 1 \
+    --model_path="./output/resnet50_models" \
+    --batch_size 128 \
     --use_gpu False > ${log_path}/$2.log 2>&1
     print_info $? $2
+
 fi

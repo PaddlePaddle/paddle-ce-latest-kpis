@@ -19,13 +19,15 @@ mkdir -p $log_path
 #访问RD程序
 print_info(){
 if [ $1 -ne 0 ];then
-    mv ${log_path}/$2.log ${log_path}/F_$2.log
-    echo -e "\033[31m ${log_path}/F_$2 \033[0m"
+    echo "exit_code: 1.0" >> ${log_path}/$2.log
+    echo -e "\033[31m FAIL_$2 \033[0m"
+    echo $2 fail log as follows
+    cat ${log_path}/$2.log
+    cp ${log_path}/$2.log ${log_path}/FAIL_$2.log
 else
-    mv ${log_path}/$2.log ${log_path}/S_$2.log
-    cat ${log_path}/S_$2.log| grep best_valid_acc |awk \
-        -F ' ' '{print"\nbest_valid_acc:" $11}' >> ${log_path}/S_$2.log
-    echo -e "\033[32m ${log_path}/S_$2 \033[0m"
+    cat ${log_path}/$2.log| grep best_valid_acc |awk \
+        -F ' ' '{print"\nbest_valid_acc:" $11}' >> ${log_path}/$2.log
+    echo "exit_code: 0.0" >> ${log_path}/$2.log
 fi
 }
 
@@ -39,11 +41,9 @@ if [ "$1" = "linux_st_gpu1" ];then #单卡
 elif [ "$1" = "linux_st_gpu2" ];then #单卡
     python dml_train.py --models='mobilenet-mobilenet' --epochs 5 --batch_size 64 > ${log_path}/$2.log 2>&1
     print_info $? $2
-#    cat ${log_path}/S_$2.log|grep best_valid_acc |awk -F ' ' 'END{print "best_valid_acc:\t"$11}' >>S_$2.log
 
 elif [ "$1" = "linux_st_cpu" ];then #单卡
     python dml_train.py --models='mobilenet-mobilenet' --epochs 5 --batch_size 64 --use_gpu False > ${log_path}/$2.log 2>&1
     print_info $? $2
-#    cat ${log_path}/S_$2.log|grep best_valid_acc |awk -F ' ' 'END{print "best_valid_acc:\t"$11}' >>S_$2.log
 
 fi

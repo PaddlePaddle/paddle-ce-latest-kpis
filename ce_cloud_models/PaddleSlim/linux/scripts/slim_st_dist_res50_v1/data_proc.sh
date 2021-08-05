@@ -21,7 +21,7 @@ if [ "$1" = "demo" ];then   # 小数据集
 elif [ "$1" = "all" ];then   # 全量数据集
     if [ ! -d "data" ];then
         mkdir data && cd data;
-        ln -s ${data_path} ILSVRC2012
+        ln -s ${data_path} ILSVRC2012;
     fi
 fi
 
@@ -45,16 +45,6 @@ if [ ! -d "MobileNetV1_pretrained" ];then
     done
 fi
 ls;
-
-#########目前的P0级别任务第一个执行的,需要安装slim
-echo "-------  install slim --------"
-cd ${root_path}/PaddleSlim
-python -m pip install pip==20.2.4
-python -m pip install opencv-python==4.2.0.32 -i https://pypi.tuna.tsinghua.edu.cn/simple
-python -m pip install -r requirements.txt
-python setup.py install
-echo "------- after install slim --------"
-python -m pip list;
 
 
 

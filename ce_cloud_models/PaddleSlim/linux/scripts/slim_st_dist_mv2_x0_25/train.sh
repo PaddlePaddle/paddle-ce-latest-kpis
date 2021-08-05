@@ -19,14 +19,14 @@ mkdir -p $log_path
 #访问RD程序
 print_info(){
 if [ $1 -ne 0 ];then
+    echo "exit_code: 1.0" >> ${log_path}/$2.log
+    echo $2 fail log as follows
     cat ${log_path}/$2.log
-    mv ${log_path}/$2.log ${log_path}/F_$2.log
-    echo -e "\033[31m ${log_path}/F_$2 \033[0m"
+    cp ${log_path}/$2.log ${log_path}/FAIL_$2.log
 else
-#    cat ${log_path}/$2.log
-    mv ${log_path}/$2.log ${log_path}/S_$2.log
-    tail -1 ${log_path}/S_$2.log|grep epoch |grep top1 |awk -F ' ' '{print"top1:" $6"\ttop5:"$8}' | tr -d ',' >>${log_path}/S_$2.log
-    echo -e "\033[32m ${log_path}/S_$2 \033[0m"
+    tail -1 ${log_path}/$2.log|grep epoch |grep top1 |awk -F ' ' \
+    '{print"top1:" $6"\ttop5:"$8}' | tr -d ',' >>${log_path}/$2.log
+    echo "exit_code: 0.0" >> ${log_path}/$2.log
 fi
 }
 

@@ -33,19 +33,19 @@ cd $code_path
 echo -e "\033[32m `pwd` eval \033[0m";
 
 if [ "$1" = "linux_st_gpu1" ];then #单卡
-    python eval.py --model "MobileNet" \
+    python eval.py --model "ResNet50" \
     --data "imagenet" \
     --model_path "./models/infer_models/0"  > ${log_path}/$2.log 2>&1
     print_info $? $2
 
 elif [ "$1" = "linux_st_gpu2" ];then #单卡
-    python eval.py --model "MobileNet" \
+    python eval.py --model "ResNet50" \
     --data "imagenet" \
     --model_path "./models/infer_models/0" > ${log_path}/$2.log 2>&1
     print_info $? $2
 
 elif [ "$1" = "linux_st_cpu" ];then #单卡
-    python eval.py --model "MobileNet" \
+    python eval.py --model "ResNet50" \
     --data "imagenet" \
     --model_path "./models/infer_models/0" \
     --use_gpu False > ${log_path}/$2.log 2>&1

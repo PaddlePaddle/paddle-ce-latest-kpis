@@ -47,7 +47,14 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_quant_embedding_linux_st_train.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_st_quant_embedding_linux_st_train.log
 
 INFER1: # 训练步骤
   -
@@ -68,7 +75,14 @@ INFER1: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_quant_embedding_linux_st_infer1.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_st_quant_embedding_linux_st_infer1.log
 
 INFER2: # 训练步骤
   -
@@ -90,4 +104,11 @@ INFER2: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_st_quant_embedding_linux_st_infer2.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_st_quant_embedding_linux_st_infer2.log

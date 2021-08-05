@@ -53,7 +53,14 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_dy_prune_fpgm_mobilenetv2_50_linux_dy_gpu2.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/dy_prune_fpgm_mobilenetv2_50_linux_dy_gpu1.log
 
   -
     tag: linux_dy_gpu2
@@ -81,7 +88,14 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_dy_prune_fpgm_mobilenetv2_50_linux_dy_gpu2.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/dy_prune_fpgm_mobilenetv2_50_linux_dy_gpu2.log
 
   -
     tag: linux_dy_cpu
@@ -109,4 +123,11 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_dy_prune_fpgm_mobilenetv2_50_linux_dy_cpu.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/dy_prune_fpgm_mobilenetv2_50_linux_dy_cpu.log

@@ -54,7 +54,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_dy_ce_tests_qat_linux_dy_gpu1.log
+    output: $ROOT_PATH/$model_log_path/slim_dy_ce_tests_qat_linux_dy_gpu1.log
   -
     tag: linux_dy_gpu2
     priority: p0
@@ -81,7 +81,14 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_dy_ce_tests_qat_linux_dy_gpu2.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_dy_ce_tests_qat_linux_dy_gpu2.log
 
   -
     tag: linux_dy_cpu
@@ -109,7 +116,14 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_dy_ce_tests_qat_linux_dy_cpu.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_dy_ce_tests_qat_linux_dy_cpu.log
 
 EVAL: # 训练步骤
   -
@@ -138,7 +152,14 @@ EVAL: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None"
-    output: $ROOT_PATH/$model_log_path/S_slim_dy_ce_tests_qat_eval_linux_dy_gpu1.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_dy_ce_tests_qat_eval_linux_dy_gpu1.log
   -
     tag: linux_dy_gpu2
     priority: p0
@@ -165,7 +186,14 @@ EVAL: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_dy_ce_tests_qat_eval_linux_dy_gpu2.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_dy_ce_tests_qat_eval_linux_dy_gpu2.log
 
   -
     tag: linux_dy_cpu
@@ -193,7 +221,14 @@ EVAL: # 训练步骤
         actived: True
         evaluation: "+"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_dy_ce_tests_qat_eval_linux_dy_cpu.log
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_dy_ce_tests_qat_eval_linux_dy_cpu.log
 
 EXPORT: # 训练步骤
   -
@@ -215,4 +250,4 @@ EXPORT: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/S_slim_dy_ce_tests_qat_export.log
+    output: $ROOT_PATH/$model_log_path/slim_dy_ce_tests_qat_export.log
