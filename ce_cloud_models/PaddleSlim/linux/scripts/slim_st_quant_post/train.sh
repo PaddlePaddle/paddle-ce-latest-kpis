@@ -39,14 +39,12 @@ if [ "$1" = "export_model" ];then #单卡
     --pretrained_model ../../pretrain/MobileNetV1_pretrained \
     --data imagenet  > ${log_path}/$2.log 2>&1
     print_info $? $2
-    echo "exit_code: 0.0" >> ${log_path}/S_$2.log
 elif [ "$1" = "quant_post" ];then
     python quant_post.py --model_path ./inference_model/MobileNet \
     --save_path ./quant_model_train/MobileNet \
     --model_filename model \
     --params_filename weights  > ${log_path}/$2.log 2>&1
     print_info $? $2
-    echo "exit_code: 0.0" >> ${log_path}/S_$2.log
 elif [ "$1" = "eval1" ];then
     python eval.py --model_path ./quant_model_train/MobileNet \
     --model_name __model__ --params_name __params__  > ${log_path}/$2.log 2>&1
