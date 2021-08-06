@@ -11,7 +11,7 @@ VARIABLES:
   model_log_path: log/stacl/
 
 EXEC:
-  exec_cases: [DATA_PROC,TRAIN, INFER, EVAL]
+  exec_cases: [DATA_PROC,TRAIN, INFER]
   exec_priority: [p0]
   exec_tag: $EXEC_TAG
 
