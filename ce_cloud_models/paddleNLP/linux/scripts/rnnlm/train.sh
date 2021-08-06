@@ -33,7 +33,7 @@ if [[ ${DEVICE} == "gpu" ]]; then
 else
     python train.py \
       --max_epoch 1 > $log_path/train_$1.log 2>&1
-
+fi
 #set http_proxy
 export http_proxy=$HTTPPROXY
 export https_proxy=$HTTPSPROXY

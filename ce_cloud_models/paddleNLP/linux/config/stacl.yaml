@@ -1,5 +1,5 @@
 MODEL: "stacl" # 模型名
-PRIORITY: P0_delay, Dy_con # 数据集不能公开，改成P1以及收敛性的任务
+PRIORITY: P1, Dy_con # 数据集不能公开，改成P1以及收敛性的任务
 GIT:
   addr: $REPO_PaddleNLP
   path: $ROOT_PATH/models_repo
@@ -11,7 +11,7 @@ VARIABLES:
   model_log_path: log/stacl/
 
 EXEC:
-  exec_cases: [DATA_PROC,TRAIN, INFER, EVAL]
+  exec_cases: [DATA_PROC,TRAIN, INFER]
   exec_priority: [p0]
   exec_tag: $EXEC_TAG
 
@@ -44,8 +44,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 0.522773
-        threshold: 0.01
+        kpi_base: 8.56779
+        threshold: 0.05
         actived: True
         evaluation: "-"
         unit_repr: "s"
@@ -62,8 +62,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 0.522773
-        threshold: 0.01
+        kpi_base: 8.547153
+        threshold: 0.05
         actived: True
         evaluation: "-"
         unit_repr: "s"
@@ -147,23 +147,3 @@ INFER:
         unit_repr: None
     output: $ROOT_PATH/$model_log_path/infer_$XPU.log
 
-EVAL:
-  -
-    priority: p0
-    tag: linux_dy_gpu1
-    env: #去掉，自动调度
-        CUDA_VISIBLE_DEVICES: $SET_CUDA
-    run:
-      -
-        path: $ROOT_PATH/$model_scripts_path
-        cmd: bash eval.sh $XPU "single"
-
-    kpis:
-      exit_code:
-        latest: True
-        kpi_base: 0
-        threshold: 0
-        actived: True
-        evaluation: "-"
-        unit_repr: None
-    output: $ROOT_PATH/$model_log_path/eval_single_$XPU.log

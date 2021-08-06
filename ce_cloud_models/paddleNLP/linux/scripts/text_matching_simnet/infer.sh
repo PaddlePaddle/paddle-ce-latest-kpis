@@ -16,10 +16,19 @@ echo "$model_name 模型样例测试阶段"
 root_path=$cur_path/../../
 code_path=$cur_path/../../models_repo/examples/text_matching/simnet/
 log_path=$root_path/log/$model_name/
-mkdir -p $log_path
-#临时环境更改
-cd $root_path/models_repo
 
+if [ ! -d $log_path ]; then
+  mkdir -p $log_path
+fi
+
+print_info(){
+if [ $1 -ne 0 ];then
+    cat ${log_path}/$2.log
+    echo "exit_code: 1.0" >> ${log_path}/$2.log
+else
+    echo "exit_code: 0.0" >> ${log_path}/$2.log
+fi
+}
 #访问RD程序
 cd $code_path
 
@@ -36,7 +45,7 @@ python predict.py \
   --network=lstm \
   --params_path='./checkpoints/final.pdparams' > $log_path/infer_${DEVICE}.log 2>&1
 
-cat $log_path/infer_${DEVICE}.log
+print_info $? infer_${DEVICE}
 
 
 #set http_proxy
