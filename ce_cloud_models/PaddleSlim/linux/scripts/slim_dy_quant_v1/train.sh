@@ -46,8 +46,7 @@ elif [ "$1" = "linux_dy_gpu2" ];then # 多卡
     --log_dir="quant_v1_linux_dy_gpu2_dist_log" train.py \
     --pretrained_model '../../pretrain/MobileNetV1_pretrained' \
     --num_epochs 1 \
-    --batch_size 128
-    --model_save_dir output > ${log_path}/$2.log 2>&1
+    --batch_size 128 > ${log_path}/$2.log 2>&1
     print_info $? $2
     mv $code_path/quant_v1_linux_dy_gpu2_dist_log $log_path/$2_dist_log
 
