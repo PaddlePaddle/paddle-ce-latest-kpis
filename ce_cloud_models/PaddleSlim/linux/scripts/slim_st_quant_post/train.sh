@@ -48,9 +48,9 @@ elif [ "$1" = "quant_post" ];then
 elif [ "$1" = "eval1" ];then
     python eval.py --model_path ./quant_model_train/MobileNet \
     --model_name __model__ --params_name __params__  > ${log_path}/$2.log 2>&1
+    tail -1 ${log_path}/$2.log | grep top1_acc | tr -d '[' | tr -d ']' \
+        | awk -F ' ' '{print"top1:" $2"\ttop5:"$3}' >>${log_path}/$2.log
     print_info $? $2
-    tail -1 ${log_path}/S_$2.log | grep top1_acc | tr -d '[' | tr -d ']' \
-        | awk -F ' ' '{print"top1:" $2"\ttop5:"$3}' >>${log_path}/S_$2.log
 elif [ "$1" = "quant_post_bc" ];then
     python quant_post.py --model_path ./inference_model/MobileNet \
     --save_path ./quant_model_train_bc/MobileNet \
@@ -61,8 +61,8 @@ elif [ "$1" = "quant_post_bc" ];then
 elif [ "$1" = "eval2" ];then
     python eval.py --model_path ./quant_model_train_bc/MobileNet \
     --model_name __model__ --params_name __params__ > ${log_path}/$2.log 2>&1
+    tail -1 ${log_path}/$2.log | grep top1_acc | tr -d '[' | tr -d ']' \
+        | awk -F ' ' '{print"top1:" $2"\ttop5:"$3}' >>${log_path}/$2.log
     print_info $? $2
-    tail -1 ${log_path}/S_$2.log | grep top1_acc | tr -d '[' | tr -d ']' \
-        | awk -F ' ' '{print"top1:" $2"\ttop5:"$3}' >>${log_path}/S_$2.log
 fi
 
