@@ -28,8 +28,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       test_accuracy:
         latest: True
-        kpi_base: 50.14
-        threshold: 0.01
+        kpi_base: 45.512
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"
@@ -47,8 +47,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       test_accuracy:
         latest: True
-        kpi_base: 50.14
-        threshold: 0.01
+        kpi_base: 1.715
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"
@@ -209,8 +209,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       test_accuracy:
         latest: True
-        kpi_base: 54.93
-        threshold: 0.01
+        kpi_base: 50.035
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"
@@ -227,8 +227,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       test_accuracy:
         latest: True
-        kpi_base: 54.93
-        threshold: 0.01
+        kpi_base: 50.035
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"
@@ -245,8 +245,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       test_accuracy:
         latest: True
-        kpi_base: 60.54
-        threshold: 0.01
+        kpi_base: 49.888
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"
@@ -263,8 +263,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       test_accuracy:
         latest: True
-        kpi_base: 60.54
-        threshold: 0.01
+        kpi_base: 1.682
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"
@@ -281,8 +281,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       test_accuracy:
         latest: True
-        kpi_base: 50.512
-        threshold: 0.01
+        kpi_base: 49.693
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"

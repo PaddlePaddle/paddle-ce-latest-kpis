@@ -83,10 +83,12 @@ TRAIN: # 训练步骤
   -
     priority: p0
     tag: win_dy_gpu1
+    env: #去掉，自动调度
+        CUDA_VISIBLE_DEVICES: $SET_CUDA
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: interaction.bat $XPU $SET_CUDA
+        cmd: interaction.bat $XPU
 
     kpis:
       exit_code:

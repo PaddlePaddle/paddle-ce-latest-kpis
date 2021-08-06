@@ -17,7 +17,7 @@ EXEC:
 #测试套
 DATA_PROC:
   -
-    priority: p2 # 不用下载数据
+    priority: p2
     tag: linux_download_data
     run:
       -
@@ -46,8 +46,8 @@ TRAIN: # 训练步骤
         unit_repr: "s"
       ppl:
         latest: True
-        kpi_base: 12.36
-        threshold: 0.02
+        kpi_base: 11.241
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"

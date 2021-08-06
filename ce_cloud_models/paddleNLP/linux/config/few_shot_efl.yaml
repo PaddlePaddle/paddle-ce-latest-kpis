@@ -157,8 +157,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       dev_accuracy:
         latest: True
-        kpi_base: 54.176
-        threshold: 0.01
+        kpi_base: 47.46
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"
@@ -337,8 +337,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       dev_accuracy:
         latest: True
-        kpi_base: 17.083
-        threshold: 0.01
+        kpi_base: 15.934
+        threshold: 0.05
         actived: True
         evaluation: "+"
         unit_repr: "s"
@@ -386,7 +386,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA tnews 100
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA tnews 30
     kpis:
       exit_code:
         latest: True
@@ -557,7 +557,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA csldcp 100
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA csldcp 67
     kpis:
       exit_code:
         latest: True
@@ -625,7 +625,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: bash infer.sh $XPU 'single' $SET_CUDA chid 100
+        cmd: bash infer.sh $XPU 'single' $SET_CUDA chid 19
     kpis:
       exit_code:
         latest: True
@@ -642,7 +642,7 @@ INFER:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: infer.bat $XPU $SET_CUDA chid 100
+        cmd: infer.bat $XPU $SET_CUDA chid 74
     kpis:
       exit_code:
         latest: True

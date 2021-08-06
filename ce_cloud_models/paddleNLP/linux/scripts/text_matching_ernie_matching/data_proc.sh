@@ -15,4 +15,4 @@ fi
 cd $code_path
 #拷贝数据
 cp -r /workspace/task/datasets/ernie_matching/lcqmc/*  /root/.paddlenlp/datasets/LCQMC/lcqmc/
-cp /workspace/task/datasets/ernie_matching/lcqmc/test.tsv .
+cp -r /workspace/task/datasets/ernie_matching/lcqmc/test.tsv ./
