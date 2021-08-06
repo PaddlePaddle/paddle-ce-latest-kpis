@@ -76,7 +76,7 @@ TRAIN: # 训练步骤
       acc_top5:
         latest: True
         kpi_base: 0.79541
-        threshold: 0.8612
+        threshold: 0.02
         actived: True
         evaluation: "+"
         unit_repr: None
@@ -87,7 +87,9 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: None
-    output: $ROOT_PATH/$model_log_path/st_sa_nas_linux_st_gpu2_dist_log/workerlog.0
+    #output: $ROOT_PATH/$model_log_path/st_sa_nas_linux_st_gpu2_dist_log/workerlog.0
+    output: $ROOT_PATH/$model_log_path/slim_st_sa_nas_linux_st_gpu2.log
+
 
   -
     priority: p2
