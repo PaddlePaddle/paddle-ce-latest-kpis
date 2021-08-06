@@ -34,14 +34,14 @@ cd $code_path
 echo -e "\033[32m `pwd` infer \033[0m";
 
 if [ "$1" = "infer1" ];then #单卡
-     python infer.py --infer_epoch 10 \
+     python infer.py --infer_epoch \
      --test_dir data/test_mid_dir \
      --dict_path data/test_build_dict_word_to_id_ \
      --batch_size 20000 --model_dir v1_cpu5_b100_lr1dir/ \
      --start_index 0 --last_index 0  > ${log_path}/$2.log 2>&1
     print_info $? $2
 elif [ "$1" = "infer2" ];then
-    python infer.py --infer_epoch 10 \
+    python infer.py --infer_epoch \
     --test_dir data/test_mid_dir \
     --dict_path data/test_build_dict_word_to_id_ \
     --batch_size 20000 --model_dir v1_cpu5_b100_lr1dir/  \

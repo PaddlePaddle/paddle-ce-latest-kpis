@@ -68,13 +68,13 @@ INFER1: # 训练步骤
         path: $ROOT_PATH/$model_scripts_path
         cmd: sh infer.sh infer1 slim_st_quant_embedding_linux_st_infer1
     kpis: #kpi指标
-      acc:
-        latest: True
-        kpi_base: 0.567
-        threshold: 0.02
-        actived: True
-        evaluation: "+"
-        unit_repr: None
+#      acc:
+#        latest: True
+#        kpi_base: 0.567
+#        threshold: 0.02
+#        actived: True
+#        evaluation: "+"
+#        unit_repr: None
       exit_code:
         latest: True
         kpi_base: 0
@@ -97,13 +97,13 @@ INFER2: # 训练步骤
         cmd: sh infer.sh infer2 slim_st_quant_embedding_linux_st_infer2
 
     kpis: #kpi指标
-      acc:
-        latest: True
-        kpi_base: 0.567
-        threshold: 0.02
-        actived: True
-        evaluation: "+"
-        unit_repr: None
+#      acc:
+#        latest: True
+#        kpi_base: 0.567
+#        threshold: 0.02
+#        actived: True
+#        evaluation: "+"
+#        unit_repr: None
       exit_code:
         latest: True
         kpi_base: 0
