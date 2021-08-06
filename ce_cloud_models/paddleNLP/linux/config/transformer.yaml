@@ -1,5 +1,5 @@
 MODEL: "transformer" # 模型名
-PRIORITY: P0, Dy_con
+PRIORITY: P0, Dy_con  # 收敛性任务
 GIT:
   addr: $REPO_PaddleNLP
   path: $ROOT_PATH/models_repo
@@ -13,7 +13,7 @@ VARIABLES:
   model_log_path: log/transformer/
 
 EXEC:
-  exec_cases: [TRAIN,PREDICT]
+  exec_cases: [TRAIN, INFER, DY_TO_ST]
   exec_priority: [p0,p1]
   exec_tag: $EXEC_TAG
 
@@ -25,7 +25,7 @@ DATA_PROC:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh data_proc.sh
+        cmd: bash data_proc.sh
 
 TRAIN: # 训练步骤
   -
@@ -37,7 +37,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh 'single' $XPU 
+        cmd: bash train.sh 'single' $XPU 
 
     kpis: #kpi指标
       ppl:
@@ -56,7 +56,7 @@ TRAIN: # 训练步骤
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh train.sh 'multi' $XPU $SET_MULTI_CUDA
+        cmd: bash train.sh 'multi' $XPU $SET_MULTI_CUDA
 
     kpis: #kpi指标
       ppl:
@@ -87,7 +87,7 @@ TRAIN: # 训练步骤
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/multi_cards_train.log
 
-PREDICT:
+INFER:
   - #可以有多步
     priority: p0
     tag: linux_dy_gpu1
@@ -96,14 +96,35 @@ PREDICT:
     run:
       -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: sh predict.sh $XPU  
+        cmd: bash infer.sh $XPU  
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 7.376870
-        threshold: 0.01
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/eval.log
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/infer_$XPU.log
+
+DY_TO_ST: # 动转静
+  - #可以有多步
+    priority: p0
+    tag: linux_dy_gpu1
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: bash dy_to_st.sh $XPU  
+
+    kpis: #kpi指标
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/dy_to_st_$XPU.log
