@@ -34,7 +34,7 @@ TRAIN: # 训练步骤
       best_valid_acc:
         latest: True
         kpi_base: 0.438802
-        threshold: 0.02
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
@@ -55,7 +55,7 @@ TRAIN: # 训练步骤
       best_valid_acc:
         latest: True
         kpi_base: 0.442408
-        threshold: 0.02
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None

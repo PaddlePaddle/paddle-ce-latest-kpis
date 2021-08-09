@@ -42,15 +42,15 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       acc_top1:
         latest: True
-        kpi_base: 0.888336
-        threshold: 0.02
+        kpi_base: 0.7079
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
       acc_top5:
         latest: True
-        kpi_base: 0.991839
-        threshold: 0.02
+        kpi_base: 0.8966
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
@@ -69,15 +69,15 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       acc_top1:
         latest: True
-        kpi_base: 0.888336
-        threshold: 0.02
+        kpi_base: 0.7077
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
       acc_top5:
         latest: True
-        kpi_base: 0.991839
-        threshold: 0.02
+        kpi_base: 0.8961
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
@@ -104,15 +104,15 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       acc_top1:
         latest: True
-        kpi_base: 0.888336
-        threshold: 0.02
+        kpi_base: 0.7077
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
       acc_top5:
         latest: True
-        kpi_base: 0.991839
-        threshold: 0.02
+        kpi_base: 0.8961
+        threshold: 0.03
         actived: True
         evaluation: "+"
         unit_repr: None
@@ -124,6 +124,28 @@ TRAIN: # 训练步骤
         evaluation: "-"
         unit_repr: None
     output: $ROOT_PATH/$model_log_path/slim_dy_ce_tests_qat_linux_dy_cpu.log
+
+EXPORT: # 训练步骤
+  -
+    tag: linux_dy_gpu1
+    priority: p0
+    env: #去掉，自动调度
+      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
+
+    run:
+      -
+        path: $ROOT_PATH/$model_scripts_path
+        cmd: sh export.sh linux_dy_gpu1 slim_dy_ce_tests_qat_export
+
+    kpis: #kpi指标
+      exit_code:
+        latest: True
+        kpi_base: 0
+        threshold: 0
+        actived: True
+        evaluation: "-"
+        unit_repr: None
+    output: $ROOT_PATH/$model_log_path/slim_dy_ce_tests_qat_export.log
 
 EVAL: # 训练步骤
   -
@@ -229,25 +251,3 @@ EVAL: # 训练步骤
         evaluation: "-"
         unit_repr: None
     output: $ROOT_PATH/$model_log_path/slim_dy_ce_tests_qat_eval_linux_dy_cpu.log
-
-EXPORT: # 训练步骤
-  -
-    tag: linux_dy_gpu1
-    priority: p0
-    env: #去掉，自动调度
-      CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
-
-    run:
-      -
-        path: $ROOT_PATH/$model_scripts_path
-        cmd: sh export.sh linux_dy_gpu1 slim_dy_ce_tests_qat_export
-
-    kpis: #kpi指标
-      exit_code:
-        latest: True
-        kpi_base: 0
-        threshold: 0
-        actived: True
-        evaluation: "-"
-        unit_repr: None
-    output: $ROOT_PATH/$model_log_path/slim_dy_ce_tests_qat_export.log

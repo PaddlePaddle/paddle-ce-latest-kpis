@@ -33,6 +33,6 @@ model=mobilenet_v1
 cd $code_path
 python src/save_quant_model.py \
           --load_model_path output_models/quant_dygraph/${model} \
-          --save_model_path int8_models/${model} > ${log_path}/$2.log 2>&1
+          --save_model_path int8_models_pact/${model} > ${log_path}/$2.log 2>&1
 print_info $? $2
 

@@ -6,7 +6,7 @@
 cur_path=`pwd`
 model_name=${PWD##*/}
 
-echo "$model_name 模型train阶段"
+echo "$model_name 模型infer阶段"
 
 #路径配置
 root_path=$cur_path/../../
