@@ -13,21 +13,12 @@ mkdir -p $code_path/data/
 
 #数据处理逻辑
 cd $code_path
-
-#取消代理
-#HTTPPROXY=$http_proxy
-#HTTPSPROXY=$https_proxy
-#unset http_proxy
-#unset https_proxy
-
-if [ ! -d "gen_data" ]
-then
-    sed -i "s/python3 prep_enwik8.py/python3.7 prep_enwik8.py/g"  ./gen_data.sh
-    bash gen_data.sh
-fi
-
-#export http_proxy=$HTTPPROXY
-#export https_proxy=$HTTPSPROXY
-
-
-
+# 创建数据集路径
+mkdir -p gen_data/
+#提前下载好数据集
+cp -r /workspace/task/datasets/transformer-xl/gen_data/*  ./gen_data/
+# if [ ! -d "gen_data" ]
+# then
+#     sed -i "s/python3 prep_enwik8.py/python3.7 prep_enwik8.py/g"  ./gen_data.sh
+#     bash gen_data.sh
+# fi

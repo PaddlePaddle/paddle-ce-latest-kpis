@@ -298,7 +298,7 @@ INFER:
     output: $ROOT_PATH/$model_log_path/infer_enum_single_$XPU.log
 
   - 
-    priority: p0
+    priority: p2 #暂时关闭，显卡不足
     tag: win_dy_gpu1_enum
     env: #去掉，自动调度
         CUDA_VISIBLE_DEVICES: $SET_CUDA

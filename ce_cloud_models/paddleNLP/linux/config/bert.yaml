@@ -467,7 +467,7 @@ FINETUNE:
         actived: True
         evaluation: "+"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/fintune_win_$XPU.log
+    output: $ROOT_PATH/$model_log_path/finetune_win_$XPU.log
 
 INFER:
   - 

@@ -4,6 +4,8 @@ cd ../..
 
 xcopy /y /c /h /r .\scripts\unified_transformer\input.txt  .\models_repo\examples\dialogue\unified_transformer\
 
+if not exist log\unified_transformer md log\unified_transformer
+
 set logpath=%cd%\log\unified_transformer
 
 cd models_repo\examples\dialogue\unified_transformer\

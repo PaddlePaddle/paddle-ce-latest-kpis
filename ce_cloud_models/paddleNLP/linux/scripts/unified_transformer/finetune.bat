@@ -2,7 +2,7 @@
 @echo off
 cd ../..
 
-md log\unified_transformer
+if not exist log\unified_transformer md log\unified_transformer
 
 set logpath=%cd%\log\unified_transformer
 
