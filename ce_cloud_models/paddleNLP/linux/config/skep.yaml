@@ -114,7 +114,7 @@ INFER:
     output: $ROOT_PATH/$model_log_path/infer_$XPU.log
 
   - 
-    priority: p1
+    priority: p2 #显卡不足，关闭，之后换机器可以打开
     tag: win_dy_gpu1
     env: #去掉，自动调度
         CUDA_VISIBLE_DEVICES: $SET_CUDA
