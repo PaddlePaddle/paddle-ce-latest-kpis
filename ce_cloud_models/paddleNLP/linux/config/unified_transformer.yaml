@@ -11,7 +11,7 @@ VARIABLES:
   model_log_path: log/unified_transformer/
 
 EXEC:
-  exec_cases: [DATA_PROC, TRAIN]
+  exec_cases: [DATA_PROC, TRAIN, FINETUNE]
   exec_priority: [p0,p1]
   exec_tag: $EXEC_TAG
 
@@ -25,7 +25,7 @@ DATA_PROC:
         path: $ROOT_PATH/$model_scripts_path
         cmd: bash data_proc.sh
 
-TRAIN: # 训练步骤
+FINETUNE: # 训练步骤
   -
     priority: p0
     tag: linux_dy_gpu1
@@ -79,7 +79,8 @@ TRAIN: # 训练步骤
         evaluation: "-"
         unit_repr: "s"
     output: $ROOT_PATH/$model_log_path/finetune_$XPU.log
-  
+
+TRAIN:  
   -
     priority: p0
     tag: win_dy_gpu1

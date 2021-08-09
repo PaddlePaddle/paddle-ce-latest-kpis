@@ -13,7 +13,7 @@ VARIABLES:
   model_log_path: log/transformer/
 
 EXEC:
-  exec_cases: [TRAIN, INFER, DY_TO_ST]
+  exec_cases: [TRAIN]
   exec_priority: [p0,p1]
   exec_tag: $EXEC_TAG
 

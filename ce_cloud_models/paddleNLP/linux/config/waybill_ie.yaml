@@ -152,22 +152,22 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       Precision:
         latest: True
-        kpi_base: 0.888707
-        threshold: 0.05
+        kpi_base: 0.264113
+        threshold: 0.08
         actived: True
         evaluation: "+"
         unit_repr: None
       Recall:
         latest: True
-        kpi_base: 0.913373
-        threshold: 0.05
+        kpi_base: 0.220353
+        threshold: 0.08
         actived: True
         evaluation: "+"
         unit_repr: None
       F1:
         latest: True
-        kpi_base: 0.900871
-        threshold: 0.05
+        kpi_base: 0.240257
+        threshold: 0.08
         actived: True
         evaluation: "+"
         unit_repr: None

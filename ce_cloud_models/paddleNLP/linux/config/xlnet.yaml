@@ -229,8 +229,8 @@ FINETUNE:
     kpis: #kpi指标
       loss:
         latest: True
-        kpi_base: 0.717061
-        threshold: 0.01
+        kpi_base: 0.826415
+        threshold: 0.05
         actived: True
         evaluation: "-"
         unit_repr: "s"
