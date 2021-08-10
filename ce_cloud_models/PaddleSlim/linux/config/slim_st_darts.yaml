@@ -20,7 +20,7 @@ EXEC:
 
 TRAIN: # 训练步骤
   -
-    priority: p0
+    priority: p2
     tag: linux_st_gpu1
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
@@ -126,7 +126,7 @@ SEARCH: # 训练步骤
     output: $ROOT_PATH/$model_log_path/slim_st_darts_search_linux_st_gpu1.log
 
   -
-    priority: p0
+    priority: p2
     tag: linux_st_gpu2
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_MULTI_CUDA  #取值为None，则不设置

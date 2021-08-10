@@ -150,7 +150,7 @@ EXPORT: # 训练步骤
 EVAL: # 训练步骤
   -
     tag: linux_dy_gpu1
-    priority: p0
+    priority: p2
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置
 
