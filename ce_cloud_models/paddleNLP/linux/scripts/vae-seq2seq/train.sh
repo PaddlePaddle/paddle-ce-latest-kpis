@@ -20,6 +20,14 @@ mkdir -p $log_path
 #临时环境更改
 cd $root_path/models_repo
 
+print_info(){
+if [ $1 -ne 0 ];then
+    cat ${log_path}/$2.log
+    echo "exit_code: 1.0" >> ${log_path}/$2.log
+else
+    echo "exit_code: 0.0" >> ${log_path}/$2.log
+fi
+}
 #访问RD程序
 cd $code_path
 
@@ -35,6 +43,7 @@ if [[ ${MULTI} == "multi" ]]; then
         --model_path ptb_model \
         --device ${DEVICE} \
         --max_epoch 1 >$log_path/train_${MULTI}_${DEVICE}.log 2>&1
+    print_info $? train_${MULTI}_${DEVICE}
 else # 单卡或cpu
     python train.py \
         --batch_size 32 \
@@ -44,6 +53,7 @@ else # 单卡或cpu
         --model_path ptb_model\
         --device ${DEVICE} \
         --max_epoch 1 >$log_path/train_${MULTI}_${DEVICE}.log 2>&1
+    print_info $? train_${MULTI}_${DEVICE}
 fi
 
 #set http_proxy

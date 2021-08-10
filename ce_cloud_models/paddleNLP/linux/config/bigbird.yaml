@@ -82,13 +82,13 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU 'bigbird-base-uncased' mac
 
     kpis:
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 11.362973
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_mac_$XPU.log
   
   -

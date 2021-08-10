@@ -19,7 +19,14 @@ log_path=$root_path/log/$model_name/
 mkdir -p $log_path
 #临时环境更改
 cd $root_path/models_repo
-
+print_info(){
+if [ $1 -ne 0 ];then
+    cat ${log_path}/$2.log
+    echo "exit_code: 1.0" >> ${log_path}/$2.log
+else
+    echo "exit_code: 0.0" >> ${log_path}/$2.log
+fi
+}
 #访问RD程序
 cd $code_path
 
@@ -39,6 +46,7 @@ if [[ $3 == 'chnsenticorp' ]];then #GPU/cpu
         --device ${DEVICE} \
         --save_steps 100 \
         --output_dir small_models/chnsenticorp/ >$log_path/train_$3_$2_${DEVICE}.log 2>&1
+    print_info $? train_$3_$2_${DEVICE}
 elif [[ $3 == 'sst-2' ]];then #GPU
     python small.py \
         --task_name $3 \
@@ -52,6 +60,7 @@ elif [[ $3 == 'sst-2' ]];then #GPU
         --vocab_path $4 \
         --device ${DEVICE} \
         --embedding_name w2v.google_news.target.word-word.dim300.en >$log_path/train_$3_$2_${DEVICE}.log 2>&1
+    print_info $? train_$3_$2_${DEVICE}
 else
     python small.py \
         --task_name qqp \
@@ -65,6 +74,7 @@ else
         --vocab_path $4 \
         --device ${DEVICE} \
         --embedding_name w2v.google_news.target.word-word.dim300.en >$log_path/train_$3_$2_${DEVICE}.log 2>&1
+    print_info $? train_$3_$2_${DEVICE}
 fi
 #set http_proxy
 export http_proxy=$HTTPPROXY
