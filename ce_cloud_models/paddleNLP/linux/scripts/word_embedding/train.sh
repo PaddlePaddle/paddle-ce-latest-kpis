@@ -20,6 +20,15 @@ mkdir -p $log_path
 #临时环境更改
 cd $root_path/models_repo
 
+print_info(){
+if [ $1 -ne 0 ];then
+    cat ${log_path}/$2.log
+    echo "exit_code: 1.0" >> ${log_path}/$2.log
+else
+    echo "exit_code: 0.0" >> ${log_path}/$2.log
+fi
+}
+
 #访问RD程序
 cd $code_path
 
@@ -37,7 +46,7 @@ python train.py \
   --epochs=1 \
   --use_token_embedding=True \
   --vdl_dir='./vdl_dir' >$log_path/train_$2_${DEVICE}.log 2>&1
-
+print_info $? train_$2_${DEVICE}
 #set http_proxy
 export http_proxy=$HTTPPROXY
 export https_proxy=$HTTPSPROXY

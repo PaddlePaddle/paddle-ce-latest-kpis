@@ -90,20 +90,13 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU single
 
     kpis: #kpi指标
-      nll:
+      exit_code:
         latest: True
-        kpi_base: 105.7
-        threshold: 0.01
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
-      ppl:
-        latest: True
-        kpi_base: 12.39
-        threshold: 0.02
-        actived: True
-        evaluation: "+"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_single_$XPU.log
 
 INFER:

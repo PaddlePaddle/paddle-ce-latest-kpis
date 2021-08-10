@@ -171,20 +171,13 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU mac chnsenticorp
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 0.511655
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
-      acc:
-        latest: True
-        kpi_base: 0.88083
-        threshold: 0.001
-        actived: True
-        evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_chnsenticorp_mac_$XPU.log
 
   
@@ -197,13 +190,13 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU mac sst-2 '/Users/paddle/.paddlenlp/models/bert-base-uncased/bert-base-uncased-vocab.txt'
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 11.362973
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_sst-2_mac_$XPU.log
 
 
@@ -216,13 +209,13 @@ TRAIN: # 训练步骤
         cmd: bash train.sh $XPU mac qqp '/Users/paddle/.paddlenlp/models/bert-base-uncased/bert-base-uncased-vocab.txt'
 
     kpis: #kpi指标
-      loss:
+      exit_code:
         latest: True
-        kpi_base: 11.362973
-        threshold: 0.001
+        kpi_base: 0
+        threshold: 0
         actived: True
         evaluation: "-"
-        unit_repr: "s"
+        unit_repr: None
     output: $ROOT_PATH/$model_log_path/train_qqp_mac_$XPU.log
 
 
