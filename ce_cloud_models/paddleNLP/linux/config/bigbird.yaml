@@ -92,7 +92,7 @@ TRAIN: # 训练步骤
     output: $ROOT_PATH/$model_log_path/train_mac_$XPU.log
   
   -
-    priority: p1
+    priority: p2
     tag: win_dy_gpu1 # win的case
     run:
       -
@@ -107,10 +107,10 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/train_win_$XPU.log
+    output: $ROOT_PATH/$model_log_path/train_$XPU.log
 
   -
-    priority: p1
+    priority: p2 #暂时关闭，显卡不足
     tag: win_gpu1_SST-2 # win的case
     run:
       -
@@ -125,7 +125,7 @@ TRAIN: # 训练步骤
         actived: True
         evaluation: "-"
         unit_repr: "s"
-    output: $ROOT_PATH/$model_log_path/run_glue_win_$XPU.log
+    output: $ROOT_PATH/$model_log_path/run_glue_$XPU.log
   
 
 FINETUNE:

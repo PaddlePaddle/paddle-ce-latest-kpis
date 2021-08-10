@@ -43,7 +43,7 @@ if [[ $3 == 'chnsenticorp' ]];then #GPU/cpu
         --dropout_prob 0.1 \
         --batch_size 64 \
         --model_name bert-wwm-ext-chinese \
-        --teacher_path small_models/chnsenticorp/step_100.pdparams \
+        --teacher_dir small_models/chnsenticorp/step_100.pdparams \
         --vocab_path senta_word_dict.txt \
         --output_dir distilled_models/chnsenticorp \
         --save_steps 100 \
@@ -60,7 +60,7 @@ elif [[ $3 == 'sst-2' ]];then #GPU
         --batch_size 128 \
         --model_name bert-base-uncased \
         --output_dir distilled_models/SST-2 \
-        --teacher_path small_models/SST-2/step_1000.pdparams \
+        --teacher_dir small_models/SST-2/step_1000.pdparams \
         --save_steps 1000 \
         --device ${DEVICE} \
         --embedding_name w2v.google_news.target.word-word.dim300.en >$log_path/distill_$3_$2_${DEVICE}.log 2>&1
@@ -76,7 +76,7 @@ else
         --model_name bert-base-uncased \
         --n_iter 10 \
         --output_dir distilled_models/QQP \
-        --teacher_path small_models/QQP/step_1000.pdparams \
+        --teacher_dir small_models/QQP/step_1000.pdparams \
         --save_steps 1000 \
         --device ${DEVICE} \
         --embedding_name w2v.google_news.target.word-word.dim300.en >$log_path/distill_$3_$2_${DEVICE}.log 2>&1
