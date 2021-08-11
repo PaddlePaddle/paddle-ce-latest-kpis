@@ -70,7 +70,8 @@ TRAIN: # 训练步骤
         unit_repr: None
     output: $ROOT_PATH/$model_log_path/slim_st_quant_post_linux_st_quant_post.log
 
-  - tag: linux_st_gpu1
+  -
+    tag: linux_st_gpu1
     priority: p0
     env: #去掉，自动调度
       CUDA_VISIBLE_DEVICES: $SET_CUDA  #取值为None，则不设置

@@ -48,7 +48,7 @@ elif [ "$1" = "use_pact" ];then
 elif [ "$1" = "load" ];then  # load
     python train.py --model MobileNetV3_large_x1_0 \
     --pretrained_model ../../pretrain/MobileNetV3_large_x1_0_ssld_pretrained \
-    --num_epochs 2 --lr 0.0001 --use_pact True --batch_size 64 --lr_strategy=piecewise_decay \
+    --num_epochs 1 --lr 0.0001 --use_pact True --batch_size 64 --lr_strategy=piecewise_decay \
     --step_epochs 20 --l2_decay 1e-5 \
     --checkpoint_dir ./output/MobileNetV3_large_x1_0/0 \
     --checkpoint_epoch 0 >${log_path}/$2.log 2>&1
