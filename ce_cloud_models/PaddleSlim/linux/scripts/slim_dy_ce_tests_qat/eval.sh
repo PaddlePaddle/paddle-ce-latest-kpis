@@ -23,8 +23,9 @@ if [ $1 -ne 0 ];then
     cat ${log_path}/$2.log
     cp ${log_path}/$2.log ${log_path}/FAIL_$2.log
 else
+    cat ${log_path}/$2.log | grep test_acc1 | tr ',' ' ' | awk -F ' ' \
+        '{print"\nacc_top1:" $5"\tacc_top5:"$7}' >> ${log_path}/$2.log
     echo "exit_code: 0.0" >> ${log_path}/$2.log
-    echo $2 log as follows
     cat ${log_path}/$2.log
 fi
 }
