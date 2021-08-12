@@ -20,11 +20,6 @@ conf_path=$code_path/conf/
 if [ ! -d $log_path ]; then
   mkdir -p $log_path
 fi
-# 编包
-cd $modle_path
-python setup.py bdist_wheel
-python -m pip install ./dist/paddlenlp*.whl
-
 
 # 准备数据
 #配置目标数据存储路径
