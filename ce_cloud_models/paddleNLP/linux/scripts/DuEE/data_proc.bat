@@ -1,20 +1,7 @@
 @echo off
 cd ../..
 
-cd models_repo
-
-python setup.py bdist_wheel
-
-for %%i in (".\dist\*.whl") do (
-    set FileName=%%~nxi
-)
-
-python -m pip uninstall -y paddlenlp
-
-python -m pip install dist\%FileName%
-
-
-cd examples\information_extraction\DuEE\
+cd models_repo\examples\information_extraction\DuEE\
 
 rd /s /q data\DuEE-Fin
 md data\DuEE-Fin

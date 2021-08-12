@@ -43,8 +43,11 @@ DATA_PROC:
     tag: win_download_data_cpu
     run:
       -
+        path: $ROOT_PATH/scripts
+        cmd: compile_package.bat
+      -
         path: $ROOT_PATH/$model_scripts_path
-        cmd: data_proc.bat True
+        cmd: data_proc.bat
 
 
 TRAIN: # 训练步骤

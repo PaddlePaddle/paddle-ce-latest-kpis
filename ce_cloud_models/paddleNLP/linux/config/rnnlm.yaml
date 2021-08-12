@@ -45,8 +45,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       Perplexity:
         latest: True
-        kpi_base: 88.7
-        threshold: 0.01
+        kpi_base: 210.5817
+        threshold: 0.05
         actived: True
         evaluation: "-"
         unit_repr: "s"
@@ -64,8 +64,8 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       Perplexity:
         latest: True
-        kpi_base: 88.7
-        threshold: 0.01
+        kpi_base: 214.1181
+        threshold: 0.05
         actived: True
         evaluation: "-"
         unit_repr: "s"

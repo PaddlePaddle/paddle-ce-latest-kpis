@@ -245,7 +245,7 @@ TRAIN: # 训练步骤
     kpis: #kpi指标
       test_accuracy:
         latest: True
-        kpi_base: 49.888
+        kpi_base: 1.682
         threshold: 0.05
         actived: True
         evaluation: "+"
