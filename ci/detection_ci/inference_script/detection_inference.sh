@@ -7,8 +7,8 @@ mkdir logs_cpp
 #machine type
 MACHINE_TYPE=`uname -m`
 echo "MACHINE_TYPE: "${MACHINE_TYPE}
-config_list='ppyolo_r50vd_dcn_1x_coco ppyolov2_r50vd_dcn_365e_coco yolov3_darknet53_270e_coco solov2_r50_fpn_1x_coco faster_rcnn_r50_fpn_1x_coco mask_rcnn_r50_1x_coco s2anet_conv_1x_dota ssd_mobilenet_v1_300_120e_voc ttfnet_darknet53_1x_coco fcos_r50_fpn_1x_coco'
-config_s2anet='s2anet_conv_1x_dota'
+config_list='ppyolo_r50vd_dcn_1x_coco ppyolov2_r50vd_dcn_365e_coco yolov3_darknet53_270e_coco solov2_r50_fpn_1x_coco faster_rcnn_r50_fpn_1x_coco mask_rcnn_r50_1x_coco s2anet_conv_2x_dota ssd_mobilenet_v1_300_120e_voc ttfnet_darknet53_1x_coco fcos_r50_fpn_1x_coco'
+config_s2anet='s2anet_conv_2x_dota'
 mode_list='trt_fp32 trt_fp16 trt_int8 fluid'
 for config in ${config_list}
 do
