@@ -265,11 +265,16 @@ config_num=`cat config_list | wc -l`
 if [ ${config_num} -ne 0 ];then
 for config in `cat config_list`
 do
+weight_dir=
+if [[ -n `echo "${config}" | grep "keypoint"` ]];then
+weight_dir=keypoint/
+fi
 tmp=${config##*/}
 model=${tmp%.*}
 cd log && mkdir ${model} && cd ..
 TRAIN
 if [[ -n `echo "${config}" | grep "mot"` ]];then
+weight_dir=mot/
 EVAL_MOT
 INFER_MOT
 PYTHON_INFER_MOT
