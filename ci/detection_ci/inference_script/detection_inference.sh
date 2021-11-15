@@ -22,6 +22,7 @@ config_list='ppyolo_r50vd_dcn_1x_coco ppyolov2_r50vd_dcn_365e_coco yolov3_darkne
 config_skip_trt8='ppyolo_r50vd_dcn_1x_coco ppyolov2_r50vd_dcn_365e_coco solov2_r50_fpn_1x_coco faster_rcnn_r50_fpn_1x_coco mask_rcnn_r50_1x_coco ttfnet_darknet53_1x_coco fcos_r50_fpn_1x_coco'
 config_skip_bs2='solov2_r50_fpn_1x_coco mask_rcnn_r50_1x_coco s2anet_conv_2x_dota'
 config_s2anet='s2anet_conv_2x_dota'
+mode_list='trt_fp32 trt_fp16 trt_int8 fluid'
 err_sign=false
 print_result_python(){
     if [ $? -ne 0 ];then
@@ -100,7 +101,6 @@ if [[ -n `echo "${config_s2anet}" | grep -w "${config}"` ]];then
     image=demo/P0072__1.0__0___0.png
 fi
 model=`cat model_list_inference | grep ${config}`
-mode_list='trt_fp32 trt_fp16 trt_int8 fluid'
 python tools/export_model.py \
        -c configs/${model} \
        --output_dir=inference_model \
