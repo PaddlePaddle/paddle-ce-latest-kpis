@@ -4,12 +4,96 @@ mkdir logs
 if [ -d "logs_cpp" ];then rm -rf logs_cpp
 fi
 mkdir logs_cpp
+if [ -d "log_err" ];then rm -rf log_err
+fi
+mkdir log_err
+cd log_err
+if [ -d "cpp_infer" ];then rm -rf cpp_infer
+fi
+mkdir cpp_infer
+if [ -d "python_infer" ];then rm -rf python_infer
+fi
+mkdir python_infer
+cd ..
 #machine type
 MACHINE_TYPE=`uname -m`
 echo "MACHINE_TYPE: "${MACHINE_TYPE}
 config_list='ppyolo_r50vd_dcn_1x_coco ppyolov2_r50vd_dcn_365e_coco yolov3_darknet53_270e_coco solov2_r50_fpn_1x_coco faster_rcnn_r50_fpn_1x_coco mask_rcnn_r50_1x_coco s2anet_conv_2x_dota ssd_mobilenet_v1_300_120e_voc ttfnet_darknet53_1x_coco fcos_r50_fpn_1x_coco'
+config_skip_trt8='ppyolo_r50vd_dcn_1x_coco ppyolov2_r50vd_dcn_365e_coco solov2_r50_fpn_1x_coco faster_rcnn_r50_fpn_1x_coco mask_rcnn_r50_1x_coco ttfnet_darknet53_1x_coco fcos_r50_fpn_1x_coco'
+config_skip_bs2='solov2_r50_fpn_1x_coco mask_rcnn_r50_1x_coco s2anet_conv_2x_dota'
 config_s2anet='s2anet_conv_2x_dota'
 mode_list='trt_fp32 trt_fp16 trt_int8 fluid'
+err_sign=false
+print_result_python(){
+    if [ $? -ne 0 ];then
+        echo -e "${config}_${mode},python_infer,FAIL"
+        cd log_err
+        if [ ! -d ${config} ];then
+            mkdir ${config}
+        fi
+        cd ../
+        mv logs/${config}_${mode}.log log_err/python_infer/${config}/
+        err_sign=true
+    else
+        echo -e "${config}_${mode},python_infer,SUCCESS"
+    fi
+}
+python_trt(){
+    python deploy/python/infer.py \
+           --model_dir=./inference_model/${config} \
+           --image_file=${image} \
+           --device=GPU \
+           --run_mode=${mode} \
+           --threshold=0.5 \
+           --trt_calib_mode=${trt_calib_mode} \
+           --output_dir=python_infer_output/${config}_${mode} >logs/${config}_${mode}.log 2>&1
+    print_result_python
+}
+python_cpu(){
+    mode=cpu
+    python deploy/python/infer.py \
+           --model_dir=./inference_model/${config} \
+           --image_file=${image} \
+           --device=CPU \
+           --threshold=0.5 \
+           --output_dir=python_infer_output/${config}_${mode} >logs/${config}_${mode}.log 2>&1
+    print_result_python
+}
+python_mkldnn(){
+    mode=mkldnn
+    python deploy/python/infer.py \
+           --model_dir=./inference_model/${config} \
+           --image_file=${image} \
+           --device=CPU \
+           --threshold=0.5 \
+           --enable_mkldnn=True \
+           --output_dir=python_infer_output/${config}_${mkldnn} >logs/${config}_${mkldnn}.log 2>&1
+    print_result_python
+}
+python_bs2(){
+    mode=bs2
+    python deploy/python/infer.py \
+           --model_dir=./inference_model/${config} \
+           --image_dir=data \
+           --device=GPU \
+           --run_mode=fluid \
+           --threshold=0.5 \
+           --batch_size=2 \
+           --output_dir=python_infer_output/${config}_${mode} >logs/${config}_${mode}.log 2>&1
+    print_result_python
+}
+python_video(){
+    mode=video
+    python deploy/python/infer.py \
+           --model_dir=./inference_model/${config} \
+           --video_file=video.mp4 \
+           --device=GPU \
+           --run_mode=fluid \
+           --threshold=0.5 \
+           --output_dir=python_infer_output/${config}_${mode} >logs/${config}_${mode}.log 2>&1
+    print_result_python
+}
+
 for config in ${config_list}
 do
 image=demo/000000570688.jpg
@@ -28,70 +112,22 @@ if [[ ${mode} == 'trt_int8' ]];then
 else
     trt_calib_mode=False
 fi
-python deploy/python/infer.py \
-       --model_dir=./inference_model/${config} \
-       --image_file=${image} \
-       --device=GPU \
-       --run_mode=${mode} \
-       --threshold=0.5 \
-       --trt_calib_mode=${trt_calib_mode} \
-       --output_dir=python_infer_output/${config}_${mode} >logs/${config}_${mode}.log 2>&1
-if [ $? -ne 0 ];then
-    echo -e "${config}_${mode},python_infer,FAIL"
+if [[ ${mode} == 'trt_int8' ]] && [[ -n `echo "${config_skip_trt8}" | grep -w "${config}"` ]];then 
+    echo -e "***skip trt_int8 for ${config}"
 else
-    echo -e "${config}_${mode},python_infer,SUCCESS"
+    python_trt
 fi
 done
-python deploy/python/infer.py \
-       --model_dir=./inference_model/${config} \
-       --image_file=${image} \
-       --device=CPU \
-       --threshold=0.5 \
-       --output_dir=python_infer_output/${config}_cpu >logs/${config}_cpu.log 2>&1
-if [ $? -ne 0 ];then
-    echo -e "${config}_cpu,python_infer,FAIL"
+python_cpu
+python_mkldnn
+if [[ -n `echo "${config_skip_bs2}" | grep -w "${config}"` ]];then
+    echo -e "***skip bs2 for ${config}"
 else
-    echo -e "${config}_cpu,python_infer,SUCCESS"
+    python_bs2
 fi
-python deploy/python/infer.py \
-       --model_dir=./inference_model/${config} \
-       --image_file=${image} \
-       --device=CPU \
-       --threshold=0.5 \
-       --enable_mkldnn=True \
-       --output_dir=python_infer_output/${config}_mkldnn >logs/${config}_mkldnn.log 2>&1
-if [ $? -ne 0 ];then
-    echo -e "${config}_mkldnn,python_infer,FAIL"
-else
-    echo -e "${config}_mkldnn,python_infer,SUCCESS"
-fi
-python deploy/python/infer.py \
-       --model_dir=./inference_model/${config} \
-       --image_dir=data \
-       --device=GPU \
-       --run_mode=fluid \
-       --threshold=0.5 \
-       --batch_size=2 \
-       --output_dir=python_infer_output/${config}_batchsize_2 >logs/${config}_batchsize_2.log 2>&1
-if [ $? -ne 0 ];then
-    echo -e "${config}_bs2,python_infer,FAIL"
-else
-    echo -e "${config}_bs2,python_infer,SUCCESS"
-fi
-python deploy/python/infer.py \
-       --model_dir=./inference_model/${config} \
-       --video_file=video.mp4 \
-       --device=GPU \
-       --run_mode=fluid \
-       --threshold=0.5 \
-       --output_dir=python_infer_output/${config}_video >logs/${config}_video.log 2>&1
-if [ $? -ne 0 ];then
-    echo -e "${config}_video,python_infer,FAIL"
-else
-    echo -e "${config}_video,python_infer,SUCCESS"
-fi
+python_video
 done
-
+###################################################
 cd deploy/cpp
 rm -rf paddle_inference
 rm -rf deps/*
@@ -113,6 +149,44 @@ sed -i "s|CUDNN_LIB=/path/to/cudnn/lib|CUDNN_LIB=/usr/lib/x86_64-linux-gnu|g" sc
 fi
 sh scripts/build.sh
 cd ../..
+print_result_cpp(){
+    if [ $? -ne 0 ];then
+        echo -e "${config}_${mode},cpp_infer,FAIL"
+        cd log_err
+        if [ ! -d ${config} ];then
+            mkdir ${config}
+        fi
+        cd ../
+        mv logs/${config}_${mode}.log log_err/cpp_infer/${config}/
+        err_sign=true
+    else
+        echo -e "${config}_${mode},cpp_infer,SUCCESS"
+    fi
+}
+cpp_trt(){
+    ./deploy/cpp/build/main --model_dir=inference_model/${config} --image_file=${image} --output_dir=cpp_infer_output/${config}_${mode} --device=GPU --run_mode=${mode} --threshold=0.5 --run_benchmark=True --trt_calib_mode=${trt_calib_mode} >logs_cpp/${config}_${mode}.log 2>&1
+print_result_cpp
+}
+cpp_cpu(){
+mode=cpu
+./deploy/cpp/build/main --model_dir=inference_model/${config} --image_file=${image} --output_dir=cpp_infer_output/${config}_${mode} --device=CPU --threshold=0.5 --run_benchmark=True >logs_cpp/${config}_${mode}.log 2>&1
+print_result_cpp
+}
+cpp_mkldnn(){
+mode=mkldnn
+./deploy/cpp/build/main --model_dir=inference_model/${config} --image_file=${image} --output_dir=cpp_infer_output/${config}_${mode} --device=CPU --use_mkldnn=True --threshold=0.5 --run_benchmark=True >logs_cpp/${config}_${mode}.log 2>&1
+print_result_cpp
+}
+cpp_bs2(){
+mode=bs2
+./deploy/cpp/build/main --model_dir=inference_model/${config} --image_dir=data --output_dir=cpp_infer_output/${config}_${mode} --device=GPU --run_mode=fluid --batch_size=2 --threshold=0.5 --run_benchmark=True >logs_cpp/${config}_${mode}.log 2>&1
+print_result_cpp
+}
+cpp_video(){
+mode=video
+./deploy/cpp/build/main --model_dir=inference_model/${config} --video_file=video.mp4 --output_dir=cpp_infer_output/${config}_${mode} --device=GPU --run_mode=fluid --threshold=0.5 >logs_cpp/${config}_${mode}.log 2>&1
+print_result_cpp
+}
 for config in ${config_list}
 do
 image=demo/000000570688.jpg
@@ -126,35 +200,21 @@ if [[ ${mode} == 'trt_int8' ]];then
 else
     trt_calib_mode=False
 fi
-./deploy/cpp/build/main --model_dir=inference_model/${config} --image_file=${image} --output_dir=cpp_infer_output/${config}_${mode} --device=GPU --run_mode=${mode} --threshold=0.5 --run_benchmark=True --trt_calib_mode=${trt_calib_mode} >logs_cpp/${config}_${mode}.log 2>&1
-if [ $? -ne 0 ];then
-    echo -e "${config}_${mode},cpp_infer,FAIL"
+if [[ ${mode} == 'trt_int8' ]] && [[ -n `echo "${config_skip_trt8}" | grep -w "${config}"` ]];then
+    echo -e "***skip trt_int8 for ${config}"
 else
-    echo -e "${config}_${mode},cpp_infer,SUCCESS"
+    cpp_trt
 fi
 done
-./deploy/cpp/build/main --model_dir=inference_model/${config} --image_file=${image} --output_dir=cpp_infer_output/${config}_cpu --device=CPU --threshold=0.5 --run_benchmark=True >logs_cpp/${config}_cpu.log 2>&1
-if [ $? -ne 0 ];then
-    echo -e "${config}_cpu,cpp_infer,FAIL"
+cpp_cpu
+cpp_mkldnn
+if [[ -n `echo "${config_skip_bs2}" | grep -w "${config}"` ]];then
+    echo -e "***skip bs2 for ${config}"
 else
-    echo -e "${config}_cpu,cpp_infer,SUCCESS"
+    cpp_bs2
 fi
-./deploy/cpp/build/main --model_dir=inference_model/${config} --image_file=${image} --output_dir=cpp_infer_output/${config}_mkldnn --device=CPU --use_mkldnn=True --threshold=0.5 --run_benchmark=True >logs_cpp/${config}_mkldnn.log 2>&1
-if [ $? -ne 0 ];then
-    echo -e "${config}_mkldnn,cpp_infer,FAIL"
-else
-    echo -e "${config}_mkldnn,cpp_infer,SUCCESS"
-fi
-./deploy/cpp/build/main --model_dir=inference_model/${config} --image_dir=data --output_dir=cpp_infer_output/${config}_batchsize_2 --device=GPU --run_mode=fluid --batch_size=2 --threshold=0.5 --run_benchmark=True >logs_cpp/${config}_batchsize_2.log 2>&1
-if [ $? -ne 0 ];then
-    echo -e "${config}_bs2,cpp_infer,FAIL"
-else
-    echo -e "${config}_bs2,cpp_infer,SUCCESS"
-fi
-./deploy/cpp/build/main --model_dir=inference_model/${config} --video_file=video.mp4 --output_dir=cpp_infer_output/${config}_video --device=GPU --run_mode=fluid --threshold=0.5 >logs_cpp/${config}_video.log 2>&1
-if [ $? -ne 0 ];then
-    echo -e "${config}_video,cpp_infer,FAIL"
-else
-    echo -e "${config}_video,cpp_infer,SUCCESS"
-fi
+cpp_video
 done
+if [ "${err_sign}" = true ];then
+    exit 1
+fi
