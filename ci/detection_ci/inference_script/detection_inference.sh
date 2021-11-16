@@ -27,11 +27,11 @@ err_sign=false
 print_result_python(){
     if [ $? -ne 0 ];then
         echo -e "${config}_${mode},python_infer,FAIL"
-        cd log_err
+        cd log_err/python_infer
         if [ ! -d ${config} ];then
             mkdir ${config}
         fi
-        cd ../
+        cd ../..
         mv logs/${config}_${mode}.log log_err/python_infer/${config}/
         err_sign=true
     else
@@ -152,12 +152,12 @@ cd ../..
 print_result_cpp(){
     if [ $? -ne 0 ];then
         echo -e "${config}_${mode},cpp_infer,FAIL"
-        cd log_err
+        cd log_err/cpp_infer
         if [ ! -d ${config} ];then
             mkdir ${config}
         fi
-        cd ../
-        mv logs/${config}_${mode}.log log_err/cpp_infer/${config}/
+        cd ../..
+        mv logs/${config}_${mode}.log log_err/cpp_infer/${config}
         err_sign=true
     else
         echo -e "${config}_${mode},cpp_infer,SUCCESS"
