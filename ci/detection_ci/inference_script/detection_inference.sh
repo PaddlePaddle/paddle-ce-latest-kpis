@@ -1,3 +1,4 @@
+set -x
 if [ -d "logs" ];then rm -rf logs
 fi
 mkdir logs
@@ -16,13 +17,16 @@ fi
 mkdir python_infer
 cd ..
 #machine type
+export no_proxy=bcebos.com;
 MACHINE_TYPE=`uname -m`
 echo "MACHINE_TYPE: "${MACHINE_TYPE}
 config_list='ppyolo_r50vd_dcn_1x_coco ppyolov2_r50vd_dcn_365e_coco yolov3_darknet53_270e_coco solov2_r50_fpn_1x_coco faster_rcnn_r50_fpn_1x_coco mask_rcnn_r50_1x_coco s2anet_conv_2x_dota ssd_mobilenet_v1_300_120e_voc ttfnet_darknet53_1x_coco fcos_r50_fpn_1x_coco'
-config_skip_trt8='ppyolo_r50vd_dcn_1x_coco ppyolov2_r50vd_dcn_365e_coco solov2_r50_fpn_1x_coco faster_rcnn_r50_fpn_1x_coco mask_rcnn_r50_1x_coco ttfnet_darknet53_1x_coco fcos_r50_fpn_1x_coco'
+config_list_cpp='ppyolo_r50vd_dcn_1x_coco ppyolov2_r50vd_dcn_365e_coco yolov3_darknet53_270e_coco faster_rcnn_r50_fpn_1x_coco mask_rcnn_r50_1x_coco s2anet_conv_2x_dota ssd_mobilenet_v1_300_120e_voc ttfnet_darknet53_1x_coco fcos_r50_fpn_1x_coco'
+config_skip_trt8='ppyolo_r50vd_dcn_1x_coco ppyolov2_r50vd_dcn_365e_coco solov2_r50_fpn_1x_coco faster_rcnn_r50_fpn_1x_coco mask_rcnn_r50_1x_coco ttfnet_darknet53_1x_coco fcos_r50_fpn_1x_coco s2anet_conv_2x_dota'
 config_skip_bs2='solov2_r50_fpn_1x_coco mask_rcnn_r50_1x_coco s2anet_conv_2x_dota'
+config_skip_video='mask_rcnn_r50_1x_coco'
 config_s2anet='s2anet_conv_2x_dota'
-mode_list='trt_fp32 trt_fp16 trt_int8 fluid'
+mode_list='trt_fp32 trt_fp16 trt_int8 paddle'
 err_sign=false
 print_result_python(){
     if [ $? -ne 0 ];then
@@ -67,7 +71,7 @@ python_mkldnn(){
            --device=CPU \
            --threshold=0.5 \
            --enable_mkldnn=True \
-           --output_dir=python_infer_output/${config}_${mkldnn} >logs/${config}_${mkldnn}.log 2>&1
+           --output_dir=python_infer_output/${config}_${mode} >logs/${config}_${mmode}.log 2>&1
     print_result_python
 }
 python_bs2(){
@@ -76,7 +80,7 @@ python_bs2(){
            --model_dir=./inference_model/${config} \
            --image_dir=data \
            --device=GPU \
-           --run_mode=fluid \
+           --run_mode=paddle \
            --threshold=0.5 \
            --batch_size=2 \
            --output_dir=python_infer_output/${config}_${mode} >logs/${config}_${mode}.log 2>&1
@@ -88,7 +92,7 @@ python_video(){
            --model_dir=./inference_model/${config} \
            --video_file=video.mp4 \
            --device=GPU \
-           --run_mode=fluid \
+           --run_mode=paddle \
            --threshold=0.5 \
            --output_dir=python_infer_output/${config}_${mode} >logs/${config}_${mode}.log 2>&1
     print_result_python
@@ -125,7 +129,11 @@ if [[ -n `echo "${config_skip_bs2}" | grep -w "${config}"` ]];then
 else
     python_bs2
 fi
-python_video
+if [[ -n `echo "${config_skip_video}" | grep -w "${config}"` ]];then
+    echo -e "***skip video for ${config}"
+else
+    python_video
+fi
 done
 ###################################################
 cd deploy/cpp
@@ -157,37 +165,37 @@ print_result_cpp(){
             mkdir ${config}
         fi
         cd ../..
-        mv logs/${config}_${mode}.log log_err/cpp_infer/${config}
+        mv logs_cpp/${config}_${mode}.log log_err/cpp_infer/${config}
         err_sign=true
     else
         echo -e "${config}_${mode},cpp_infer,SUCCESS"
     fi
 }
 cpp_trt(){
-    ./deploy/cpp/build/main --model_dir=inference_model/${config} --image_file=${image} --output_dir=cpp_infer_output/${config}_${mode} --device=GPU --run_mode=${mode} --threshold=0.5 --run_benchmark=True --trt_calib_mode=${trt_calib_mode} >logs_cpp/${config}_${mode}.log 2>&1
+    ./deploy/cpp/build/main --model_dir=inference_model/${config} --image_file=${image} --output_dir=cpp_infer_output/${config}_${mode} --device=GPU --run_mode=${mode} --threshold=0.5 --trt_calib_mode=${trt_calib_mode} >logs_cpp/${config}_${mode}.log 2>&1
 print_result_cpp
 }
 cpp_cpu(){
 mode=cpu
-./deploy/cpp/build/main --model_dir=inference_model/${config} --image_file=${image} --output_dir=cpp_infer_output/${config}_${mode} --device=CPU --threshold=0.5 --run_benchmark=True >logs_cpp/${config}_${mode}.log 2>&1
+./deploy/cpp/build/main --model_dir=inference_model/${config} --image_file=${image} --output_dir=cpp_infer_output/${config}_${mode} --device=CPU --threshold=0.5 >logs_cpp/${config}_${mode}.log 2>&1
 print_result_cpp
 }
 cpp_mkldnn(){
 mode=mkldnn
-./deploy/cpp/build/main --model_dir=inference_model/${config} --image_file=${image} --output_dir=cpp_infer_output/${config}_${mode} --device=CPU --use_mkldnn=True --threshold=0.5 --run_benchmark=True >logs_cpp/${config}_${mode}.log 2>&1
+./deploy/cpp/build/main --model_dir=inference_model/${config} --image_file=${image} --output_dir=cpp_infer_output/${config}_${mode} --device=CPU --use_mkldnn=True --threshold=0.5 >logs_cpp/${config}_${mode}.log 2>&1
 print_result_cpp
 }
 cpp_bs2(){
 mode=bs2
-./deploy/cpp/build/main --model_dir=inference_model/${config} --image_dir=data --output_dir=cpp_infer_output/${config}_${mode} --device=GPU --run_mode=fluid --batch_size=2 --threshold=0.5 --run_benchmark=True >logs_cpp/${config}_${mode}.log 2>&1
+./deploy/cpp/build/main --model_dir=inference_model/${config} --image_dir=data --output_dir=cpp_infer_output/${config}_${mode} --device=GPU --run_mode=paddle --batch_size=2 --threshold=0.5 >logs_cpp/${config}_${mode}.log 2>&1
 print_result_cpp
 }
 cpp_video(){
 mode=video
-./deploy/cpp/build/main --model_dir=inference_model/${config} --video_file=video.mp4 --output_dir=cpp_infer_output/${config}_${mode} --device=GPU --run_mode=fluid --threshold=0.5 >logs_cpp/${config}_${mode}.log 2>&1
+./deploy/cpp/build/main --model_dir=inference_model/${config} --video_file=video.mp4 --output_dir=cpp_infer_output/${config}_${mode} --device=GPU --run_mode=paddle --threshold=0.5 >logs_cpp/${config}_${mode}.log 2>&1
 print_result_cpp
 }
-for config in ${config_list}
+for config in ${config_list_cpp}
 do
 image=demo/000000570688.jpg
 if [[ -n `echo "${config_s2anet}" | grep -w "${config}"` ]];then
@@ -213,8 +221,13 @@ if [[ -n `echo "${config_skip_bs2}" | grep -w "${config}"` ]];then
 else
     cpp_bs2
 fi
-cpp_video
+if [[ -n `echo "${config_skip_video}" | grep -w "${config}"` ]];then
+    echo -e "***skip video for ${config}"
+else
+    cpp_video
+fi
 done
 if [ "${err_sign}" = true ];then
     exit 1
 fi
+set +x

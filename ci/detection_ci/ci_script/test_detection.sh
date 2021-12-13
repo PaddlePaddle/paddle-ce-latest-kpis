@@ -6,26 +6,32 @@ export PATH=$(pwd)/run_env_py37:${PATH};
 export http_proxy=${proxy};
 export https_proxy=${proxy};
 export no_proxy=bcebos.com;
+export PYTHONPATH=`pwd`:$PYTHONPATH;
 apt-get update
 apt-get install ffmpeg -y
 python -m pip install pip==20.2.4 --ignore-installed;
+python -m pip install pyparsing==2.4.7 --ignore-installed --no-cache-dir
 pip install Cython --ignore-installed;
-pip install -r requirements.txt --ignore-installed;
 pip install cython_bbox --ignore-installed;
+pip install -r requirements.txt --ignore-installed;
 python -m pip uninstall paddlepaddle-gpu -y
+#pip uninstall pyparsing -y
+#python -m pip install pyparsing==2.4.7 --ignore-installed --no-cache-dir
 if [[ ${branch} == 'develop' ]];then
 python -m pip install ${paddle_dev_wheel} --no-cache-dir
 else
 python -m pip install ${paddle_release_wheel} --no-cache-dir
 fi
+pip uninstall pyparsing -y
+#python -m pip install pyparsing==2.4.7 --ignore-installed --no-cache-dir
 echo -e '*****************paddle_version*****'
 python -c 'import paddle;print(paddle.version.commit)'
 echo -e '*****************detection_version****'
 git rev-parse HEAD
 #find modified config file of this pr
 rm -rf config_list
-git diff --numstat --diff-filter=AMR upstream/${branch} | grep .yml | grep configs | grep -v kunlun | grep -v reader | grep -v test | grep -v oidv5 |grep -v _base_ |grep -v datasets |grep -v runtime |grep -v slim | grep -v roadsign | awk '{print $NF}' | tee config_list
-echo -e '********************config_list****'
+git diff --numstat --diff-filter=AMR upstream/${branch} | grep .yml | grep configs | grep -v kunlun | grep -v reader | grep -v test | grep -v oidv5 |grep -v _base_ |grep -v datasets |grep -v runtime |grep -v slim | grep -v roadsign | grep -v pruner | awk '{print $NF}' | tee config_list
+echo -e '**************config_list****'
 cat config_list
 #create log dir
 if [ -d "log" ];then rm -rf log
@@ -80,6 +86,9 @@ ln -s ${file_path}/data/mot dataset/mot
 if [ -d "dataset/DOTA_1024_s2anet" ];then rm -rf dataset/DOTA_1024_s2anet
 fi
 ln -s ${file_path}/data/DOTA_1024_s2anet dataset/DOTA_1024_s2anet
+if [ -d "dataset/mainbody" ];then rm -rf dataset/mainbody
+fi
+ln -s ${file_path}/data/mainbody dataset/mainbody
 print_result(){
     if [ $? -ne 0 ];then
         echo -e "${model},${model_type},${mode},FAIL"
@@ -186,7 +195,7 @@ PYTHON_INFER(){
     python deploy/python/infer.py \
            --model_dir=inference_model/${model} \
            --image_file=${image} \
-           --run_mode=fluid \
+           --run_mode=paddle \
            --device=GPU \
            --threshold=0.5 \
            --output_dir=python_infer_output/${model}/ >log/${model}/${model}_${model_type}_${mode}.log 2>&1
@@ -199,7 +208,7 @@ PYTHON_INFER_MOT(){
            --model_dir=inference_model/${model} \
            --video_file=video.mp4 \
            --save_mot_txts \
-           --run_mode=fluid \
+           --run_mode=paddle \
            --device=GPU \
            --threshold=0.5 \
            --output_dir=python_infer_output/${model}/ >log/${model}/${model}_${model_type}_${mode}.log 2>&1
@@ -211,7 +220,7 @@ PYTHON_INFER_KEYPOINT(){
     python deploy/python/keypoint_infer.py \
            --model_dir=inference_model/${model} \
            --image_file=${image} \
-           --run_mode=fluid \
+           --run_mode=paddle \
            --device=GPU \
            --threshold=0.5 \
            --output_dir=python_infer_output/${model}/ >log/${model}/${model}_${model_type}_${mode}.log 2>&1
@@ -223,7 +232,7 @@ CPP_INFER(){
         --model_dir=inference_model/${model} \
         --image_file=${image} \
         --device=GPU \
-        --run_mode=fluid \
+        --run_mode=paddle \
         --threshold=0.5 \
         --output_dir=cpp_infer_output/${model} >log/${model}/${model}_${model_type}_${mode}.log 2>&1
     print_result
@@ -234,7 +243,7 @@ CPP_INFER_MOT(){
         --model_dir=inference_model/${model} \
         --video_file=video.mp4 \
         --device=GPU \
-        --run_mode=fluid \
+        --run_mode=paddle \
         --threshold=0.5 \
         --output_dir=cpp_infer_output/${model} >log/${model}/${model}_${model_type}_${mode}.log 2>&1
     print_result
@@ -246,7 +255,7 @@ CPP_INFER_KEYPOINT(){
         --model_dir_keypoint=inference_model/${model} \
         --image_file=${image} \
         --device=GPU \
-        --run_mode=fluid \
+        --run_mode=paddle \
         --threshold=0.5 \
         --output_dir=cpp_infer_output/${model} >log/${model}/${model}_${model_type}_${mode}.log 2>&1
     print_result
@@ -266,25 +275,35 @@ if [ ${config_num} -ne 0 ];then
 for config in `cat config_list`
 do
 weight_dir=
-if [[ -n `echo "${config}" | grep "keypoint"` ]];then
-weight_dir=keypoint/
-fi
 tmp=${config##*/}
 model=${tmp%.*}
+if [[ -n `echo "${model_list}" | grep -w "${model}"` ]];then
+echo -e "run ${model} later"
+else
 cd log && mkdir ${model} && cd ..
 TRAIN
 if [[ -n `echo "${config}" | grep "mot"` ]];then
 weight_dir=mot/
 EVAL_MOT
 INFER_MOT
+EXPORT
 PYTHON_INFER_MOT
+elif [[ -n `echo "${config}" | grep "keypoint"` ]];then
+weight_dir=keypoint/
+EVAL
+INFER
+EXPORT
+PYTHON_INFER_KEYPOINT
 else
 EVAL
 INFER
+EXPORT
 PYTHON_INFER
+fi
 fi
 done
 fi
+
 for model in ${model_list}
 do
 weight_dir=
