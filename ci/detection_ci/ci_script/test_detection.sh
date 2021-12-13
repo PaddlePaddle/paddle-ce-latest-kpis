@@ -15,15 +15,11 @@ pip install Cython --ignore-installed;
 pip install cython_bbox --ignore-installed;
 pip install -r requirements.txt --ignore-installed;
 python -m pip uninstall paddlepaddle-gpu -y
-#pip uninstall pyparsing -y
-#python -m pip install pyparsing==2.4.7 --ignore-installed --no-cache-dir
 if [[ ${branch} == 'develop' ]];then
 python -m pip install ${paddle_dev_wheel} --no-cache-dir
 else
 python -m pip install ${paddle_release_wheel} --no-cache-dir
 fi
-pip uninstall pyparsing -y
-#python -m pip install pyparsing==2.4.7 --ignore-installed --no-cache-dir
 echo -e '*****************paddle_version*****'
 python -c 'import paddle;print(paddle.version.commit)'
 echo -e '*****************detection_version****'

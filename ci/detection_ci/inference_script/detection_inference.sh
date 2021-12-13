@@ -71,7 +71,7 @@ python_mkldnn(){
            --device=CPU \
            --threshold=0.5 \
            --enable_mkldnn=True \
-           --output_dir=python_infer_output/${config}_${mode} >logs/${config}_${mmode}.log 2>&1
+           --output_dir=python_infer_output/${config}_${mode} >logs/${config}_${mode}.log 2>&1
     print_result_python
 }
 python_bs2(){
