@@ -1,6 +1,7 @@
 #!/bin/bash
 
 rm -rf *_factor.txt
+
 export current_dir=$PWD
 
 print_info(){
