@@ -20,7 +20,7 @@ if [ "$1" = "demo" ];then   # 小数据集
 elif [ "$1" = "all" ];then   # 全量数据集
     if [ ! -d "data" ];then
         mkdir data && cd data;
-        ln -s /ssd2/ce_data/ILSVRC2012 ILSVRC2012;
+        ln -s ${data_path} ILSVRC2012;
     fi
 fi
 
@@ -43,5 +43,14 @@ if [ ! -d "MobileNetV1" ];then
 done
 fi
 ls;
+
+echo "-------  install slim --------"
+cd ${root_path}/PaddleSlim
+python -m pip install pip==20.2.4
+python -m pip install opencv-python==4.2.0.32 -i https://pypi.tuna.tsinghua.edu.cn/simple
+python -m pip install -r requirements.txt
+python setup.py install
+echo "------- after install slim --------"
+python -m pip list;
 
 

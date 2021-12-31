@@ -15,18 +15,26 @@ log_path=$root_path/log/$model_name/
 mkdir -p $log_path
 #临时环境更改
 
+echo "-------  install slim --------"
+cd ${root_path}/PaddleSlim
+python -m pip install pip==20.2.4
+python -m pip install opencv-python==4.2.0.32 -i https://pypi.tuna.tsinghua.edu.cn/simple
+python -m pip install -r requirements.txt
+python setup.py install
+echo "------- after install slim --------"
+python -m pip list;
 
 #访问RD程序
 print_info(){
 if [ $1 -ne 0 ];then
-    echo -e "\033[31m ${log_path}/F_$2 \033[0m"
-    echo "exit_code: 1.0" >>${log_path}/$2.log
+    echo "exit_code: 1.0" >> ${log_path}/$2.log
+    echo -e "\033[31m FAIL_$2 \033[0m"
+    echo $2 fail log as follows
+    cat ${log_path}/$2.log
+    cp ${log_path}/$2.log ${log_path}/FAIL_$2.log
 else
-    echo -e "\033[32m ${log_path}/S_$2 \033[0m"
-    echo "exit_code: 0.0" >>${log_path}/$2.log
+    echo "exit_code: 0.0" >> ${log_path}/$2.log
 fi
-echo $2 log as below
-cat ${log_path}/$2.log
 }
 
 cd $code_path
